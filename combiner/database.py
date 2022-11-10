@@ -8,7 +8,7 @@ class Database:
     def __init__(self, path_to_database, additional_database_information):
         self.__database_name = get_file_without_path_or_extension(path_to_database)
         try:
-            self.__additional_information = read_csv_file(additional_database_information)
+            self.__additional_information = additional_database_information
             self.__database_contents = read_csv_file(path_to_database)
         except Exception as e:
             raise e
@@ -34,7 +34,7 @@ class Database:
         if breach_date is not None:
             self.__database_contents["breach_date"] = breach_date
 
-    def __get_breach_date_from_additional_database_information(self):
+    def __get_breach_date_from_additional_database_information(self) -> str | None:
         for index, row in self.__additional_information.iterrows():
             if row["database"] == self.__database_name:
                 breach_date = row["dumped"]
@@ -44,7 +44,8 @@ class Database:
 
 if __name__ == '__main__':
     try:
-        database = Database("../000webhost.com.csv", "../list_of_leaks.txt")
+        additional_information = read_csv_file("../list_of_leaks.txt")
+        database = Database("../000webhost.com.csv", additional_information)
         combined_database = database.combine()
         print(combined_database)
     except Exception as e:
