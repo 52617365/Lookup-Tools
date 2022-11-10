@@ -5,11 +5,15 @@ import pandas as pd
 
 
 class FileReader:
-    def __init__(self, file_path: str):
-        if not self.is_valid_file(file_path):
-            raise IOError(F"File does not exist: {file_path}")
-        self.__file_path = file_path
-        self.__file_name = get_file_without_path_or_extension(file_path)
+    """ FileReader Contract:
+    file_path has to be a valid path to a file.
+    """
+
+    def __init__(self, file_path_that_exists: str):
+        if not self.is_valid_file(file_path_that_exists):
+            raise IOError(F"File does not exist: {file_path_that_exists}")
+        self.__file_path = file_path_that_exists
+        self.__file_name = get_file_without_path_or_extension(file_path_that_exists)
 
     def get_file_name(self) -> str:
         return self.__file_name
