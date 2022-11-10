@@ -18,12 +18,6 @@ class Database:
         self.__set_additional_information_to_database()
         return self.__database_contents
 
-    # def get_database_name(self) -> str:
-    #     return self.__database_name
-    #
-    # def get_database_contents(self) -> DataFrame:
-    #     return self.__database_contents
-
     def get_additional_information(self) -> str:
         breach_date = self.__get_breach_date_from_additional_database_information()
         return breach_date

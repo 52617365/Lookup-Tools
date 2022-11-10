@@ -7,7 +7,7 @@ import pandas as pd
 class FileReader:
     def __init__(self, file_path: str):
         self.__set_file_path(file_path)
-        self.__file_name = self.get_file_without_path_or_extension(file_path)
+        self.__file_name = get_file_without_path_or_extension(file_path)
 
     def __set_file_path(self, file_path: str):
         if not self.is_valid_file(file_path):
@@ -31,9 +31,10 @@ class FileReader:
     def is_valid_file(file_path: str):
         return os.path.isfile(file_path)
 
-    @staticmethod
-    def get_file_without_path_or_extension(file_name: str) -> str:
-        return os.path.splitext(os.path.basename(file_name))[0]
+
+def get_file_without_path_or_extension(file_name: str) -> str:
+    return os.path.splitext(os.path.basename(file_name))[0]
+
 
 if __name__ == '__main__':
     file_reader = FileReader("../000webhost.com.csv")
