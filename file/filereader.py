@@ -8,7 +8,6 @@ class FileReader:
     """ FileReader Contract:
     file_path has to be a valid path to a file.
     """
-
     def __init__(self, file_path_that_exists: str):
         if not self.is_valid_file(file_path_that_exists):
             raise IOError(F"File does not exist: {file_path_that_exists}")
@@ -30,7 +29,7 @@ class FileReader:
             raise invalid_format
 
     @staticmethod
-    def is_valid_file(file_path: str):
+    def is_valid_file(file_path: str) -> bool:
         return os.path.isfile(file_path)
 
 

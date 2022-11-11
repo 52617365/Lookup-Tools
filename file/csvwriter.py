@@ -20,5 +20,6 @@ class CsvWriter:
 if __name__ == '__main__':
     file = FileReader("../000webhost.com.csv")
     data = file.get_file_as_csv()
+    print(data)
     writer = CsvWriter("test.json", data)
     writer.write_as_json()
