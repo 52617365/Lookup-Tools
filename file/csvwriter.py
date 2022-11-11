@@ -9,17 +9,15 @@ class CsvWriter:
         self.__data_to_write = data_to_write
 
     def write_as_json(self):
-        # TODO: maybe add some folder to write to instead to keep stuff organized?
         data_in_json = self.__data_to_write.to_json(self.__path_to_writing_file, orient='records')
 
     def write_as_csv(self):
-        # TODO: maybe add some folder to write to instead to keep stuff organized?
         self.__data_to_write.to_csv(self.__path_to_writing_file, index=False)
 
 
 if __name__ == '__main__':
     file = FileReader("../000webhost.com.csv")
-    data = file.get_file_as_csv()
+    data = file.get_file_as_dataframe()
     print(data)
     writer = CsvWriter("test.json", data)
     writer.write_as_json()

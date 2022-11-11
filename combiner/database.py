@@ -9,9 +9,8 @@ class Database:
         self.__database_name = self.__file.get_file_name()
         self.__additional_information = additional_database_information
         try:
-            self.__database_contents = self.__file.get_file_as_csv()
+            self.__database_contents = self.__file.get_file_as_dataframe()
         except Exception as e:
-            # TODO: maybe add the file to some invalid/* folder for future investigation?
             raise e
 
     def combine(self) -> DataFrame:
@@ -41,7 +40,7 @@ if __name__ == '__main__':
     try:
 
         additional_information = FileReader("../list_of_leaks.txt")
-        database = Database("../000webhost.com.csv", additional_information.get_file_as_csv())
+        database = Database("../000webhost.com.csv", additional_information.get_file_as_dataframe())
         combined_database = database.combine()
         print(combined_database)
     except Exception as e:
