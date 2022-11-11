@@ -7,7 +7,7 @@ from file.filereader import FileReader
 
 class MyTestCase(unittest.TestCase):
     def test_get_file_as_csv(self):
-        file = FileReader("../../000webhost.com.csv")
+        file = FileReader("testing_file.txt")
         data = file.get_file_as_csv()
         df = pd.DataFrame({'test': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(data.equals(df), True)
