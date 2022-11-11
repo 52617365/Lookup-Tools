@@ -4,7 +4,7 @@ from file.filereader import FileReader
 
 
 class Database:
-    def __init__(self, path_to_database, additional_database_information):
+    def __init__(self, path_to_database: str, additional_database_information: DataFrame):
         self.__file = FileReader(path_to_database)
         self.__database_name = self.__file.get_file_name()
         self.__additional_information = additional_database_information
@@ -29,11 +29,12 @@ class Database:
             self.__database_contents["breach_date"] = breach_date
 
     def __get_breach_date_from_additional_database_information(self) -> str | None:
-        for index, row in self.__additional_information.iterrows():
-            if row["database"] == self.__database_name:
-                breach_date = row["dumped"]
-                return breach_date
-        return None
+        try:
+            breach_date = self.__additional_information.loc[
+                self.__additional_information['database'] == self.__database_name, 'dumped'].item()
+            return breach_date
+        except ValueError as e:
+            return None
 
 
 if __name__ == '__main__':
