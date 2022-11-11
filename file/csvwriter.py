@@ -12,7 +12,7 @@ class CsvWriter:
         # TODO: maybe add some folder to write to instead to keep stuff organized?
         data_in_json = self.__data_to_write.to_json(self.__path_to_writing_file, orient='records')
 
-    def write(self):
+    def write_as_csv(self):
         # TODO: maybe add some folder to write to instead to keep stuff organized?
         self.__data_to_write.to_csv(self.__path_to_writing_file, index=False)
 

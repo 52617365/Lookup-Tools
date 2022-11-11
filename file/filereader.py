@@ -5,9 +5,6 @@ import pandas as pd
 
 
 class FileReader:
-    """ FileReader Contract:
-    file_path has to be a valid path to a file.
-    """
     def __init__(self, file_path_that_exists: str):
         if not self.is_valid_file(file_path_that_exists):
             raise IOError(F"File does not exist: {file_path_that_exists}")
@@ -23,7 +20,7 @@ class FileReader:
     def get_file_as_csv(self) -> pd.DataFrame:
         try:
             # We specify that the engine is python because the C engine is not able to determine the dynamic delimiter.
-            return pd.read_csv(self.__file_path, quoting=csv.QUOTE_NONE, skipinitialspace=True, sep=None,
+            return pd.read_csv(self.__file_path, sep=None,
                                engine='python')
         except Exception as invalid_format:
             raise invalid_format
