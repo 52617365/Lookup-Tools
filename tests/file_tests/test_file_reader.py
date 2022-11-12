@@ -10,6 +10,7 @@ class TestFileReader(unittest.TestCase):
     def test_get_valid_file_as_dataframe(self):
         current_working_directory = os.getcwd()
         testing_file_path = F"{current_working_directory}\\file_tests\\files\\testing_file.txt"
+        print(testing_file_path)
 
         example_delimited_file = FileReader(testing_file_path)
         data = example_delimited_file.get_file_as_dataframe()

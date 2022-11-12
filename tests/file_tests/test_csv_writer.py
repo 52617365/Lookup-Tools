@@ -12,7 +12,6 @@ class TestCsvWriter(unittest.TestCase):
         current_working_directory = os.getcwd()
 
         file_path = F"{current_working_directory}\\hasher_tests\\files\\test.json"
-        print(file_path)
 
         csv_data_to_write_as_json = pd.DataFrame({'test': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
 
