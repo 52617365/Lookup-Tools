@@ -6,8 +6,6 @@ from pandas import DataFrame
 
 
 class Hasher:
-    load_dotenv()
-
     def __init__(self, file_data: DataFrame, hash_file_path: str = os.getenv("HASH_FILE_PATH")):
         load_dotenv()
         if hash_file_path is None:
