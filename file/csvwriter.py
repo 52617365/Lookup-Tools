@@ -1,35 +1,31 @@
 import sys
 
 import pandas as pd
+from pandas import DataFrame
 
 from file.filereader import FileReader
+from hasher.hash import Hasher
 
 
 class CsvWriter:
-    def __init__(self, writing_file_path: str, data_to_write: pd.DataFrame | str):
+    def __init__(self, writing_file_path: str, data_to_write: pd.DataFrame):
         self.__path_to_writing_file = writing_file_path
         self.__data_to_write = data_to_write
 
     def write_as_json(self):
-        if isinstance(self.__data_to_write, pd.DataFrame):
-            self.__data_to_write.to_json(self.__path_to_writing_file, orient='records')
-        else:
-            print("This function can only be called with dataframes.")
-            sys.exit(1)
+        self.__data_to_write.to_json(self.__path_to_writing_file, orient='records')
+        self.__write_hash_to_file()
 
     def write_as_csv(self):
-        if isinstance(self.__data_to_write, pd.DataFrame):
-            self.__data_to_write.to_csv(self.__path_to_writing_file, index=False)
-        else:
-            print("This function can only be called with dataframes.")
-            sys.exit(1)
+        self.__data_to_write.to_csv(self.__path_to_writing_file, index=False)
+        self.__write_hash_to_file()
 
-    def write_hash_to_file(self):
-        if isinstance(self.__data_to_write, str):
-            with open(self.__path_to_writing_file, 'a') as hashes_file:
-                hashes_file.write(self.__data_to_write + "\n")
+    def __write_hash_to_file(self):
+        if isinstance(self.__data_to_write, DataFrame):
+            hasher = Hasher(self.__data_to_write)
+            hasher.write_unique_identifier_of_file_to_logs()
         else:
-            print("This function can only be called with strings containing hashes.")
+            print("This function can only be called with Dataframes.")
             sys.exit(1)
 
 
