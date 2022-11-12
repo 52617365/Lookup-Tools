@@ -1,9 +1,23 @@
-- name: Lookup-Tools
-- uses: actions/checkout@v3
-- uses: actions/setup-python@v4.3.0
-  with:
-    python-version: 3.11
-    cache: 'pip'
-- run: pip install -r requirements.txt
-- run: python -m unittest discover -s tests -t tests -p *.py in tests
+name: Lookup-Tools
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  on_push_or_pull:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: pip freeze > requirements.txt
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -p "*_test.py"
+
+
+#  run: python -m unittest discover -s tests -t tests -p *.py in tests
 
