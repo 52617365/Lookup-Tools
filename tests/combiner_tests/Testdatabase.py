@@ -1,3 +1,4 @@
+import os
 import unittest
 
 import pandas as pd
@@ -33,7 +34,10 @@ class MyTestCase(unittest.TestCase):
         additional_information_about_databases = pd.DataFrame({'database': ["testing_file"], 'entries': [15271696],
                                                                'dumped': ["2011-05-21"]})
 
-        our_loaded_database = Database("./testing_file.txt", additional_information_about_databases)
+        current_working_directory = os.getcwd()
+        testing_file_path = F"{current_working_directory}\\combiner_tests\\files\\testing_file.txt"
+
+        our_loaded_database = Database(testing_file_path, additional_information_about_databases)
         combined_database = our_loaded_database.combine()
         self.assertEqual(combined_database["database_name"].item(), "testing_file")
         self.assertEqual(combined_database["breach_date"].item(), "2011-05-21")

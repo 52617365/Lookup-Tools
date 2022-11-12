@@ -1,4 +1,5 @@
 import json
+import os
 import unittest
 
 import pandas as pd
@@ -8,7 +9,10 @@ from file.csvwriter import CsvWriter
 
 class TestCsvWriter(unittest.TestCase):
     def test_write_as_json(self):
-        file_path = "test.json"
+        current_working_directory = os.getcwd()
+
+        file_path = F"{current_working_directory}\\hasher_tests\\files\\test.json"
+        print(file_path)
 
         csv_data_to_write_as_json = pd.DataFrame({'test': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
 
@@ -23,7 +27,8 @@ class TestCsvWriter(unittest.TestCase):
         json.loads(json_string_that_was_written)
 
     def test_write_as_csv(self):
-        file_path = "test.csv"
+        current_working_directory = os.getcwd()
+        file_path = F"{current_working_directory}\\hasher_tests\\files\\test.csv"
 
         csv_file = pd.DataFrame({'test': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
 
