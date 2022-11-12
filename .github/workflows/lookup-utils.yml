@@ -7,7 +7,7 @@ on:
 
 jobs:
   on_push_or_pull:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -16,8 +16,5 @@ jobs:
       - run: pip install pipreqs
       - run: pipreqs --force .
       - run: pip install -r requirements.txt
-      - run: python -m unittest discover -s ./tests -t ./tests -p *.py
-
-
-#  run: python -m unittest discover -s tests -t tests -p *.py in tests
+      - run: python -m unittest discover -s tests
 

@@ -8,9 +8,8 @@ from file.filereader import FileReader
 
 class TestFileReader(unittest.TestCase):
     def test_get_valid_file_as_dataframe(self):
-        current_working_directory = os.getcwd()
-        testing_file_path = F"{current_working_directory}\\file_tests\\files\\testing_file.txt"
-        print(testing_file_path)
+        dir_name = os.path.dirname(__file__)
+        testing_file_path = os.path.join(dir_name, 'files/testing_file.txt')
 
         example_delimited_file = FileReader(testing_file_path)
         data = example_delimited_file.get_file_as_dataframe()
@@ -23,7 +22,10 @@ class TestFileReader(unittest.TestCase):
 
     def test_get_dataframe_file_with_file_that_is_invalid(self):
         with self.assertRaises(Exception):
-            f = FileReader("files/invalid_format_file.csv")
+            dir_name = os.path.dirname(__file__)
+            testing_file_path = os.path.join(dir_name, 'files/invalid_format_file.csv')
+
+            f = FileReader(testing_file_path)
             file = f.get_file_as_dataframe()
 
 

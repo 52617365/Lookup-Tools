@@ -34,8 +34,8 @@ class MyTestCase(unittest.TestCase):
         additional_information_about_databases = pd.DataFrame({'database': ["testing_file"], 'entries': [15271696],
                                                                'dumped': ["2011-05-21"]})
 
-        current_working_directory = os.getcwd()
-        testing_file_path = F"{current_working_directory}\\combiner_tests\\files\\testing_file.txt"
+        dir_name = os.path.dirname(__file__)
+        testing_file_path = os.path.join(dir_name, 'files/testing_file.txt')
 
         our_loaded_database = Database(testing_file_path, additional_information_about_databases)
         combined_database = our_loaded_database.combine()
