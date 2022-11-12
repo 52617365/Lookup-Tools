@@ -1,10 +1,17 @@
 import hashlib
+import os
+from dotenv import load_dotenv
 
 from pandas import DataFrame
 
 
 class Hasher:
-    def __init__(self, file_data: DataFrame, hash_file_path: str = "hashes.txt"):
+    load_dotenv()
+
+    def __init__(self, file_data: DataFrame, hash_file_path: str = os.getenv("HASH_FILE_PATH")):
+        load_dotenv()
+        if hash_file_path is None:
+            raise Exception("Either set the environment variable HASH_FILE_PATH or pass it as a parameter.")
         self.__hash_file_path = hash_file_path
         self.__file_data = file_data.to_string()
 
