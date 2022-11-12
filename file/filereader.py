@@ -30,6 +30,11 @@ class FileReader:
         except Exception as invalid_format:
             raise invalid_format
 
+    def get_file_as_txt(self) -> str:
+        with open(self.__file_path, 'r') as file:
+            file.close()
+            return file.read()
+
     @staticmethod
     def is_valid_file(file_path: str) -> bool:
         return os.path.isfile(file_path)
