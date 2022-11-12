@@ -13,8 +13,8 @@ class TestHashing(unittest.TestCase):
 
         csv_to_hash = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
 
-        hasher = Hasher(csv_to_hash.to_csv(), hash_file_path="test_hashes.txt")
-        hasher.write_file_identifier_to_hashes()
+        hasher = Hasher(csv_to_hash, hash_file_path="test_hashes.txt")
+        hasher.write_unique_identifier_of_file_to_logs()
 
         with open(hashes_file_path, "r") as hashes:
             sha256_hash = hashes.readline().rstrip()
