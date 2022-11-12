@@ -34,14 +34,3 @@ class Database:
             return breach_date
         except ValueError as e:
             return None
-
-
-if __name__ == '__main__':
-    try:
-
-        additional_information = FileReader("../list_of_leaks.txt")
-        database = Database("../000webhost.com.csv", additional_information.get_file_as_dataframe())
-        combined_database = database.combine()
-        print(combined_database)
-    except Exception as e:
-        print(e)

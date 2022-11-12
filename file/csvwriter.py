@@ -3,7 +3,6 @@ import sys
 import pandas as pd
 from pandas import DataFrame
 
-from file.filereader import FileReader
 from hasher.hash import Hasher
 
 
@@ -27,11 +26,3 @@ class CsvWriter:
         else:
             print("This function can only be called with Dataframes.")
             sys.exit(1)
-
-
-if __name__ == '__main__':
-    file = FileReader("../000webhost.com.csv")
-    data = file.get_file_as_dataframe()
-    print(data)
-    writer = CsvWriter("test.json", data)
-    writer.write_as_json()
