@@ -21,7 +21,6 @@ class TestFileReader(unittest.TestCase):
             FileReader("file_that_does_not_exist.csv")
 
     def test_get_dataframe_file_with_file_that_is_invalid(self):
-        # TODO: make this pass.
         with self.assertRaises(Exception):
             f = FileReader("files/invalid_format_file.csv")
             file = f.get_file_as_dataframe()
