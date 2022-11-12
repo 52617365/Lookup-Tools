@@ -36,11 +36,8 @@ class HashFilePath:
 
 
 class Hasher:
-    def __init__(self, file_data: DataFrame, hash_file_path: str = os.getenv("HASH_FILE_PATH")):
-        load_dotenv()
-        if hash_file_path is None:
-            raise Exception("Either set the environment variable HASH_FILE_PATH or pass it as a parameter.")
-        self.__hash_file_path = hash_file_path
+    def __init__(self, file_data: DataFrame, hash_file_path: str = "file_hashes.txt"):
+        self.__hash_file_path = HashFilePath(hash_file_path).get()
         self.__file_data = file_data.to_string()
 
     def __get_sha256_hash(self) -> str:
@@ -50,3 +47,6 @@ class Hasher:
         # This is not wise to open for each write, maybe pss this writer into the class?
         with open(self.__hash_file_path, "a") as hashes:
             hashes.write(self.__get_sha256_hash() + "\n")
+
+    def get_hash_file_path(self):
+        return self.__hash_file_path
