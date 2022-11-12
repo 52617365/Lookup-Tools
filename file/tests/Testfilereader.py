@@ -5,7 +5,7 @@ import pandas as pd
 from file.filereader import FileReader
 
 
-class MyTestCase(unittest.TestCase):
+class TestFileReader(unittest.TestCase):
     def test_get_valid_file_as_dataframe(self):
         example_delimited_file = FileReader("testing_file.txt")
         data = example_delimited_file.get_file_as_dataframe()
