@@ -1,16 +1,12 @@
 import hashlib
-import os
 
-import pandas as pd
 from pandas import DataFrame
-
-from file.csvwriter import CsvWriter
 
 
 class Hasher:
-    def __init__(self, file_data: str, hash_file_path: str = "hashes.txt"):
-        self.__file_data = file_data
+    def __init__(self, file_data: DataFrame, hash_file_path: str = "hashes.txt"):
         self.__hash_file_path = hash_file_path
+        self.__file_data = file_data.to_string()
 
     def __get_sha256_hash(self) -> str:
         return hashlib.sha256(self.__file_data.encode('utf-8')).hexdigest()
