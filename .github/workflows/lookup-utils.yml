@@ -1,0 +1,9 @@
+- name: Lookup-Tools
+- uses: actions/checkout@v3
+- uses: actions/setup-python@v4.3.0
+  with:
+    python-version: 3.11
+    cache: 'pip'
+- run: pip install -r requirements.txt
+- run: python -m unittest discover -s tests -t tests -p *.py in tests
+
