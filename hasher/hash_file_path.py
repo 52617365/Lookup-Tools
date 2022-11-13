@@ -10,20 +10,20 @@ class HashFilePath:
         self.__user_specified_hash_file_path = hash_file_path
 
     def get(self):
-        if self.user_wants_to_use_user_specified_hash_file_path():
+        if self.__user_wants_to_use_user_specified_hash_file_path():
             return self.__get_user_specified_hash_file_path()
-        if self.user_wants_to_use_environment_variable():
+        if self.__user_wants_to_use_environment_variable():
             return self.__get_environment_variable()
         else:
             quit("No hash file path specified.")
 
-    def user_wants_to_use_user_specified_hash_file_path(self) -> bool:
+    def __user_wants_to_use_user_specified_hash_file_path(self) -> bool:
         return self.__user_specified_hash_file_path is not None
 
     def __get_user_specified_hash_file_path(self) -> str:
         return self.__user_specified_hash_file_path
 
-    def user_wants_to_use_environment_variable(self) -> bool:
+    def __user_wants_to_use_environment_variable(self) -> bool:
         return self.__variable_is_set() and self.__user_specified_hash_file_path is None
 
     def __variable_is_set(self) -> bool:
