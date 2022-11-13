@@ -7,11 +7,23 @@ from pandas.errors import ParserWarning
 
 
 class FileReader:
-    def __init__(self, file_path_that_exists: str):
-        if not is_valid_file(file_path_that_exists):
-            raise IOError(F"File does not exist: {file_path_that_exists}")
-        self.__file_path = file_path_that_exists
-        self.__file_name = get_file_without_path_or_extension(file_path_that_exists)
+    def __init__(self, file_path: str):
+        self.__raise_io_error_if_file_does_not_exist(self, file_path)
+        self.__file_path: str = file_path
+        self.__file_name: str = self.get_file_without_path_or_extension(file_path)
+
+    @staticmethod
+    def __raise_io_error_if_file_does_not_exist(self, file_path: str):
+        if not self.is_valid_file(file_path):
+            raise IOError(F"File does not exist: {file_path}")
+
+    @staticmethod
+    def is_valid_file(file_path: str) -> bool:
+        return os.path.isfile(file_path)
+
+    @staticmethod
+    def get_file_without_path_or_extension(file_name: str) -> str:
+        return os.path.splitext(os.path.basename(file_name))[0]
 
     def get_file_name(self) -> str:
         return self.__file_name
@@ -42,11 +54,3 @@ class FileReader:
         with open(self.__file_path, 'r') as file:
             file.close()
             return file.read()
-
-
-def is_valid_file(file_path: str) -> bool:
-    return os.path.isfile(file_path)
-
-
-def get_file_without_path_or_extension(file_name: str) -> str:
-    return os.path.splitext(os.path.basename(file_name))[0]
