@@ -8,10 +8,7 @@ class Database:
         self.__file = FileReader(path_to_database)
         self.__database_name = self.__file.get_file_name()
         self.__additional_information = additional_database_information
-        try:
-            self.__database_contents = self.__file.get_file_as_dataframe()
-        except Exception as e:
-            raise e
+        self.__database_contents = self.__file.get_file_as_dataframe()
 
     def combine(self) -> DataFrame:
         self.__set_additional_information_to_database()
