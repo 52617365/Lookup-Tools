@@ -1,1 +1,0 @@
-A python script/combination of python scripts attached together to help me automate the process of parsing terabytes of data. This repo contains scripts that are relevant to my project, but if I needed it, someone else will too, now or in the future. This is why I'm posting them here.

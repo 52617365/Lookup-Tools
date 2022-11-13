@@ -9,7 +9,7 @@ from hasher.hash import Hasher
 class TestHashing(unittest.TestCase):
     def test_write_file_identifier_to_hashes(self):
         dir_name = os.path.dirname(__file__)
-        testing_hashes_file_path = os.path.join(dir_name, 'files/test_hashes.txt')
+        testing_hashes_file_path = os.path.join(dir_name, 'test_hashes.txt')
 
         csv_to_hash = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
 
