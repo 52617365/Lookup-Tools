@@ -25,8 +25,6 @@ class TestCsvWriter(unittest.TestCase):
         json.loads(json_string_that_was_written)
 
     def test_write_as_csv(self):
-        current_working_directory = os.getcwd()
-
         dir_name = os.path.dirname(__file__)
         testing_file_path = os.path.join(dir_name, 'files/test.csv')
 

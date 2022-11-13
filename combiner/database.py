@@ -32,5 +32,5 @@ class Database:
             breach_date = self.__additional_information.loc[
                 self.__additional_information['database'] == self.__database_name, 'dumped'].item()
             return breach_date
-        except ValueError as e:
+        except ValueError:
             return None
