@@ -21,10 +21,8 @@ class FileReader:
 
     def get_file_as_dataframe(self) -> pd.DataFrame:
         try:
-            # We specify that the engine is python because the C engine is not able to determine the dynamic delimiter.
-            # We have to turn the warning into an error here because the python engine shows a warning instead of an error.
             csv_file: DataFrame = self.get_csv_with_custom_delimiter_turning_warnings_into_errors()
-            return self.get_csv_with_custom_delimiter_turning_warnings_into_errors()
+            return csv_file
         except Exception as invalid_format:
             # TODO: mark the file as invalid somehow.
             # Maybe have another hash file that contains the hashes to invalid files.
@@ -32,6 +30,8 @@ class FileReader:
             raise invalid_format
 
     def get_csv_with_custom_delimiter_turning_warnings_into_errors(self) -> DataFrame:
+        # Only the python engine can determine a dynamic delimiter.
+        # To my knowledge, python engine will only throw a warning, not an error. We want to catch that error.
         with warnings.catch_warnings():
             warnings.simplefilter("error", category=ParserWarning)
             csv_file = pd.read_csv(self.__file_path, engine='python', sep=None, skipinitialspace=True,
