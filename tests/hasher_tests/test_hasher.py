@@ -22,12 +22,10 @@ class TestHashing(unittest.TestCase):
         os.remove("test_hashes.txt")
         self.assertEqual(sha256_hash_to_expect, sha256_hash)
 
-    def test_default_hash_file_name_gets_set(self):
-        csv_to_hash = pd.DataFrame()
-        hasher = Hasher(csv_to_hash)
-
-        expected_default_hash_file_name = "file_hashes.txt"
-        self.assertEqual(hasher.get_hash_file_path(), expected_default_hash_file_name)
+    def test_system_exit_if_no_hash_file_path_provided(self):
+        with self.assertRaises(SystemExit):
+            csv_to_hash = pd.DataFrame()
+            hasher = Hasher(csv_to_hash)
 
 
 if __name__ == '__main__':
