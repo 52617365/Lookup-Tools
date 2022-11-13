@@ -42,7 +42,7 @@ class HashFilePath:
 
     @staticmethod
     def __path_is_valid(file_path) -> bool:
-        if HashFilePath.__path_exists(file_path) and file_path != "":
+        if HashFilePath.__path_exists(file_path):
             return True
         return False
 
