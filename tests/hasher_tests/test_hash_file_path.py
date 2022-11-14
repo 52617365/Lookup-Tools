@@ -24,6 +24,19 @@ class TestHashFilePath(unittest.TestCase):
         with self.assertRaises(SystemExit):
             HashFilePath().get()
 
+    def test_invalid_hashes_file_gets_generated_in_the_same_directory_as_the_valid_hashes_file(self):
+        dir_name = os.path.dirname(__file__)
+        expected_invalid_hashes_directory = os.path.join(dir_name, 'files/invalid_example_hash_file_path.txt')
+        expected_file_path = os.path.join(dir_name, 'files/example_hash_file_path.txt')
+
+        HashFilePath(expected_file_path).get()
+
+        invalid_hashes_path_exists = os.path.exists(expected_invalid_hashes_directory)
+
+        os.remove(expected_invalid_hashes_directory)
+
+        self.assertEqual(invalid_hashes_path_exists, True)
+
 
 if __name__ == '__main__':
     unittest.main()
