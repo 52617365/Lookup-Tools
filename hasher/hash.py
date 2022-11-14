@@ -18,13 +18,14 @@ class Hasher:
     def __get_sha256_hash(self) -> str:
         return hashlib.sha256(self.__file_data.encode('utf-8')).hexdigest()
 
-    def is_file_unique(self) -> bool:
+    def file_is_unique(self) -> bool:
         return not self.__is_hash_already_in_hashes_file()
 
     def __is_hash_already_in_hashes_file(self):
+        hash_to_check_for = self.__get_sha256_hash()
         with open(self.__hash_file_path, "r") as hashes:
             for line in hashes:
-                if line.strip() == self.__get_sha256_hash():
+                if line.strip() == hash_to_check_for:
                     return True
         return False
 
