@@ -30,15 +30,14 @@ class FileReader:
 
     def get_file_as_dataframe(self) -> pd.DataFrame:
         try:
-            csv_file: DataFrame = self.get_csv_with_custom_delimiter_turning_warnings_into_errors()
+            csv_file: DataFrame = self.__get_csv_with_custom_delimiter_turning_warnings_into_errors()
             return csv_file
         except Exception as invalid_format:
-            # TODO: mark the file as invalid somehow.
-            # Maybe have another hash file that contains the hashes to invalid files.
-            # We want to handle that here to avoid passing exceptions around.
+            # TODO: we have a write_invalid_file_hash_to_logs() function to use when this exception is raised.
+            # Figure out if we somehow want to catch it here or in the caller.
             raise invalid_format
 
-    def get_csv_with_custom_delimiter_turning_warnings_into_errors(self) -> DataFrame:
+    def __get_csv_with_custom_delimiter_turning_warnings_into_errors(self) -> DataFrame:
         # Only the python engine can determine a dynamic delimiter.
         # To my knowledge, python engine will only throw a warning, not an error. We want to catch that error.
         with warnings.catch_warnings():
