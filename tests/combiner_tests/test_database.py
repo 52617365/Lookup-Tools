@@ -1,9 +1,9 @@
-import os
 import unittest
 
 import pandas as pd
 
 from combiner.database import Database
+from tests.file_tests.test_csv_writer import get_relative_path_to_file
 
 
 class MyTestCase(unittest.TestCase):
@@ -34,8 +34,7 @@ class MyTestCase(unittest.TestCase):
         additional_information_about_databases = pd.DataFrame({'database': ["testing_file"], 'entries': [15271696],
                                                                'dumped': ["2011-05-21"]})
 
-        dir_name = os.path.dirname(__file__)
-        testing_file_path = os.path.join(dir_name, 'files/testing_file.txt')
+        testing_file_path = get_relative_path_to_file('files/testing_file.txt')
 
         our_loaded_database = Database(testing_file_path, additional_information_about_databases)
         combined_database = our_loaded_database.combine()

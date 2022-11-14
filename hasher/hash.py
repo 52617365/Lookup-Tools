@@ -11,19 +11,15 @@ class Hasher:
         self.__file_data = file_data.to_string()
         self.__hash_file_path = HashFilePath(hash_file_path).get()
 
-    def write_unique_identifier_of_valid_file_to_logs(self):
+    def write_valid_file_hash_to_logs(self):
         # This is not wise to open for each write, maybe pass this writer into the class?
         with open(self.__hash_file_path, "a") as valid_hashes:
             valid_hashes.write(self.__get_sha256_hash() + "\n")
 
-    # TODO: test for this 
-    def write_unique_identifier_of_invalid_file_to_logs(self):
+    def write_invalid_file_hash_to_logs(self):
         invalid_hashes_file_path = get_file_name_for_invalid_hashes_file(self.__hash_file_path)
-        with open(invalid_hashes_file_path) as invalid_hashes:
+        with open(invalid_hashes_file_path, "a") as invalid_hashes:
             invalid_hashes.write(self.__get_sha256_hash() + "\n")
-
-    def __get_sha256_hash(self) -> str:
-        return hashlib.sha256(self.__file_data.encode('utf-8')).hexdigest()
 
     def file_is_unique(self) -> bool:
         return not self.__hash_is_already_in_hashes_file()
@@ -35,6 +31,9 @@ class Hasher:
                 if line.strip() == hash_to_check_for:
                     return True
         return False
+
+    def __get_sha256_hash(self) -> str:
+        return hashlib.sha256(self.__file_data.encode('utf-8')).hexdigest()
 
     def get_hash_file_path(self):
         return self.__hash_file_path
