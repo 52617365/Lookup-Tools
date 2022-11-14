@@ -1,6 +1,6 @@
 from pandas import DataFrame
 
-from file.filereader import FileReader
+from file.file_reader import FileReader
 
 
 class Database:

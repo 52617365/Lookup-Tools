@@ -3,7 +3,7 @@ import unittest
 
 import pandas as pd
 
-from file.filereader import FileReader
+from file.file_reader import FileReader
 
 
 def get_platform_independent_relative_path(relative_path_to_file: str) -> str:
