@@ -2,14 +2,13 @@ import glob
 import os
 
 
-def get_current_directory() -> str:
+def get_current_path() -> str:
     return os.path.dirname(__file__)
 
 
 class FileGlob:
-    def __init__(self, path=get_current_directory(), recursive=False):
+    def __init__(self, path=get_current_path()):
         self.path = path
-        self.recursive = recursive
 
     def get_files_from_directories(self):
         all_file_paths_from_directories = glob.glob(F'{self.path}/**/*', recursive=True)
