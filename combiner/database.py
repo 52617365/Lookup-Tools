@@ -6,7 +6,7 @@ from file.file_reader import FileReader
 class Database:
     def __init__(self, path_to_database: str, additional_database_information: DataFrame):
         self.__file = FileReader(path_to_database)
-        self.__database_name = self.__file.get_file_name()
+        self.__database_name = self.__file.get_file().get_file_name()
         self.__additional_information = additional_database_information
         self.__database_contents = self.__file.get_file_as_dataframe()
 
