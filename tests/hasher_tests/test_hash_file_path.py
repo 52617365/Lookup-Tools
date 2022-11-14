@@ -5,7 +5,7 @@ from unittest import mock
 from hasher.hash_file_path import HashFilePath
 
 
-def get_relative_path_to_file(relative_path_to_file: str) -> str:
+def get_relative_file(relative_path_to_file: str) -> str:
     dir_name = os.path.dirname(__file__)
     relative_path = os.path.join(dir_name, relative_path_to_file)
     return relative_path
@@ -14,9 +14,10 @@ def get_relative_path_to_file(relative_path_to_file: str) -> str:
 class TestHashFilePath(unittest.TestCase):
     def setUp(self):
         self.hash_hash_file_path_environment_variable = "HASH_FILE_PATH"
-        self.invalid_hash_file_test_path = get_relative_path_to_file(
-            'files/invalid_example_hash_file_path.txt')
-        self.test_hash_file_path = get_relative_path_to_file('files/example_hash_file_path.txt')
+        self.invalid_hash_file_test_path = get_relative_file(
+            "files/invalid_example_hash_file_path.txt")
+        self.test_hash_file_path = get_relative_file(
+            "files/example_hash_file_path.txt")
 
     def test_raise_exception_if_env_var_set_but_empty(self):
         with self.assertRaises(SystemExit):
@@ -31,7 +32,6 @@ class TestHashFilePath(unittest.TestCase):
             self.assertEqual(file_path, self.test_hash_file_path)
 
     def test_user_specified_gets_picked_if_its_provided(self):
-        file_path = self.test_hash_file_path
         file_path = HashFilePath(self.test_hash_file_path).get()
         self.assertEqual(file_path, self.test_hash_file_path)
 

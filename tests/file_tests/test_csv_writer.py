@@ -14,6 +14,7 @@ def get_relative_path_to_file(relative_path_to_file: str) -> str:
 
 
 class TestCsvWriter(unittest.TestCase):
+
     def test_write_as_json(self):
         testing_file_path = get_relative_path_to_file('files/test.json')
 

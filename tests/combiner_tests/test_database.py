@@ -1,12 +1,21 @@
+import os
 import unittest
 
 import pandas as pd
 
 from combiner.database import Database
-from tests.file_tests.test_csv_writer import get_relative_path_to_file
+
+
+def get_relative_path_to_file(relative_path_to_file: str) -> str:
+    dir_name = os.path.dirname(__file__)
+    relative_path = os.path.join(dir_name, relative_path_to_file)
+    return relative_path
 
 
 class MyTestCase(unittest.TestCase):
+    def setUp(self) -> None:
+        self.testing_file_path = get_relative_path_to_file('files/testing_file.txt')
+
     def test__ctor_raises_exception_when_file_path_to_database_is_invalid(self):
         with self.assertRaises(Exception):
             Database("file_that_should_cause_exception_because_it_does_not_exist.txt", pd.DataFrame({}))
@@ -34,9 +43,7 @@ class MyTestCase(unittest.TestCase):
         additional_information_about_databases = pd.DataFrame({'database': ["testing_file"], 'entries': [15271696],
                                                                'dumped': ["2011-05-21"]})
 
-        testing_file_path = get_relative_path_to_file('files/testing_file.txt')
-
-        our_loaded_database = Database(testing_file_path, additional_information_about_databases)
+        our_loaded_database = Database(self.testing_file_path, additional_information_about_databases)
         combined_database = our_loaded_database.combine()
         self.assertEqual(combined_database["database_name"].item(), "testing_file")
         self.assertEqual(combined_database["breach_date"].item(), "2011-05-21")
