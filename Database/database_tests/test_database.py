@@ -12,15 +12,15 @@ def get_relative_path_to_file(relative_path_to_file: str) -> str:
     return relative_path
 
 
-class MyTestCase(unittest.TestCase):
+class TestDatabase(unittest.TestCase):
     def setUp(self) -> None:
-        self.testing_file_path = get_relative_path_to_file('files/testing_file.txt')
+        self.testing_file_path = os.path.join('Database', 'database_tests', 'files', 'testing_file.txt')
 
-    def test__ctor_raises_exception_when_file_path_to_database_is_invalid(self):
+    def test_ctor_raises_exception_when_file_path_to_database_is_invalid(self):
         with self.assertRaises(Exception):
             Database("file_that_should_cause_exception_because_it_does_not_exist.txt", pd.DataFrame({}))
 
-    def test__get_breach_date_from_additional_database_information(self):
+    def test_get_breach_date_from_additional_database_information(self):
         additional_information_about_databases = pd.DataFrame(
             {'database': ["000webhost.com", "007.no"], 'entries': [15271696, 3834673],
              'dumped': ["2011-05-21", "2022-02-13"]})
@@ -29,7 +29,7 @@ class MyTestCase(unittest.TestCase):
             additional_information_about_databases['database'] == '000webhost.com', 'dumped'].item()
         self.assertEqual(breach_date_related_to_database_name, "2011-05-21")
 
-    def test__raises_exception_get_breach_date_from_additional_database_information(self):
+    def test_raise_exception_when_database_does_not_exist(self):
         additional_information_about_databases = pd.DataFrame(
             {'database': [], 'entries': [],
              'dumped': []})
@@ -39,7 +39,7 @@ class MyTestCase(unittest.TestCase):
             additional_information_about_databases.loc[
                 additional_information_about_databases['database'] == 'this_database_does_not_exist', 'dumped'].item()
 
-    def test__combine(self):
+    def test_combine(self):
         additional_information_about_databases = pd.DataFrame({'database': ["testing_file"], 'entries': [15271696],
                                                                'dumped': ["2011-05-21"]})
 

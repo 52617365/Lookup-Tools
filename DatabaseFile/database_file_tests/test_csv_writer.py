@@ -14,13 +14,14 @@ def get_relative_path_to_file(relative_path_to_file: str) -> str:
 
 
 class TestCsvWriter(unittest.TestCase):
+    hashes_file = "file_hashes.txt"
 
     def test_write_as_json(self):
         testing_file_path = get_relative_path_to_file('files/test.json')
 
         csv_data_to_write_as_json = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
 
-        writer = DatabaseWriter(testing_file_path, csv_data_to_write_as_json)
+        writer = DatabaseWriter(testing_file_path, csv_data_to_write_as_json, "")
         writer.write_as_json()
 
         file_handle_to_json_file = open(testing_file_path, "r")
@@ -30,19 +31,34 @@ class TestCsvWriter(unittest.TestCase):
 
         json.loads(json_string_that_was_written)
 
-    def test_write_as_csv(self):
-        testing_file_path = get_relative_path_to_file('files/test.csv')
+    def test_write_unique_identifier_of_valid_file(self):
+        csv_to_hash = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
 
-        csv_file = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
+        writer = DatabaseWriter("", csv_to_hash, self.hashes_file)
+        writer.write_valid_file_hash_to_logs()
 
-        writer = DatabaseWriter(testing_file_path, csv_file)
-        writer.write_as_csv()
+        with open(self.hashes_file, "r") as hashes:
+            sha256_hash = hashes.readline().rstrip()
 
-        written_csv_file = pd.read_csv(testing_file_path)
+        sha256_hash_to_expect = 'f90d860c5753d69b89d375e53ff8a9644f28c9ffe83cf1daa8de641d8d37ab07'
+        self.assertEqual(sha256_hash_to_expect, sha256_hash)
 
-        expected_csv_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
+    def test_write_unique_identifier_of_invalid_file(self):
+        csv_to_hash = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
 
-        self.assertEqual(written_csv_file.equals(expected_csv_data), True)
+        writer = DatabaseWriter("", csv_to_hash, self.hashes_file)
+        writer.write_invalid_file_hash_to_logs()
+
+        with open(self.hashes_file, "r") as hashes:
+            sha256_hash = hashes.readline().rstrip()
+
+        sha256_hash_to_expect = 'f90d860c5753d69b89d375e53ff8a9644f28c9ffe83cf1daa8de641d8d37ab07'
+        self.assertEqual(sha256_hash_to_expect, sha256_hash)
+
+    @classmethod
+    def tearDownClass(cls):
+        os.remove(cls.hashes_file)
+        os.remove("invalid_" + cls.hashes_file)
 
 
 if __name__ == '__main__':

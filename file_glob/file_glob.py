@@ -26,4 +26,3 @@ class FileGlob:
 if __name__ == '__main__':
     file_glob = FileGlob(path=os.getcwd())
     files = file_glob.get_files_from_directories()
-    print(files)

@@ -6,9 +6,9 @@ import pandas as pd
 from DatabaseFile.database_reader import DatabaseReader
 
 
-class TestFileReaderSetup:
+class DatabaseFileReaderSetup:
     def __init__(self):
-        TestFileReaderSetup.create_files(self)
+        DatabaseFileReaderSetup.create_files(self)
 
     def create_files(self):
         self.create_testing_file()
@@ -42,9 +42,9 @@ def get_platform_independent_relative_path(relative_path_to_file: str) -> str:
     return filename
 
 
-class TestFileReader(unittest.TestCase):
+class TestDatabaseReader(unittest.TestCase):
     def setUp(self):
-        TestFileReaderSetup()
+        DatabaseFileReaderSetup()
 
     def test_get_valid_file_as_dataframe(self):
         testing_file_path = "testing_file.csv"
@@ -67,7 +67,7 @@ class TestFileReader(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        TestFileReaderSetup.clean_files()
+        DatabaseFileReaderSetup.clean_files()
 
 
 if __name__ == '__main__':
