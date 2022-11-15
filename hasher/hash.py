@@ -34,6 +34,3 @@ class Hasher:
 
     def __get_sha256_hash(self) -> str:
         return hashlib.sha256(self.__file_data.encode('utf-8')).hexdigest()
-
-    def get_hash_file_path(self):
-        return self.__hash_file_path

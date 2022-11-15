@@ -13,18 +13,30 @@ class Database:
         self.__database_contents = self.__file.get_file_as_dataframe()
 
     def combine(self) -> DataFrame:
-        self.__set_additional_information_to_database()
-        return self.__database_contents
-
-    def get_additional_information(self) -> str:
-        breach_date = self.__get_breach_date_from_additional_database_information()
-        return breach_date
+        database_contents_with_additional_information = self.__set_additional_information_to_database()
+        return database_contents_with_additional_information
 
     def __set_additional_information_to_database(self):
-        breach_date = self.get_additional_information()
-        self.__database_contents["database_name"] = self.__database_name
+        breach_date = self.__get_additional_information()
+
+        database_contents_with_additional_information = self.__database_contents
+
+        self.__set_db_name(database_contents_with_additional_information)
+        self.__set_breach_date(breach_date, database_contents_with_additional_information)
+
+        return database_contents_with_additional_information
+
+    def __set_db_name(self, database_contents_with_additional_information):
+        database_contents_with_additional_information["database_name"] = self.__database_name
+
+    @staticmethod
+    def __set_breach_date(breach_date, database_contents_with_additional_information):
         if breach_date is not None:
-            self.__database_contents["breach_date"] = breach_date
+            database_contents_with_additional_information["breach_date"] = breach_date
+
+    def __get_additional_information(self) -> str:
+        breach_date = self.__get_breach_date_from_additional_database_information()
+        return breach_date
 
     def __get_breach_date_from_additional_database_information(self) -> str | None:
         try:

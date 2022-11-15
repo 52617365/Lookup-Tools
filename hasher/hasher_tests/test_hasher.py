@@ -13,6 +13,7 @@ def get_relative_path_to_file(relative_path_to_file: str) -> str:
     return relative_path
 
 
+# TODO: make a test for file_is_unique function.
 class TestHasher(unittest.TestCase):
     def setUp(self):
         self.testing_hashes_file_path = get_relative_path_to_file('files/test_hashes.txt')
