@@ -2,12 +2,8 @@ import glob
 import os
 
 
-def get_current_path() -> str:
-    return os.path.dirname(__file__)
-
-
 class FileGlob:
-    def __init__(self, path=get_current_path()):
+    def __init__(self, path: str = os.getcwd()):
         self.path = path
 
     def get_files_from_directories(self):
@@ -28,6 +24,6 @@ class FileGlob:
 
 
 if __name__ == '__main__':
-    file_glob = FileGlob()
+    file_glob = FileGlob(path=os.getcwd())
     files = file_glob.get_files_from_directories()
     print(files)
