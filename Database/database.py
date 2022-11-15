@@ -1,16 +1,16 @@
 from pandas import DataFrame
 
-from file.file_reader import FileReader
+from DatabaseFile.database_reader import DatabaseReader
 
 
 class Database:
     """Initializing this class can possibly fail if the database format in invalid."""
 
     def __init__(self, path_to_database: str, additional_database_information: DataFrame):
-        self.__file = FileReader(path_to_database)
-        self.__database_name = self.__file.get_file().get_file_name()
+        file_reader_to_database = DatabaseReader(path_to_database)
+        self.__database_name = file_reader_to_database.file.get_file_name()
         self.__additional_information = additional_database_information
-        self.__database_contents = self.__file.get_file_as_dataframe()
+        self.__database_contents = file_reader_to_database.get_database_as_dataframe()
 
     def combine(self) -> DataFrame:
         database_contents_with_additional_information = self.__set_additional_information_to_database()
@@ -30,7 +30,7 @@ class Database:
         database_contents_with_additional_information["database_name"] = self.__database_name
 
     @staticmethod
-    def __set_breach_date(breach_date, database_contents_with_additional_information):
+    def __set_breach_date(breach_date: str, database_contents_with_additional_information: DataFrame):
         if breach_date is not None:
             database_contents_with_additional_information["breach_date"] = breach_date
 

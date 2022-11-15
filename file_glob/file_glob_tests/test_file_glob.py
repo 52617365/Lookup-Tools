@@ -16,8 +16,8 @@ def get_tests_base_path():
 
 class TestFileGlob(unittest.TestCase):
     def setUp(self) -> None:
-        self.__first_file_path = os.path.join(get_tests_base_path(), "dir", "file.txt")
-        self.__second_file_path = os.path.join(get_tests_base_path(), "dir", "sub_dir", "file.csv")
+        self.__first_file_path = os.path.join(get_tests_base_path(), "dir", "DatabaseFile.txt")
+        self.__second_file_path = os.path.join(get_tests_base_path(), "dir", "sub_dir", "DatabaseFile.csv")
         self.create_startup_files()
 
     def create_startup_files(self):

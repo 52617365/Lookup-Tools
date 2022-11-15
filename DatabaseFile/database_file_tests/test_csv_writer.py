@@ -4,7 +4,7 @@ import unittest
 
 import pandas as pd
 
-from file.csv_writer import CsvWriter
+from DatabaseFile.database_writer import DatabaseWriter
 
 
 def get_relative_path_to_file(relative_path_to_file: str) -> str:
@@ -20,7 +20,7 @@ class TestCsvWriter(unittest.TestCase):
 
         csv_data_to_write_as_json = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
 
-        writer = CsvWriter(testing_file_path, csv_data_to_write_as_json)
+        writer = DatabaseWriter(testing_file_path, csv_data_to_write_as_json)
         writer.write_as_json()
 
         file_handle_to_json_file = open(testing_file_path, "r")
@@ -35,7 +35,7 @@ class TestCsvWriter(unittest.TestCase):
 
         csv_file = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
 
-        writer = CsvWriter(testing_file_path, csv_file)
+        writer = DatabaseWriter(testing_file_path, csv_file)
         writer.write_as_csv()
 
         written_csv_file = pd.read_csv(testing_file_path)

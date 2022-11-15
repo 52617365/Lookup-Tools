@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-class CsvWriter:
+class DatabaseWriter:
     def __init__(self, writing_file_path: str, data_to_write: pd.DataFrame):
         self.__path_to_writing_file = writing_file_path
         self.__data_to_write = data_to_write
