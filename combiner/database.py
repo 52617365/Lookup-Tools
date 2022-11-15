@@ -4,6 +4,8 @@ from file.file_reader import FileReader
 
 
 class Database:
+    """Initializing this class can possibly fail if the database format in invalid."""
+
     def __init__(self, path_to_database: str, additional_database_information: DataFrame):
         self.__file = FileReader(path_to_database)
         self.__database_name = self.__file.get_file().get_file_name()
