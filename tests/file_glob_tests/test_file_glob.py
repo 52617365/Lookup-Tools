@@ -1,60 +1,34 @@
 import os
-import pathlib
 import shutil
 import unittest
 
 from file_glob.file_glob import FileGlob
 
 
-# TODO: this setup is fucked. Fix it on 15.11.2022
-class TestFileGlobSetup:
-    @staticmethod
-    def create_files():
-        TestFileGlobSetup.__create_recursive_directories()
-        TestFileGlobSetup.__create_files_in_recursive_directories()
-
-    @staticmethod
-    def __create_files_in_recursive_directories():
-        open(get_absolute_path("test/test.txt"), "w").close()
-        open(get_absolute_path("test/test2/test2.txt"), "w").close()
-
-    @staticmethod
-    def __create_recursive_directories():
-        try:
-            os.mkdir("test")
-            os.mkdir(os.path.join("test", "test2"))
-        except FileExistsError:
-            pass
-
-    @staticmethod
-    def clean_files():
-        shutil.rmtree("test")
-
-
-def get_absolute_path(relative_path: str) -> str:
-    absolute_path = os.path.join(os.getcwd(), relative_path)
-    return absolute_path
-
-
 def get_current_path():
-    return pathlib.Path(__file__).parent.resolve()
+    return os.getcwd()
 
 
 class TestFileGlob(unittest.TestCase):
     def setUp(self) -> None:
-        TestFileGlobSetup().create_files()
+        self.create_startup_files()
+
+    @staticmethod
+    def create_startup_files():
+        os.makedirs("dir")
+        os.makedirs(os.path.join("dir", "sub_dir"))
+        open("dir/file.txt", "w").close()
+        open(os.path.join("dir", "sub_dir", "file.csv"), "w").close()
 
     def test_recursive_glob(self) -> None:
-        file_glob = FileGlob(path=get_current_path())
-        files = file_glob.get_files_from_directories()
-        expected_files_found = [get_absolute_path(os.path.join("file_glob_tests", "test", "test.txt")),
-                                get_absolute_path(os.path.join("file_glob_tests", "test", "test2", "test2.txt"))]
-
-        self.assertEqual(expected_files_found, files)
+        expected_data = [os.path.join(get_current_path(), "dir", "file.txt"),
+                         os.path.join(get_current_path(), "dir", "sub_dir", "file.csv")]
+        actual_data = FileGlob(os.getcwd()).get_files_from_directories()
+        self.assertEqual(expected_data, actual_data)
 
     @classmethod
     def tearDownClass(cls) -> None:
-        TestFileGlobSetup.clean_files()
+        shutil.rmtree("dir")
 
 
 if __name__ == '__main__':

@@ -18,7 +18,7 @@ class TestCsvWriter(unittest.TestCase):
     def test_write_as_json(self):
         testing_file_path = get_relative_path_to_file('files/test.json')
 
-        csv_data_to_write_as_json = pd.DataFrame({'test': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
+        csv_data_to_write_as_json = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
 
         writer = CsvWriter(testing_file_path, csv_data_to_write_as_json)
         writer.write_as_json()
@@ -33,14 +33,14 @@ class TestCsvWriter(unittest.TestCase):
     def test_write_as_csv(self):
         testing_file_path = get_relative_path_to_file('files/test.csv')
 
-        csv_file = pd.DataFrame({'test': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
+        csv_file = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
 
         writer = CsvWriter(testing_file_path, csv_file)
         writer.write_as_csv()
 
         written_csv_file = pd.read_csv(testing_file_path)
 
-        expected_csv_data = pd.DataFrame({'test': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
+        expected_csv_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
 
         self.assertEqual(written_csv_file.equals(expected_csv_data), True)
 

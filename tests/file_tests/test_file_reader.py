@@ -16,7 +16,7 @@ class TestFileReaderSetup:
 
     @staticmethod
     def create_testing_file():
-        data = "test,test2,test3\nasd1,asd2,asd3"
+        data = "dir,test2,test3\nasd1,asd2,asd3"
 
         file_handle = open('testing_file.csv', "w")
         file_handle.write(data)
@@ -24,7 +24,7 @@ class TestFileReaderSetup:
 
     @staticmethod
     def create_invalid_file_path():
-        invalid_data = "test,test2,test3\nasd1,asd2,asd3,asd4"
+        invalid_data = "dir,test2,test3\nasd1,asd2,asd3,asd4"
         # write to file
         file_handle = open('invalid_format_file.csv', "w")
         file_handle.write(invalid_data)
@@ -51,7 +51,7 @@ class TestFileReader(unittest.TestCase):
 
         example_delimited_file = FileReader(testing_file_path)
         data = example_delimited_file.get_file_as_dataframe()
-        expected_data = pd.DataFrame({'test': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
+        expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(data.equals(expected_data), True)
 
     def test_get_file_as_dataframe_with_file_that_does_not_exist(self):

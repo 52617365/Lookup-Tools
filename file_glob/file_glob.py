@@ -28,6 +28,6 @@ class FileGlob:
 
 
 if __name__ == '__main__':
-    file_glob = FileGlob(recursive=False)
+    file_glob = FileGlob()
     files = file_glob.get_files_from_directories()
     print(files)
