@@ -23,20 +23,23 @@ class TestFileGlob(unittest.TestCase):
 
     def create_startup_files(self):
         base_path = get_tests_base_path()
-        print(F"Base path is {base_path}")
-        print(F"First directory is: {os.path.join(base_path, 'dir')}")
-        print(F"Second directory is: {os.path.join(base_path, 'dir', 'sub_dir')}")
+        self.create_directories(base_path)
+        self.create_files()
+
+    def create_files(self):
+        open(self.__first_file_path, "w").close()
+        open(self.__second_file_path, "w").close()
+
+    @staticmethod
+    def create_directories(base_path):
         try:
             os.makedirs(os.path.join(base_path, "dir"))
         except FileExistsError:
             pass
-
         try:
             os.makedirs(os.path.join(base_path, "dir", "sub_dir"))
         except FileExistsError:
             pass
-        open(self.__first_file_path, "w").close()
-        open(self.__second_file_path, "w").close()
 
     def test_recursive_glob(self) -> None:
         expected_data = [self.__first_file_path, self.__second_file_path]
