@@ -7,7 +7,7 @@ class JsonWriter:
         self.__data_to_write = data_to_write
 
     def write_as_json(self):
-        self.__data_to_write.to_json(self.get_json_file_name(), orient='records')
+        self.__data_to_write.to_json(F"parsed/{self.get_json_file_name()}", orient='records')
 
     def get_json_file_name(self):
         return self.database_file_name + ".json"
