@@ -54,14 +54,9 @@ class TestDatabaseReader(unittest.TestCase):
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(data.equals(expected_data), True)
 
-    def test_get_file_as_dataframe_with_file_that_does_not_exist(self):
-        with self.assertRaises(IOError):
-            DatabaseReader("file_that_does_not_exist.csv")
-
     def test_get_dataframe_file_with_file_that_has_invalid_format(self):
         with self.assertRaises(Exception):
             testing_file_path = 'invalid_format_file.csv'
-
             f = DatabaseReader(testing_file_path)
             f.get_database_as_dataframe()
 
