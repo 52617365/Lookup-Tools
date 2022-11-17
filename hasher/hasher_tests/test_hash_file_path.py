@@ -26,8 +26,7 @@ class TestHashFilePath(unittest.TestCase):
 
     def test_env_variable_gets_picked_if_no_user_specified_path_provided(self):
         with mock.patch.dict(os.environ,
-                             {
-                                 self.hash_hash_file_path_environment_variable: self.test_hash_file_path}):
+                             {self.hash_hash_file_path_environment_variable: self.test_hash_file_path}):
             file_path = HashFilePath().get()
             self.assertEqual(file_path, self.test_hash_file_path)
 
