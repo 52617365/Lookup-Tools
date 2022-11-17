@@ -2,7 +2,7 @@ import os
 import unittest
 from unittest import mock
 
-from hasher.hash_file_path import HashFilePath
+from hashing.hash_file_path import HashFilePath
 
 
 def get_relative_file(relative_path_to_file: str) -> str:
