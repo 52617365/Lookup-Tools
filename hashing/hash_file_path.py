@@ -58,12 +58,9 @@ class HashFilePath:
 
     @staticmethod
     def __get_handles_to_files(file_path):
-        try:
-            handler_to_valid_hashes_file, handler_to_invalid_hashes_file = HashFilePath.__open_handles_to_files(
-                file_path)
-            HashFilePath.__close_file_handles(handler_to_valid_hashes_file, handler_to_invalid_hashes_file)
-        except OSError as e:
-            raise e
+        handler_to_valid_hashes_file, handler_to_invalid_hashes_file = HashFilePath.__open_handles_to_files(
+            file_path)
+        HashFilePath.__close_file_handles(handler_to_valid_hashes_file, handler_to_invalid_hashes_file)
 
     @staticmethod
     def __open_handles_to_files(file_path):
