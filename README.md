@@ -2,7 +2,8 @@
 
 ## Lookup-Tools is an automated parsing project made to assist with my main project Lookup.
 
-### What problems is this project trying to solve?
+<details>
+<summary>What problems is this project trying to solve?</summary>
 
 - Lookup uses MongoDB to store data, the data has to be parsed, and preferably (not mandatory), in JSON format before it
   can be stored
@@ -12,11 +13,14 @@
   dataset *automagically*, leaving me with less manual work to achieve
   my end goal.
 
-### Why JSON?
+</details>
+
+<details>
+<summary>Why JSON?</summary>
 
 > You are able to mongoimport data in a .csv format, why would you turn it into JSON first?
 
-- **TLDR**; I can't guarantee the format of the file and converting it to JSON will minimize data loss.
+- **TLDR;** I can't guarantee the format of the file and converting it to JSON will minimize data loss.
 
 For example, if you have a csv dataset that contains the following data:
 
@@ -52,7 +56,10 @@ Example of a JSON string representation:
 ]
 ```
 
-### What additional data?
+</details>
+
+<details>
+<summary>What additional data?</summary>
 
 - The data that is parsed is not always enough to be useful, for example, if you have a dataset with phone numbers, you
   might want to know how old the phone number is to see if it's still used.
@@ -72,8 +79,35 @@ database      ,entries ,dumped
 1000cv.it     ,2699    ,2018-10-24
 ```
 
-### How do you avoid duplicate data?
+#### Example end result
+
+```json
+[
+  {
+    "id": 1,
+    "username": "John, Carmack",
+    "age": 20,
+    "database": "000webhost.com",
+    "dumped": "2017-03-29"
+  },
+  {
+    "id": 2,
+    "username": "Jonathan.blow",
+    "age": 21,
+    "database": "007.no",
+    "dumped": "2018-10-24"
+  }
+]
+```
+
+</details>
+
+<details>
+
+<summary>How do you avoid duplicate data?</summary>
 
 - Each handled file has an encrypted SHA256 hash representation, stored in a file.
 - When a file is read, it is encrypted into a SHA256 hash, and compared to the hashes stored in the file to see if it
   has already been handled.
+
+</details>
