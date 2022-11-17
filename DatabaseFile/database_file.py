@@ -4,6 +4,7 @@ import os
 class DatabaseFile:
     def __init__(self, file_path):
         self.__file_name = self.__get_file_without_path_or_extension(file_path)
+        self.__file_path = file_path
 
     @staticmethod
     def __get_file_without_path_or_extension(file_name: str) -> str:
@@ -11,3 +12,6 @@ class DatabaseFile:
 
     def get_file_name(self) -> str:
         return self.__file_name
+
+    def get_file_path(self):
+        return self.__file_path
