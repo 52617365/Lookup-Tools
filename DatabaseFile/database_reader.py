@@ -8,8 +8,8 @@ from DatabaseFile.database_file import DatabaseFile
 
 
 class DatabaseReader:
-    def __init__(self, file_path: str):
-        self.__file = DatabaseFile(file_path)
+    def __init__(self, database_file_path: str):
+        self.__database_file = DatabaseFile(database_file_path)
 
     def get_database_as_dataframe(self) -> pd.DataFrame:
         # try:
@@ -21,13 +21,11 @@ class DatabaseReader:
     #     # Figure out if we somehow want to catch it here or in the caller of this function.
     #     raise invalid_database_format
 
-    def get_database_name(self):
-        return self.__file.get_file_name()
-
     def __get_csv_with_custom_delimiter_turning_warnings_into_errors(self) -> DataFrame:
         # Hack to turn warnings into errors.
         with warnings.catch_warnings():
             warnings.simplefilter("error", category=ParserWarning)
-            csv_file = pd.read_csv(self.get_database_name(), engine='python', sep=None, skipinitialspace=True,
+            csv_file = pd.read_csv(self.__database_file.get_file_path(), engine='python', sep=None,
+                                   skipinitialspace=True,
                                    index_col=False)
             return csv_file
