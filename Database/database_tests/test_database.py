@@ -16,10 +16,6 @@ class TestDatabase(unittest.TestCase):
     def setUp(self) -> None:
         self.testing_file_path = os.path.join('Database', 'database_tests', 'files', 'testing_file.txt')
 
-    def test_ctor_raises_exception_when_file_path_to_database_is_invalid(self):
-        with self.assertRaises(Exception):
-            Database("file_that_should_cause_exception_because_it_does_not_exist.txt", pd.DataFrame({}))
-
     def test_get_breach_date_from_additional_database_information(self):
         additional_information_about_databases = pd.DataFrame(
             {'database': ["000webhost.com", "007.no"], 'entries': [15271696, 3834673],
@@ -39,14 +35,14 @@ class TestDatabase(unittest.TestCase):
             additional_information_about_databases.loc[
                 additional_information_about_databases['database'] == 'this_database_does_not_exist', 'dumped'].item()
 
-    def test_combine(self):
+    def test_set_additional_information_to_database(self):
         additional_information_about_databases = pd.DataFrame({'database': ["testing_file"], 'entries': [15271696],
                                                                'dumped': ["2011-05-21"]})
 
         our_loaded_database = Database(self.testing_file_path, additional_information_about_databases)
-        combined_database = our_loaded_database.combine()
-        self.assertEqual(combined_database["database_name"].item(), "testing_file")
-        self.assertEqual(combined_database["breach_date"].item(), "2011-05-21")
+        combined_database = our_loaded_database.set_additional_information_to_database()
+        self.assertEqual("testing_file", combined_database["database_name"].item())
+        self.assertEqual("2011-05-21", combined_database["breach_date"].item())
 
 
 if __name__ == '__main__':
