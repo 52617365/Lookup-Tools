@@ -24,10 +24,9 @@ class TestCsvWriter(unittest.TestCase):
     def test_unique_identifier_gets_generated_correctly(self):
         csv_to_hash = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
 
-        writer = HashWriter(csv_to_hash, self.hashes_file)
-
+        generated_identifier = HashWriter.get_sha256_hash_from(csv_to_hash)
         sha256_hash_to_expect = 'f90d860c5753d69b89d375e53ff8a9644f28c9ffe83cf1daa8de641d8d37ab07'
-        self.assertEqual(sha256_hash_to_expect, writer.file_identifier)
+        self.assertEqual(sha256_hash_to_expect, generated_identifier)
 
 
 if __name__ == '__main__':
