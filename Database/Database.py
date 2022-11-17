@@ -1,6 +1,6 @@
 from pandas import DataFrame
 
-from DatabaseFile.database_reader import DatabaseReader
+from DatabaseIO.DatabaseReader import DatabaseReader
 
 
 class Database:

@@ -3,8 +3,8 @@ import os
 
 
 class FileGlob:
-    def __init__(self, path: str = os.getcwd()):
-        self.path = path
+    def __init__(self, path_to_glob: str = os.getcwd()):
+        self.path = path_to_glob
 
     def get_files_from_directories(self):
         all_file_paths_from_directories = glob.glob(F'{self.path}/**/*', recursive=True)
@@ -21,8 +21,3 @@ class FileGlob:
     @staticmethod
     def __has_supported_extension(file_path: str) -> bool:
         return file_path.endswith('.txt') or file_path.endswith('.csv')
-
-
-if __name__ == '__main__':
-    file_glob = FileGlob(path=os.getcwd())
-    files = file_glob.get_files_from_directories()

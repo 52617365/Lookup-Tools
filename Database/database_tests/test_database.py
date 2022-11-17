@@ -3,7 +3,7 @@ import unittest
 
 import pandas as pd
 
-from Database.database import Database
+from Database.Database import Database
 
 
 def get_relative_path_to_file(relative_path_to_file: str) -> str:

@@ -2,7 +2,7 @@ import os
 import shutil
 import unittest
 
-from file_glob.file_glob import FileGlob
+from FileGlob.FileGlob import FileGlob
 
 
 def get_absolute_path(relative_path: str) -> str:
@@ -10,14 +10,14 @@ def get_absolute_path(relative_path: str) -> str:
 
 
 def get_tests_base_path():
-    base_path = get_absolute_path(os.path.join("file_glob", "file_glob_tests"))
+    base_path = get_absolute_path(os.path.join("FileGlob", "file_glob_tests"))
     return base_path
 
 
 class TestFileGlob(unittest.TestCase):
     def setUp(self) -> None:
-        self.__first_file_path = os.path.join(get_tests_base_path(), "dir", "DatabaseFile.txt")
-        self.__second_file_path = os.path.join(get_tests_base_path(), "dir", "sub_dir", "DatabaseFile.csv")
+        self.__first_file_path = os.path.join(get_tests_base_path(), "dir", "DatabaseIO.txt")
+        self.__second_file_path = os.path.join(get_tests_base_path(), "dir", "sub_dir", "DatabaseIO.csv")
         self.create_startup_files()
 
     def create_startup_files(self):

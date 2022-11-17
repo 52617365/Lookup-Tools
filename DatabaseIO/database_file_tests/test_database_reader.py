@@ -3,7 +3,7 @@ import unittest
 
 import pandas as pd
 
-from DatabaseFile.database_reader import DatabaseReader
+from DatabaseIO.DatabaseReader import DatabaseReader
 
 
 class DatabaseFileReaderSetup:
@@ -25,7 +25,7 @@ class DatabaseFileReaderSetup:
     @staticmethod
     def create_invalid_file_path():
         invalid_data = "dir,test2,test3\nasd1,asd2,asd3,asd4"
-        # write to DatabaseFile
+        # write to DatabaseIO
         file_handle = open('invalid_format_file.csv', "w")
         file_handle.write(invalid_data)
         file_handle.close()

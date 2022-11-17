@@ -17,7 +17,7 @@ class HashFilePath:
         if self.__user_wants_to_use_environment_variable():
             return self.__get_environment_variable()
         else:
-            quit("No hash DatabaseFile path specified.")
+            quit("No hash file path specified.")
 
     def __user_wants_to_use_user_specified_hash_file_path(self) -> bool:
         return self.__user_specified_hash_file_path is not None
@@ -26,7 +26,7 @@ class HashFilePath:
         if self.__path_is_valid(self.__user_specified_hash_file_path):
             return self.__user_specified_hash_file_path
         else:
-            quit("User specified hash DatabaseFile path is invalid.")
+            quit("User specified hash DatabaseIO path is invalid.")
 
     def __user_wants_to_use_environment_variable(self) -> bool:
         return self.__variable_is_set() and self.__user_specified_hash_file_path is None
@@ -81,11 +81,6 @@ def open_handler_to_invalid_hashes_file(valid_hashes_file_path: str) -> TextIO:
     return open_or_create_file(path_to_invalid_hashes_file)
 
 
-def open_or_create_file(file_path: str) -> TextIO:
-    handler_to_file = open(file_path, "a")
-    return handler_to_file
-
-
 def get_file_name_for_invalid_hashes_file(valid_hashes_file_path: str) -> str:
     path, file_name = os.path.split(valid_hashes_file_path)
     file_name = os.path.splitext(file_name)[0]
@@ -94,3 +89,8 @@ def get_file_name_for_invalid_hashes_file(valid_hashes_file_path: str) -> str:
     invalid_hashes_file_path = os.path.join(path, invalid_hashes_file_name)
 
     return invalid_hashes_file_path
+
+
+def open_or_create_file(file_path: str) -> TextIO:
+    handler_to_file = open(file_path, "a")
+    return handler_to_file
