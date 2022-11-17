@@ -4,10 +4,11 @@ import argparse
 class CommandLineArguments:
 
     def __init__(self):
-        self.parser = argparse.ArgumentParser(description='A program that parses delimited files')
-        self.parser.add_argument('-s', '--search', default='cat', type=str, help='search term')
-        self.parser.add_argument('-n', '--num_images', default=5, type=int, help='num images to save')
-        self.parser.add_argument('-d', '--directory', default='downloads', type=str, help='save directory')
+        self.parser = argparse.ArgumentParser(description='Parse delimited files into JSON strings')
+        self.parser.add_argument('-i', '--input', type=str, help='input file to parse', required=True)
+        self.parser.add_argument('-o', '--output', type=str, help='output file to write json to', required=True)
+        self.parser.add_argument('-g', '--glob', default=False, type=bool,
+                                 help='A boolean value to determine if the input is a glob', required=False)
         self.args = self.parser.parse_args()
 
     def get_arguments(self):

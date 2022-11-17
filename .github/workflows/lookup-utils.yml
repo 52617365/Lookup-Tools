@@ -15,7 +15,6 @@ jobs:
           python-version: '3.11'
         defaults:
           run:
-            working-directory: lookup-utils
       - run: pip install pipreqs
       - run: pipreqs --force .
       - run: pip install -r requirements.txt

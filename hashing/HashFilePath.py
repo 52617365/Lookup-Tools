@@ -26,7 +26,7 @@ class HashFilePath:
         if self.__path_is_valid(self.__user_specified_hash_file_path):
             return self.__user_specified_hash_file_path
         else:
-            quit("User specified hash DatabaseIO path is invalid.")
+            quit("User specified hash file path is invalid.")
 
     def __user_wants_to_use_environment_variable(self) -> bool:
         return self.__variable_is_set() and self.__user_specified_hash_file_path is None
