@@ -1,4 +1,3 @@
-import os
 import warnings
 
 import pandas as pd
@@ -23,14 +22,3 @@ class DatabaseReader:
                                    skipinitialspace=True,
                                    index_col=False)
             return csv_file
-
-    def get_breach_date_from_additional_database_information(self) -> str | None:
-        try:
-            breach_date = self.additional_information.loc[
-                self.additional_information['database'] == self.get_file_name(), 'dumped'].item()
-            return breach_date
-        except ValueError:
-            return None
-
-    def get_file_name(self) -> str:
-        return os.path.splitext(os.path.basename(self.database_file_path))[0]

@@ -1,23 +1,43 @@
+import os
+
+import pandas as pd
 from pandas import DataFrame
 
 from DatabaseIO.DatabaseReader import DatabaseReader
 
 
 class DatabaseCombiner:
-    def __init__(self, database_file_path: str, additional_database_information: DataFrame):
-        self.reader = DatabaseReader(database_file_path, additional_database_information)
-        self.breach_date = self.reader.get_breach_date_from_additional_database_information()
-        self.database_contents_with_additional_information = self.reader.get_database_as_dataframe()
+    def __init__(self, additional_database_information: DataFrame):
+        self.additional_database_information = additional_database_information
 
-    def set_additional_information_to_database(self):
-        self.__set_db_name()
-        self.__set_breach_date()
+    def combine(self, database_file_path: str) -> pd.DataFrame:
+        reader = DatabaseReader(database_file_path, self.additional_database_information)
 
-        return self.database_contents_with_additional_information
+        database = reader.get_database_as_dataframe()
 
-    def __set_db_name(self):
-        self.database_contents_with_additional_information["database_name"] = self.reader.get_file_name()
+        self.__set_db_name(database, database_file_path)
+        self.__set_breach_date(database, database_file_path)
 
-    def __set_breach_date(self):
-        if self.breach_date is not None:
-            self.database_contents_with_additional_information["breach_date"] = self.breach_date
+        return database
+
+    def __set_db_name(self, database: DataFrame, database_file_path: str):
+        database_name = self.get_file_name(database_file_path)
+        database["database_name"] = database_name
+
+    def __set_breach_date(self, database: DataFrame, database_file_path: str):
+        breach_date = self.get_breach_date_from_additional_database_information(database_file_path)
+        if breach_date is not None:
+            database["breach_date"] = breach_date
+
+    def get_breach_date_from_additional_database_information(self, database_file_path: str) -> str | None:
+        try:
+            breach_date = self.additional_database_information.loc[
+                self.additional_database_information['database'] == self.get_file_name(
+                    database_file_path), 'dumped'].item()
+            return breach_date
+        except ValueError:
+            return None
+
+    @staticmethod
+    def get_file_name(database_file_path: str) -> str:
+        return os.path.splitext(os.path.basename(database_file_path))[0]
