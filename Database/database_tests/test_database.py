@@ -39,8 +39,8 @@ class TestDatabase(unittest.TestCase):
         additional_information_about_databases = pd.DataFrame({'database': ["testing_file"], 'entries': [15271696],
                                                                'dumped': ["2011-05-21"]})
 
-        our_loaded_database = DatabaseCombiner(self.testing_file_path, additional_information_about_databases)
-        combined_database = our_loaded_database.set_additional_information_to_database()
+        our_loaded_database = DatabaseCombiner(additional_information_about_databases)
+        combined_database = our_loaded_database.combine(self.testing_file_path)
         self.assertEqual("testing_file", combined_database["database_name"].item())
         self.assertEqual("2011-05-21", combined_database["breach_date"].item())
 
