@@ -1,6 +1,7 @@
 import pandas as pd
 
 from Database.DatabaseCombiner import DatabaseCombiner
+from DatabaseIO.DatabaseReader import DatabaseReader
 from DatabaseIO.HashWriter import HashWriter
 from DatabaseIO.JsonWriter import JsonWriter
 from FileGlob.FileGlob import FileGlob
@@ -19,11 +20,12 @@ def get_databases(args):
 if __name__ == '__main__':
     args = CommandLineArguments().get()
     databases = get_databases(args)
-    additional_information = pd.read_csv(args.additional_information)
+    additional_information = pd.read_csv(args.additional)
     hash_writer = HashWriter("file_hashes.txt")
 
     for database in databases:
-        sha256_for_database = HashWriter.get_sha256_hash_from(database)
+        database_contents = DatabaseReader(database).get_database_as_dataframe()
+        sha256_for_database = HashWriter.get_sha256_hash_from(database_contents)
         if not hash_writer.file_is_unique(sha256_for_database):
             continue
 
