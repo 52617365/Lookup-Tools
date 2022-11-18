@@ -6,9 +6,8 @@ from pandas.errors import ParserWarning
 
 
 class DatabaseReader:
-    def __init__(self, database_file_path: str, additional_database_information: DataFrame):
+    def __init__(self, database_file_path: str):
         self.database_file_path = database_file_path
-        self.additional_information = additional_database_information
 
     def get_database_as_dataframe(self) -> pd.DataFrame:
         csv_file: DataFrame = self.__get_csv_with_custom_delimiter_turning_warnings_into_errors()
