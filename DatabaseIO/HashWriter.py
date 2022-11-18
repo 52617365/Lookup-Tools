@@ -19,7 +19,7 @@ class HashWriter:
     @staticmethod
     def open_handler_to_file(path_to_file: str):
         try:
-            handler = open(path_to_file, "a")
+            handler = open(path_to_file, "a+")
             return handler
         except IOError:
             quit(F"Hash file does not exist: {path_to_file}")
@@ -46,3 +46,7 @@ class HashWriter:
             if line.strip() == file_identifier:
                 return True
         return False
+
+    def __del__(self):
+        self.valid_hashes_file.close()
+        self.invalid_hashes_file.close()
