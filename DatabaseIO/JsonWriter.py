@@ -9,7 +9,7 @@ class JsonWriter:
     def write_as_json(self):
         try:
             self.__data_to_write.to_json(F"parsed/{self.get_json_file_name()}", orient='records')
-        except FileNotFoundError:
+        except OSError:
             quit("Make sure the 'parsed' folder exists")
 
     def get_json_file_name(self):
