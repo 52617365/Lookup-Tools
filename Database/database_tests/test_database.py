@@ -40,7 +40,9 @@ class TestDatabase(unittest.TestCase):
                                                                'dumped': ["2011-05-21"]})
 
         our_loaded_database = DatabaseCombiner(additional_information_about_databases)
-        combined_database = our_loaded_database.combine(self.testing_file_path)
+
+        database_contents = pd.DataFrame({'test': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
+        combined_database = our_loaded_database.combine(database_contents, self.testing_file_path)
         self.assertEqual("testing_file", combined_database["database_name"].item())
         self.assertEqual("2011-05-21", combined_database["breach_date"].item())
 
