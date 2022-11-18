@@ -11,18 +11,18 @@ class HashWriter:
         self.invalid_hashes_file = self.open_handler_to_invalid_file(path_to_valid_hashes)
 
     @staticmethod
+    def open_handler_to_invalid_file(path_to_valid_hashes: str):
+        path_to_invalid_hashes = get_file_name_for_invalid_hashes_file(path_to_valid_hashes)
+        handler_to_invalid_files = HashWriter.open_handler_to_file(path_to_invalid_hashes)
+        return handler_to_invalid_files
+
+    @staticmethod
     def open_handler_to_file(path_to_file: str):
         try:
             handler = open(path_to_file, "a")
             return handler
         except IOError:
             quit(F"Hash file does not exist: {path_to_file}")
-
-    @staticmethod
-    def open_handler_to_invalid_file(path_to_valid_hashes: str):
-        path_to_invalid_hashes = get_file_name_for_invalid_hashes_file(path_to_valid_hashes)
-        handler_to_invalid_files = HashWriter.open_handler_to_file(path_to_invalid_hashes)
-        return handler_to_invalid_files
 
     @staticmethod
     def get_sha256_hash_from(data_to_write: DataFrame) -> str:
