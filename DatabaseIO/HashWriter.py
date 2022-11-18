@@ -36,7 +36,9 @@ class HashWriter:
         self.invalid_hashes_file.write(file_identifier + "\n")
 
     def file_is_unique(self, file_identifier: str) -> bool:
-        return not self.__hash_is_already_in_hashes_file(file_identifier)
+        if self.__hash_is_already_in_hashes_file(file_identifier):
+            return False
+        return True
 
     def __hash_is_already_in_hashes_file(self, file_identifier: str):
         valid_hashes = self.valid_hashes_file.readlines()

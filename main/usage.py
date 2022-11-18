@@ -26,12 +26,12 @@ if __name__ == '__main__':
     for database in databases:
         database_contents = DatabaseReader(database).get_database_as_dataframe()
         sha256_for_database = HashWriter.get_sha256_hash_from(database_contents)
-        if not hash_writer.file_is_unique(sha256_for_database):
-            continue
-
-        try:
-            combined_delimited_database = DatabaseCombiner(additional_information).combine(database)
-            database_writer = JsonWriter(DatabaseCombiner.get_file_name(database), combined_delimited_database)
-            hash_writer.write_valid_file_hash_to_logs(sha256_for_database)
-        except Exception as e:
-            hash_writer.write_invalid_file_hash_to_logs(sha256_for_database)
+        if hash_writer.file_is_unique(sha256_for_database):
+            try:
+                combined_delimited_database = DatabaseCombiner(additional_information).combine(database_contents,
+                                                                                               database)
+                database_writer = JsonWriter(DatabaseCombiner.get_file_name(database), combined_delimited_database)
+                database_writer.write_as_json()
+                hash_writer.write_valid_file_hash_to_logs(sha256_for_database)
+            except ValueError as e:
+                hash_writer.write_invalid_file_hash_to_logs(sha256_for_database)
