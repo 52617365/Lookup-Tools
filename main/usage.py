@@ -13,8 +13,8 @@ from main.UserArguments import CommandLineArguments
 class Usage:
     def __init__(self):
         self.__user_arguments = CommandLineArguments().get()
-        self.hash_writer = HashWriter("file_hashes.txt")
         self.additional_information = self.get_additional_information()
+        self.hash_writer = HashWriter()
 
     def get_additional_information(self):
         try:
@@ -27,7 +27,6 @@ class Usage:
         database_paths = self.get_database_paths()
         for database_path in database_paths:
             self.handle_database(database_path)
-        self.hash_writer.write_hashes_to_file()
 
     def get_database_paths(self):
         if self.__user_arguments.glob:
@@ -37,17 +36,16 @@ class Usage:
         return databases
 
     def handle_database(self, database_path):
-        global file_identifier
-        global database_contents
+        global file_identifier, database_contents
         try:
             database_contents, file_identifier = self.__read_database(database_path)
         except ParserWarning:
-            self.hash_writer.new_invalid_hashes.add(file_identifier)
+            self.hash_writer.write_invalid_hash(file_identifier)
 
         combined_database_contents = self.__combine_additional_information_to_database(database_contents,
                                                                                        database_path)
         self.__write_file_as_json(database_path, combined_database_contents)
-        self.hash_writer.new_valid_hashes.add(file_identifier)
+        self.hash_writer.write_valid_hash(file_identifier)
 
     def __read_database(self, database_path):
         database_contents, file_identifier = DatabaseReader(database_path, self.hash_writer).get_database()
@@ -63,8 +61,6 @@ class Usage:
         database_writer = JsonWriter(DatabaseCombiner.get_file_name(database_path), combined_database_contents)
         database_writer.write_as_json()
 
-
-# TODO: We are currently not checking for if the file is invalid, fix this.
 
 if __name__ == '__main__':
     Usage().run()
