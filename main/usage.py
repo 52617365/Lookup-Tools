@@ -21,7 +21,7 @@ class Usage:
             additional_information = pd.read_csv(self.__user_arguments.additional)
             return additional_information
         except OSError:
-            quit("Additional information file not found")
+            quit(F"Additional information file not found at {self.__user_arguments.additional}")
 
     def run(self):
         database_paths = self.get_database_paths()
@@ -38,14 +38,16 @@ class Usage:
 
     def handle_database(self, database_path):
         global file_identifier
+        global database_contents
         try:
             database_contents, file_identifier = self.__read_database(database_path)
-            combined_database_contents = self.__combine_additional_information_to_database(database_contents,
-                                                                                           database_path)
-            self.__write_file_as_json(database_path, combined_database_contents)
-            self.hash_writer.new_valid_hashes.add(file_identifier)
         except ParserWarning:
             self.hash_writer.new_invalid_hashes.add(file_identifier)
+
+        combined_database_contents = self.__combine_additional_information_to_database(database_contents,
+                                                                                       database_path)
+        self.__write_file_as_json(database_path, combined_database_contents)
+        self.hash_writer.new_valid_hashes.add(file_identifier)
 
     def __read_database(self, database_path):
         database_contents, file_identifier = DatabaseReader(database_path, self.hash_writer).get_database()
