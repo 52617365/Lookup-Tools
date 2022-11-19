@@ -5,6 +5,7 @@ from pandas import DataFrame
 from hashing.HashFilePath import get_file_name_for_invalid_hashes_file
 
 
+# TODO: change this to use a database.
 class HashWriter:
     def __init__(self, path_to_valid_hashes: str):
         self.new_valid_hashes = set()
