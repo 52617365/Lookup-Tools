@@ -17,21 +17,31 @@ def get_databases(args):
     return databases
 
 
+# TODO: We are currently not checking for if the file is invalid, fix this.
+
+def get_additional_information():
+    try:
+        additional_information = pd.read_csv(args.additional)
+        return additional_information
+    except FileNotFoundError:
+        quit("Additional information file not found")
+
+
 if __name__ == '__main__':
     args = CommandLineArguments().get()
+    additional_information = get_additional_information()
     databases = get_databases(args)
-    additional_information = pd.read_csv(args.additional)
     hash_writer = HashWriter("file_hashes.txt")
 
     for database in databases:
-        database_contents = DatabaseReader(database).get_database_as_dataframe()
-        sha256_for_database = HashWriter.get_sha256_hash_from(database_contents)
-        if hash_writer.file_is_unique(sha256_for_database):
+        database_contents, file_identifier = DatabaseReader(database, hash_writer).get_database()
+        if hash_writer.file_is_unique(file_identifier):
             try:
                 combined_delimited_database = DatabaseCombiner(additional_information).combine(database_contents,
                                                                                                database)
                 database_writer = JsonWriter(DatabaseCombiner.get_file_name(database), combined_delimited_database)
                 database_writer.write_as_json()
-                hash_writer.write_valid_file_hash_to_logs(sha256_for_database)
+                hash_writer.new_valid_hashes.append(file_identifier)
             except ValueError as e:
-                hash_writer.write_invalid_file_hash_to_logs(sha256_for_database)
+                hash_writer.new_invalid_hashes.append(file_identifier)
+    hash_writer.write_hashes_to_file()
