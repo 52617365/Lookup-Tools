@@ -1,9 +1,11 @@
 import pandas as pd
 
+from Database.DatabaseCombiner import DatabaseCombiner
+
 
 class JsonWriter:
-    def __init__(self, database_file_name: str, data_to_write: pd.DataFrame):
-        self.database_file_name = database_file_name
+    def __init__(self, database_file, data_to_write: pd.DataFrame):
+        self.database_file_name = DatabaseCombiner.get_file_name(database_file)
         self.__data_to_write = data_to_write
 
     def write_as_json(self):
