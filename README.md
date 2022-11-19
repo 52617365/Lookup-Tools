@@ -1,6 +1,6 @@
 # Lookup-Tools
 
-## Lookup-Tools is an automated parsing project made to assist with my main project Lookup.
+## Lookup-Tools is an automated parsing project that uses pandas made to assist with my main project Lookup.
 
 <details>
 <summary>What problems is this project trying to solve?</summary>
