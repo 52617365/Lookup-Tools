@@ -49,7 +49,7 @@ class TestDatabaseReader(unittest.TestCase):
     def test_get_valid_file_as_dataframe(self):
         testing_file_path = "testing_file.csv"
 
-        example_delimited_file = DatabaseReader(testing_file_path)
+        example_delimited_file = DatabaseReader(testing_file_path, None)
         data = example_delimited_file.get_database_as_dataframe()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(data.equals(expected_data), True)
