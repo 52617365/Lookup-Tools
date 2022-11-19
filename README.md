@@ -10,7 +10,7 @@
   there.
 - Parsing the data is a very time-consuming task, and it is not very time-efficient to do it all manually.
 - Lookup-Tools is a project that will help me with the act of parsing data and adding additional data related to the
-  dataset *automagically*, leaving me with less manual work to achieve
+  dataset partly *automagically*, leaving me with less manual work to achieve
   my end goal.
 
 </details>
