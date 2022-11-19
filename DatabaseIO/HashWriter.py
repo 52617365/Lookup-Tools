@@ -7,33 +7,62 @@ from hashing.HashFilePath import get_file_name_for_invalid_hashes_file
 
 class HashWriter:
     def __init__(self, path_to_valid_hashes: str):
-        self.valid_hashes_file = self.open_handler_to_file(path_to_valid_hashes)
-        self.invalid_hashes_file = self.open_handler_to_invalid_file(path_to_valid_hashes)
+        self.new_valid_hashes = set()
+        self.new_invalid_hashes = set()
+        self.valid_hashes_writer = self.open_write_handler_to_file(path_to_valid_hashes)
+        self.invalid_hashes_writer = self.open_write_handler_to_invalid_file(path_to_valid_hashes)
+        self.previous_hashes = self.get_previous_hashes(path_to_valid_hashes)
 
     @staticmethod
-    def open_handler_to_invalid_file(path_to_valid_hashes: str):
+    def get_previous_hashes(path_to_valid_hashes: str):
+        valid_hashes = HashWriter.read_contents_of_file(path_to_valid_hashes)
+        invalid_hashes = HashWriter.read_contents_of_invalid_file(path_to_valid_hashes)
+        return valid_hashes + invalid_hashes
+
+    @staticmethod
+    def read_contents_of_invalid_file(path_to_valid_hashes: str):
+        invalid_hashes_file = get_file_name_for_invalid_hashes_file(path_to_valid_hashes)
+        return HashWriter.read_contents_of_file(invalid_hashes_file)
+
+    @staticmethod
+    def read_contents_of_file(path_to_hashes: str):
+        with open(path_to_hashes, "r") as file:
+            return file.read().splitlines()
+
+    @staticmethod
+    def open_write_handler_to_invalid_file(path_to_valid_hashes: str):
         path_to_invalid_hashes = get_file_name_for_invalid_hashes_file(path_to_valid_hashes)
-        handler_to_invalid_files = HashWriter.open_handler_to_file(path_to_invalid_hashes)
+        handler_to_invalid_files = HashWriter.open_write_handler_to_file(path_to_invalid_hashes)
         return handler_to_invalid_files
 
     @staticmethod
-    def open_handler_to_file(path_to_file: str):
+    def open_write_handler_to_file(path_to_hashes: str):
         try:
-            handler = open(path_to_file, "a+")
+            handler = open(path_to_hashes, "a", encoding='utf-8')
             return handler
         except IOError:
-            quit(F"Hash file does not exist: {path_to_file}")
+            quit(F"Hash file directory does not exist: {path_to_hashes}")
 
     @staticmethod
     def get_sha256_hash_from(data_to_write: DataFrame) -> str:
         file_data = data_to_write.to_string()
         return hashlib.sha256(file_data.encode('utf-8')).hexdigest()
 
-    def write_valid_file_hash_to_logs(self, file_identifier: str):
-        self.valid_hashes_file.write(file_identifier + "\n")
+    def write_hashes_to_file(self):
+        self.write_valid_file_hashes_to_logs()
+        self.write_invalid_file_hashes_to_logs()
 
-    def write_invalid_file_hash_to_logs(self, file_identifier: str):
-        self.invalid_hashes_file.write(file_identifier + "\n")
+    def write_valid_file_hashes_to_logs(self):
+        HashWriter.write_set_to_file(self.valid_hashes_writer, self.new_valid_hashes)
+
+    def write_invalid_file_hashes_to_logs(self):
+        HashWriter.write_set_to_file(self.invalid_hashes_writer, self.new_invalid_hashes)
+
+    @staticmethod
+    def write_set_to_file(file_handler, contents_to_write: set):
+        for content in contents_to_write:
+            file_handler.write(content + "\n")
+        file_handler.close()
 
     def file_is_unique(self, file_identifier: str) -> bool:
         if self.__hash_is_already_in_hashes_file(file_identifier):
@@ -41,14 +70,6 @@ class HashWriter:
         return True
 
     def __hash_is_already_in_hashes_file(self, file_identifier: str):
-        valid_hashes = self.valid_hashes_file.readlines()
-        invalid_hashes = self.invalid_hashes_file.readlines()
-        hashes = valid_hashes + invalid_hashes
-        for line in hashes:
-            if line.strip() == file_identifier:
-                return True
+        if file_identifier in self.previous_hashes:
+            return True
         return False
-
-    def __del__(self):
-        self.valid_hashes_file.close()
-        self.invalid_hashes_file.close()
