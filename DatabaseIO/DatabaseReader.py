@@ -13,8 +13,11 @@ class DatabaseReader:
         self.hasher = hasher
 
     def get_database(self) -> (pd.DataFrame, str):
-        csv_file: DataFrame = self.get_database_as_dataframe()
-        file_identifier = self.hasher.get_sha256_hash_from(csv_file)
+        global csv_file
+        try:
+            csv_file = self.get_database_as_dataframe()
+        finally:
+            file_identifier = self.hasher.get_sha256_hash_from(csv_file)
         return csv_file, file_identifier
 
     def get_database_as_dataframe(self) -> pd.DataFrame:
