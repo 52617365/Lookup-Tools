@@ -1,5 +1,6 @@
 import pandas as pd
 from pandas import DataFrame
+from pandas.errors import ParserWarning
 
 from Database.DatabaseCombiner import DatabaseCombiner
 from DatabaseIO.DatabaseReader import DatabaseReader
@@ -25,10 +26,7 @@ class Usage:
     def run(self):
         database_paths = self.get_database_paths()
         for database_path in database_paths:
-            try:
-                self.handle_database(database_path)
-            except ValueError:
-                continue
+            self.handle_database(database_path)
         self.hash_writer.write_hashes_to_file()
 
     def get_database_paths(self):
@@ -46,7 +44,7 @@ class Usage:
                                                                                            database_path)
             self.__write_file_as_json(database_path, combined_database_contents)
             self.hash_writer.new_valid_hashes.add(file_identifier)
-        except ValueError:
+        except ParserWarning:
             self.hash_writer.new_invalid_hashes.add(file_identifier)
 
     def __read_database(self, database_path):
