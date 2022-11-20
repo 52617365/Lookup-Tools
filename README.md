@@ -106,8 +106,8 @@ database      ,entries ,dumped
 
 <summary>How do you avoid duplicate data?</summary>
 
-- Each handled file has an encrypted SHA256 hash representation, stored in a file or database.
-- When a file is read, it is encrypted into a SHA256 hash, and compared to the hashes stored in the file or database to
+- Each handled file has an encrypted SHA256 hash representation, stored in a database.
+- When a file is read, it is encrypted into a SHA256 hash, and compared to the hashes stored in the database to
   see if it
   has already been handled.
 
