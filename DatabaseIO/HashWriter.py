@@ -16,7 +16,7 @@ class HashWriterConnection:
     @staticmethod
     def get_mongodb_env_variables():
         current_path = pathlib.Path(__file__).parent.resolve()
-        config = dotenv_values(F"{current_path}\.env")
+        config = dotenv_values(F"{current_path}\\.env")
         HashWriterConnection.__terminate_if_env_values_invalid(config)
         return config
 
@@ -42,7 +42,7 @@ class HashWriter:
             self.mongo_hash_collection.insert_one({"hash": hash, "valid": False})
 
     def hash_is_unique(self, hash: str):
-        return self.mongo_hash_collection.find_one({"hash": hash}) is not None
+        return self.mongo_hash_collection.find_one({"hash": hash}) is None
 
     @staticmethod
     def get_sha256_hash_from(data_to_write: DataFrame) -> str:
