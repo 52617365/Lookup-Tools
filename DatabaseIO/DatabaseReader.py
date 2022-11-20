@@ -17,7 +17,7 @@ class DatabaseReader:
         try:
             csv_file = self.get_database_as_dataframe()
         finally:
-            file_identifier = self.hasher.get_sha256_hash_from(csv_file)
+            file_identifier = self.hasher.get_blake2b_hash_from(csv_file)
         return csv_file, file_identifier
 
     def get_database_as_dataframe(self) -> pd.DataFrame:

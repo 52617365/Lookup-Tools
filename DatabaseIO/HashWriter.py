@@ -45,6 +45,7 @@ class HashWriter:
         return self.mongo_hash_collection.find_one({"hash": hash}) is None
 
     @staticmethod
-    def get_sha256_hash_from(data_to_write: DataFrame) -> str:
+    def get_blake2b_hash_from(data_to_write: DataFrame) -> str:
         file_data = data_to_write.to_string()
-        return hashlib.sha256(file_data.encode('utf-8')).hexdigest()
+        file_hash = hashlib.blake2b(file_data.encode('utf-8')).hexdigest()
+        return file_hash
