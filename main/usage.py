@@ -1,5 +1,6 @@
 import pandas as pd
 from pandas import DataFrame
+from pandas.errors import ParserWarning
 
 from Database.DatabaseCombiner import DatabaseCombiner
 from DatabaseIO.DatabaseReader import DatabaseReader
@@ -42,7 +43,7 @@ class Usage:
                                                                                            database_path)
             self.__write_file_as_json(database_path, combined_database_contents)
             self.hash_writer.write_valid_hash(file_identifier)
-        except Exception:
+        except ParserWarning:
             self.hash_writer.write_invalid_hash(file_identifier)
 
     def __read_database(self, database_path):
