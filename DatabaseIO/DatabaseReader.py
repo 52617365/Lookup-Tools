@@ -24,8 +24,6 @@ class DatabaseReader:
         csv_file: DataFrame = self.__get_csv_with_custom_delimiter_turning_warnings_into_errors()
         return csv_file
 
-    # TODO: handle how we're going to be generating the invalid hash if this function fails.
-    # currently it's not generating invalid hashes correctly for invalid files. It's because if it fails, we are not correctly generating the hash.
     def __get_csv_with_custom_delimiter_turning_warnings_into_errors(self) -> DataFrame:
         # Hack to turn warnings into errors.
         with warnings.catch_warnings():
