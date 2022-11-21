@@ -45,9 +45,12 @@ class HashWriter:
 
     @staticmethod
     def get_hash_from_file_contents(path_to_file: str):
-        with open(path_to_file, "r") as file:
-            file_contents = file.read()
-            return HashWriter.get_blake2b_hash_from(file_contents)
+        try:
+            with open(path_to_file, "r") as file:
+                file_contents = file.read()
+                return HashWriter.get_blake2b_hash_from(file_contents)
+        except OSError:
+            quit("Could not open file: " + path_to_file)
 
     @staticmethod
     def get_blake2b_hash_from(file_data: str) -> str:
