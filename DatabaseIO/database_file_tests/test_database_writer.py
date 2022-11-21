@@ -7,8 +7,6 @@ from DatabaseIO.HashWriter import HashWriter
 
 
 class TestDatabaseWriter(unittest.TestCase):
-    hashes_file = "file_hashes.txt"
-
     def test_pandas_dataframe_json_conversion(self):
         csv_data_to_write_as_json = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         converted_json_data = csv_data_to_write_as_json.to_json(orient='records')
