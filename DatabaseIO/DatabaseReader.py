@@ -8,7 +8,7 @@ from DatabaseIO.HashWriter import HashWriter
 
 
 class DatabaseReader:
-    def __init__(self, database_file_path: str, hasher: HashWriter):
+    def __init__(self, database_file_path: str, hasher: HashWriter | None):
         self.database_file_path = database_file_path
         self.hasher = hasher
 
