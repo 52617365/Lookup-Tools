@@ -1,5 +1,4 @@
 import json
-import os
 import unittest
 
 import pandas as pd
@@ -7,13 +6,7 @@ import pandas as pd
 from DatabaseIO.HashWriter import HashWriter
 
 
-def get_relative_path_to_file(relative_path_to_file: str) -> str:
-    dir_name = os.path.dirname(__file__)
-    relative_path = os.path.join(dir_name, relative_path_to_file)
-    return relative_path
-
-
-class TestCsvWriter(unittest.TestCase):
+class TestDatabaseWriter(unittest.TestCase):
     hashes_file = "file_hashes.txt"
 
     def test_pandas_dataframe_json_conversion(self):
