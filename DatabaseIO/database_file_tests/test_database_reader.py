@@ -1,4 +1,3 @@
-import os
 import unittest
 from collections import OrderedDict
 from unittest.mock import patch
@@ -8,43 +7,6 @@ from pyfakefs.fake_filesystem_unittest import TestCase
 
 from DatabaseIO.DatabaseReader import DatabaseReader
 from DatabaseIO.HashWriter import HashWriter
-
-
-class DatabaseFileReaderSetup:
-
-    def __init__(self):
-        DatabaseFileReaderSetup.create_files(self)
-
-    def create_files(self):
-        self.create_testing_file()
-        self.create_invalid_file_path()
-
-    @staticmethod
-    def create_testing_file():
-        data = "dir,test2,test3\nasd1,asd2,asd3"
-
-        file_handle = open('testing_file.csv', "w")
-        file_handle.write(data)
-        file_handle.close()
-
-    @staticmethod
-    def create_invalid_file_path():
-        invalid_data = "dir,test2,test3\nasd1,asd2,asd3,asd4"
-        # write to DatabaseIO
-        file_handle = open('invalid_format_file.csv', "w")
-        file_handle.write(invalid_data)
-        file_handle.close()
-
-    @staticmethod
-    def clean_files():
-        os.remove('testing_file.csv')
-        os.remove('invalid_format_file.csv')
-
-
-def get_platform_independent_relative_path(relative_path_to_file: str) -> str:
-    dir_name = os.path.dirname(__file__)
-    filename = os.path.join(dir_name, relative_path_to_file)
-    return filename
 
 
 class TestDatabaseReader(TestCase):
