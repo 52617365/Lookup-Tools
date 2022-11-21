@@ -2,11 +2,13 @@ import os
 import unittest
 
 import pandas as pd
+from pyfakefs.fake_filesystem_unittest import TestCase
 
 from DatabaseIO.DatabaseReader import DatabaseReader
 
 
 class DatabaseFileReaderSetup:
+
     def __init__(self):
         DatabaseFileReaderSetup.create_files(self)
 
@@ -42,12 +44,17 @@ def get_platform_independent_relative_path(relative_path_to_file: str) -> str:
     return filename
 
 
-class TestDatabaseReader(unittest.TestCase):
+class TestDatabaseReader(TestCase):
+
     def setUp(self):
-        DatabaseFileReaderSetup()
+        self.setUpPyfakefs()
+
+    # def setUp(self):
+    #     DatabaseFileReaderSetup()
 
     def test_get_valid_file_as_dataframe(self):
         testing_file_path = "testing_file.csv"
+        self.fs.create_file(testing_file_path, contents="dir,test2,test3\nasd1,asd2,asd3")
 
         example_delimited_file = DatabaseReader(testing_file_path, None)
         data = example_delimited_file.get_database_as_dataframe()
@@ -57,12 +64,9 @@ class TestDatabaseReader(unittest.TestCase):
     def test_get_dataframe_file_with_file_that_has_invalid_format(self):
         with self.assertRaises(Exception):
             testing_file_path = 'invalid_format_file.csv'
-            f = DatabaseReader(testing_file_path)
+            self.fs.create_file(testing_file_path, contents="field1,field2\nvalue1,value2,value3")
+            f = DatabaseReader(testing_file_path, None)
             f.get_database_as_dataframe()
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        DatabaseFileReaderSetup.clean_files()
 
 
 if __name__ == '__main__':
