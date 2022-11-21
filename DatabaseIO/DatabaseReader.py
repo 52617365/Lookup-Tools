@@ -13,14 +13,12 @@ class DatabaseReader:
         self.hasher = hasher
 
     def get_database(self) -> (pd.DataFrame, str):
-        global csv_file
+        file_identifier = self.hasher.get_hash_from_file_contents(self.database_file_path)
         try:
             csv_file = self.get_database_as_dataframe()
-            file_identifier = self.hasher.get_blake2b_hash_from(csv_file)
             return csv_file, file_identifier
         except ParserWarning:
-            file_identifier = self.hasher.get_blake2b_hash_from(csv_file)
-            return csv_file, file_identifier
+            return pd.DataFrame(), file_identifier
 
     def get_database_as_dataframe(self) -> pd.DataFrame:
         csv_file: DataFrame = self.__get_csv_with_custom_delimiter_turning_warnings_into_errors()

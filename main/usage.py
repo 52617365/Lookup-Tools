@@ -1,6 +1,5 @@
 import pandas as pd
 from pandas import DataFrame
-from pandas.errors import ParserWarning
 
 from Database.DatabaseCombiner import DatabaseCombiner
 from DatabaseIO.DatabaseReader import DatabaseReader
@@ -36,15 +35,15 @@ class Usage:
         return databases
 
     def handle_database(self, database_path):
-        global file_identifier, database_contents
-        try:
-            database_contents, file_identifier = self.__read_database(database_path)
+        database_contents, file_identifier = self.__read_database(database_path)
+        if database_contents.empty:
+            self.hash_writer.write_invalid_hash(file_identifier)
+            return
+        else:
             combined_database_contents = self.__combine_additional_information_to_database(database_contents,
                                                                                            database_path)
             self.__write_file_as_json(database_path, combined_database_contents)
             self.hash_writer.write_valid_hash(file_identifier)
-        except ParserWarning:
-            self.hash_writer.write_invalid_hash(file_identifier)
 
     def __read_database(self, database_path):
         database_contents, file_identifier = DatabaseReader(database_path, self.hash_writer).get_database()

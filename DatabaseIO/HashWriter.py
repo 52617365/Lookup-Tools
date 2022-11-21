@@ -3,7 +3,6 @@ import pathlib
 
 import pymongo
 from dotenv import dotenv_values
-from pandas import DataFrame
 
 
 class HashWriterConnection:
@@ -45,7 +44,12 @@ class HashWriter:
         return self.mongo_hash_collection.find_one({"hash": hash}) is None
 
     @staticmethod
-    def get_blake2b_hash_from(data_to_write: DataFrame) -> str:
-        file_data = data_to_write.to_string()
+    def get_hash_from_file_contents(path_to_file: str):
+        with open(path_to_file, "r") as file:
+            file_contents = file.read()
+            return HashWriter.get_blake2b_hash_from(file_contents)
+
+    @staticmethod
+    def get_blake2b_hash_from(file_data: str) -> str:
         file_hash = hashlib.blake2b(file_data.encode('utf-8')).hexdigest()
         return file_hash
