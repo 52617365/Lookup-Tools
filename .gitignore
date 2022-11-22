@@ -1,6 +1,7 @@
 *.txt
 *.csv
 *.json
+*.ipynb
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -163,3 +164,4 @@ cython_debug/
 #.idea/
 !/DatabaseIO/database_file_tests/files/testing_file.txt
 !/Database/database_tests/files/testing_file.txt
+!/jupyter/
