@@ -2,9 +2,9 @@ import pandas as pd
 from pandas import DataFrame
 
 from Database.DatabaseCombiner import DatabaseCombiner
-from DatabaseIO.DatabaseReader import DatabaseReader
-from DatabaseIO.HashWriter import HashWriter
-from DatabaseIO.JsonWriter import JsonWriter
+from DatabaseWriter.DatabaseReader import DatabaseReader
+from DatabaseWriter.HashWriter import HashWriter
+from DatabaseWriter.JsonWriter import JsonWriter
 from FileGlob.FileGlob import FileGlob
 from main.UserArguments import CommandLineArguments
 

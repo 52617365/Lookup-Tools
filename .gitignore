@@ -159,9 +159,9 @@ cython_debug/
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this DatabaseIO.  For a more nuclear
+#  and can be added to the global gitignore or merged into this DatabaseWriter.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
-!/DatabaseIO/database_file_tests/files/testing_file.txt
+!/DatabaseWriter/database_file_tests/files/testing_file.txt
 !/Database/database_tests/files/testing_file.txt
 !/jupyter/

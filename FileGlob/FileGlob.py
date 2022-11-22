@@ -1,13 +1,15 @@
 import glob
-import os
+from os import path
+from pathlib import Path
 
 
 class FileGlob:
-    def __init__(self, path_to_glob: str = os.getcwd()):
+    def __init__(self, path_to_glob: Path):
         self.path = path_to_glob
 
     def get_files_from_directories(self):
-        all_file_paths_from_directories = glob.glob(F'{self.path}/**/*', recursive=True)
+        path_to_glob = path.join(self.path, "**", "*")
+        all_file_paths_from_directories = glob.glob(path_to_glob, recursive=True)
         files = self.__get_files_with_supported_extension(all_file_paths_from_directories)
         return files
 
