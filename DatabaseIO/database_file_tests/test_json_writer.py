@@ -1,4 +1,3 @@
-import json
 import unittest
 
 import pandas as pd
@@ -25,11 +24,6 @@ class TestDatabaseWriter(TestCase):
         with open(fake_file_name, 'r') as f:
             json_data = f.read()
             assert json_data == expected_json_data
-
-    def test_pandas_dataframe_json_conversion(self):
-        csv_data_to_write_as_json = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
-        converted_json_data = csv_data_to_write_as_json.to_json(orient='records')
-        json.loads(converted_json_data)
 
     def test_unique_identifier_gets_generated_correctly(self):
         csv_to_hash = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
