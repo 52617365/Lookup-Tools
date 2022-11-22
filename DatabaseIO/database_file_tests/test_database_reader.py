@@ -28,10 +28,12 @@ class TestDatabaseReader(TestCase):
             f = DatabaseReader(testing_file_path, None)
             f.get_database_as_dataframe()
 
+    @patch('DatabaseIO.HashWriter.pymongo.MongoClient.server_info')
     @patch('DatabaseIO.HashWriter.dotenv_values')
-    def test_get_database(self, mock_dotenv_values):
+    def test_get_database(self, mock_dotenv_values, mongo_server_info):
         testing_file_path = self.create_fake_file("testing_file.csv", "field1,field2,field3\nasd1,asd2,asd3")
 
+        mongo_server_info.return_value = {"version": "4.4.1"}
         mock_dotenv_values.return_value = OrderedDict(
             {"CONNECTION_STRING": "test_connection_string", "DATABASE_NAME": "test_database_name",
              "COLLECTION_NAME": "test_collection_name"})
