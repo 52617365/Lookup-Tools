@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 from pyfakefs.fake_filesystem_unittest import TestCase
 
-from DatabaseIO.HashWriter import HashWriter
+from DatabaseWriter.HashWriter import HashWriter
 
 
 class TestHashWriterConnection(TestCase):
@@ -13,7 +13,7 @@ class TestHashWriterConnection(TestCase):
         with self.assertRaises(SystemExit):
             HashWriter()
 
-    @patch('DatabaseIO.HashWriterConnection.dotenv_values')
+    @patch('DatabaseWriter.HashWriterConnection.dotenv_values')
     def test_terminate_if_mongodb_does_not_exist(self, dotenv_values):
         dotenv_values.return_value = {"CONNECTION_STRING": "test_connection_string",
                                       "DATABASE_NAME": "test_database_name",

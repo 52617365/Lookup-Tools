@@ -4,7 +4,7 @@ import pandas as pd
 from pandas import DataFrame
 from pandas.errors import ParserWarning
 
-from DatabaseIO.HashWriter import HashWriter
+from DatabaseWriter.HashWriter import HashWriter
 
 
 class DatabaseReader:

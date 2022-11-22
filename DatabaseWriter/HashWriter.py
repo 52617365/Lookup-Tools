@@ -1,6 +1,6 @@
 import hashlib
 
-from DatabaseIO.HashWriterConnection import HashWriterConnection
+from DatabaseWriter.HashWriterConnection import HashWriterConnection
 
 
 class HashWriter:

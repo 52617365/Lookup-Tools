@@ -5,8 +5,8 @@ from unittest.mock import patch
 import pandas as pd
 from pyfakefs.fake_filesystem_unittest import TestCase
 
-from DatabaseIO.DatabaseReader import DatabaseReader
-from DatabaseIO.HashWriter import HashWriter
+from DatabaseWriter.DatabaseReader import DatabaseReader
+from DatabaseWriter.HashWriter import HashWriter
 
 
 class TestDatabaseReader(TestCase):
@@ -28,8 +28,8 @@ class TestDatabaseReader(TestCase):
             f = DatabaseReader(testing_file_path, None)
             f.get_database_as_dataframe()
 
-    @patch('DatabaseIO.HashWriterConnection.pymongo.MongoClient.server_info')
-    @patch('DatabaseIO.HashWriterConnection.dotenv_values')
+    @patch('DatabaseWriter.HashWriterConnection.pymongo.MongoClient.server_info')
+    @patch('DatabaseWriter.HashWriterConnection.dotenv_values')
     def test_get_database(self, mock_dotenv_values, mongo_server_info):
         testing_file_path = self.create_fake_file("testing_file.csv", "field1,field2,field3\nasd1,asd2,asd3")
 

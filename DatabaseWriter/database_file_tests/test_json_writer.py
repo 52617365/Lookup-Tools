@@ -3,7 +3,7 @@ import unittest
 import pandas as pd
 from pyfakefs.fake_filesystem_unittest import TestCase
 
-from DatabaseIO.JsonWriter import JsonWriter
+from DatabaseWriter.JsonWriter import JsonWriter
 
 
 class TestDatabaseWriter(TestCase):

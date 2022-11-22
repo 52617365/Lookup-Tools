@@ -2,7 +2,7 @@ import unittest
 
 from pyfakefs.fake_filesystem_unittest import TestCase
 
-from DatabaseIO.HashWriter import HashWriter
+from DatabaseWriter.HashWriter import HashWriter
 
 
 class TestHashWriter(TestCase):
