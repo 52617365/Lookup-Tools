@@ -28,12 +28,13 @@ class TestDatabaseReader(TestCase):
             f = DatabaseReader(testing_file_path, None)
             f.get_database_as_dataframe()
 
-    @patch('DatabaseIO.HashWriter.pymongo.MongoClient.server_info')
-    @patch('DatabaseIO.HashWriter.dotenv_values')
+    @patch('DatabaseIO.HashWriterConnection.pymongo.MongoClient.server_info')
+    @patch('DatabaseIO.HashWriterConnection.dotenv_values')
     def test_get_database(self, mock_dotenv_values, mongo_server_info):
         testing_file_path = self.create_fake_file("testing_file.csv", "field1,field2,field3\nasd1,asd2,asd3")
 
-        mongo_server_info.return_value = {"version": "4.4.1"}
+        self.avoid_exit_if_instance_mongo_instance_does_not_exist(mongo_server_info)
+
         mock_dotenv_values.return_value = OrderedDict(
             {"CONNECTION_STRING": "test_connection_string", "DATABASE_NAME": "test_database_name",
              "COLLECTION_NAME": "test_collection_name"})
@@ -46,6 +47,10 @@ class TestDatabaseReader(TestCase):
         expected_file_identifier = "0a85dea3cfe57ca01ab859e954acde77ae8caf899647e4d1f9c01ed55995a03fc7445ada4ac67567390082532d5996876bed744677a502f415bfce26ee3847a0"
         self.assertEqual(csv_file.equals(expected_csv_file), True)
         self.assertEqual(expected_file_identifier, file_identifier)
+
+    @staticmethod
+    def avoid_exit_if_instance_mongo_instance_does_not_exist(mongo_server_info):
+        mongo_server_info.return_value = {"version": "4.4.1"}
 
     def create_fake_file(self, testing_file_path: str, contents: str):
         self.fs.create_file(testing_file_path, contents=contents)
