@@ -8,7 +8,8 @@ from pymongo.errors import ServerSelectionTimeoutError
 class HashWriterConnection:
     def __init__(self):
         env = self.get_mongodb_env_variables()
-        self.collection = self.__get_mongo_collection(env)
+        self.hash_collection = self.__get_mongo_collection(env, env.get("HASHES_COLLECTION_NAME"))
+        self.databases_collection = self.__get_mongo_collection(env, env.get("DATABASES_COLLECTION_NAME"))
 
     @staticmethod
     def get_mongodb_env_variables():
@@ -19,19 +20,19 @@ class HashWriterConnection:
 
     @staticmethod
     def __terminate_if_env_values_invalid(config: dict):
-        required_keys = ['DATABASE_NAME', 'COLLECTION_NAME', 'CONNECTION_STRING']
+        required_keys = ['DATABASE_NAME', 'HASHES_COLLECTION_NAME', 'CONNECTION_STRING', "DATABASES_COLLECTION_NAME"]
 
         for key in required_keys:
             if config.get(key) is None:
                 quit("Missing key in .env file: " + key)
 
     @staticmethod
-    def __get_mongo_collection(config: dict):
+    def __get_mongo_collection(config: dict, collection_name: str):
         try:
             client = pymongo.MongoClient(config.get("CONNECTION_STRING"), serverSelectionTimeoutMS=10)
             client.server_info()
             database = client[config.get("DATABASE_NAME")]
-            collection = database[config.get("COLLECTION_NAME")]
+            collection = database[collection_name]
             return collection
         except ServerSelectionTimeoutError:
             quit("Unable to connect to MongoDB")

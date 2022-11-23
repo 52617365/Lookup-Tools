@@ -42,7 +42,7 @@ class Usage:
         else:
             combined_database_contents = self.__combine_additional_information_to_database(database_contents,
                                                                                            database_path)
-            self.__write_file_as_json(database_path, combined_database_contents)
+            self.__write_file_as_json(combined_database_contents, self.hash_writer.mongo_hash_collection)
             self.hash_writer.write_valid_hash(file_identifier)
 
     def __read_database(self, database_path):
