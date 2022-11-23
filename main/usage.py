@@ -1,6 +1,7 @@
 import pandas as pd
 from pandas import DataFrame
 
+from Connection.DatabaseConnection import DatabaseConnection
 from Database.DatabaseCombiner import DatabaseCombiner
 from DatabaseWriter.DatabaseReader import DatabaseReader
 from DatabaseWriter.HashWriter import HashWriter
@@ -10,10 +11,13 @@ from main.UserArguments import CommandLineArguments
 
 
 class Usage:
-    def __init__(self):
+    # TODO: pass all collections to constructor?
+    def __init__(self, hash_collection, data_collection, database_collection):
         self.__user_arguments = CommandLineArguments().get()
         self.additional_information = self.get_additional_information()
-        self.hash_writer = HashWriter()
+        self.hash_writer = HashWriter(hash_collection)
+        self.__data_collection = data_collection
+        self.__database_collection = database_collection
 
     def get_additional_information(self):
         try:
@@ -42,8 +46,9 @@ class Usage:
         else:
             combined_database_contents = self.__combine_additional_information_to_database(database_contents,
                                                                                            database_path)
-            self.__write_file_as_json(combined_database_contents, self.hash_writer.mongo_hash_collection)
+            self.__write_file_as_json(combined_database_contents)
             self.hash_writer.write_valid_hash(file_identifier)
+            # TODO: write to databases here with additional information
 
     def __read_database(self, database_path):
         database_contents, file_identifier = DatabaseReader(database_path, self.hash_writer).get_database()
@@ -54,11 +59,15 @@ class Usage:
         combined_database_contents = combined_delimited_database.combine(database_contents, database_path)
         return combined_database_contents
 
-    @staticmethod
-    def __write_file_as_json(database_path: str, combined_database_contents: DataFrame):
-        database_writer = JsonWriter(DatabaseCombiner.get_file_name(database_path), combined_database_contents)
+    def __write_file_as_json(self, combined_database_contents: DataFrame):
+        database_writer = JsonWriter(combined_database_contents, self.__data_collection)
         database_writer.write_as_json()
 
 
 if __name__ == '__main__':
-    Usage().run()
+    collections = DatabaseConnection()
+    hash_collection = collections.hash_collection
+    data_collection = collections.data_collection
+    database_collection = collections.database_collection
+
+    Usage(hash_collection, data_collection, database_collection).run()
