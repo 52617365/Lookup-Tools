@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 from pyfakefs.fake_filesystem_unittest import TestCase
 
+from Connection.DatabaseConnection import DatabaseConnection
 from DatabaseWriter.HashWriter import HashWriter
 
 
@@ -9,9 +10,10 @@ class TestHashWriterConnection(TestCase):
     def setUp(self):
         self.setUpPyfakefs()
 
-    def test_terminate_if_variables(self):
+    def test_terminate_if_variables_dont_exist(self):
         with self.assertRaises(SystemExit):
-            HashWriter()
+            collection = DatabaseConnection().hash_collection
+            HashWriter(collection)
 
     @patch('Connection.DatabaseConnection.dotenv_values')
     def test_terminate_if_mongodb_does_not_exist(self, dotenv_values):
@@ -20,4 +22,5 @@ class TestHashWriterConnection(TestCase):
                                       "HASHES_COLLECTION_NAME": "test_collection_name",
                                       "DATABASES_COLLECTION_NAME": "test_databases_collection_name"}
         with self.assertRaises(SystemExit):
-            HashWriter()
+            collection = DatabaseConnection().hash_collection
+            HashWriter(collection)
