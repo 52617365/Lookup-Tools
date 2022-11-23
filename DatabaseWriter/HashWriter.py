@@ -1,11 +1,11 @@
 import hashlib
 
-from DatabaseWriter.HashWriterConnection import HashWriterConnection
+from Connection.DatabaseConnection import HashWriterConnection
 
 
 class HashWriter:
     def __init__(self):
-        self.mongo_hash_collection = HashWriterConnection().collection
+        self.mongo_hash_collection = HashWriterConnection().hash_collection
 
     def write_valid_hash(self, hash):
         if self.__hash_is_unique(hash):
