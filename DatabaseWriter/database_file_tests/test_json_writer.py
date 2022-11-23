@@ -1,5 +1,6 @@
 import unittest
 
+import mongomock
 import pandas as pd
 from pyfakefs.fake_filesystem_unittest import TestCase
 
@@ -11,18 +12,14 @@ class TestDatabaseWriter(TestCase):
         self.setUpPyfakefs()
 
     def test_write_as_json(self):
-        fake_file_name = "parsed/test.json"
-        self.fs.create_file(fake_file_name)
+        client = mongomock.MongoClient().test.test_collection
+        collection = client.db.collection
 
-        csv_data_to_write_as_json = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
-        writer = JsonWriter(fake_file_name, csv_data_to_write_as_json)
+        csv_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
+
+        writer = JsonWriter(csv_data, collection)
         writer.write_as_json()
-
-        expected_json_data = "[{\"dir\":\"asd1\",\"test2\":\"asd2\",\"test3\":\"asd3\"}]"
-
-        with open(fake_file_name, 'r') as f:
-            json_data = f.read()
-            assert json_data == expected_json_data
+        self.assertTrue(collection.find_one({'dir': "asd1"}, {'_id': 1}))
 
 
 if __name__ == '__main__':
