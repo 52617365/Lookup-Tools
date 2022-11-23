@@ -143,8 +143,8 @@ database      ,entries ,dumped
 
 <summary>How do you avoid duplicate data?</summary>
 
-- Each handled file has an encrypted SHA256 hash representation, stored in a database.
-- When a file is read, it is encrypted into a SHA256 hash, and compared to the hashes stored in the database to
+- Each handled file has an encrypted blake2b hash generated from the file contents, stored in a MongoDB collection.
+- When a file is read, it is encrypted into a blake2b hash, and compared to the hashes stored in the collection to
   see if it
   has already been handled.
 
