@@ -28,8 +28,8 @@ class TestDatabaseReader(TestCase):
             f = DatabaseReader(testing_file_path, None)
             f.get_database_as_dataframe()
 
-    @patch('DatabaseWriter.HashWriterConnection.pymongo.MongoClient.server_info')
-    @patch('DatabaseWriter.HashWriterConnection.dotenv_values')
+    @patch('Connection.DatabaseConnection.pymongo.MongoClient.server_info')
+    @patch('Connection.DatabaseConnection.dotenv_values')
     def test_get_database(self, mock_dotenv_values, mongo_server_info):
         testing_file_path = self.create_fake_file("testing_file.csv", "field1,field2,field3\nasd1,asd2,asd3")
 
@@ -37,7 +37,8 @@ class TestDatabaseReader(TestCase):
 
         mock_dotenv_values.return_value = OrderedDict(
             {"CONNECTION_STRING": "test_connection_string", "DATABASE_NAME": "test_database_name",
-             "COLLECTION_NAME": "test_collection_name"})
+             "HASHES_COLLECTION_NAME": "test_collection_name",
+             "DATABASES_COLLECTION_NAME": "test_databases_collection_name"})
 
         hash_writer = HashWriter()
         reader = DatabaseReader(testing_file_path, hash_writer)
