@@ -29,27 +29,27 @@ class JsonWriter:
 
     def write_additional_information(self):
         try:
-            database_information = self.get_information_about_database()
+            database_information = self.__get_information_about_database()
             if database_information.breach_date is None:
-                self.insert_information_without_breach_date(database_information)
+                self.__insert_information_without_breach_date(database_information)
             else:
-                self.insert_information_with_breach_date(database_information)
+                self.__insert_information_with_breach_date(database_information)
         except Exception as e:
             quit("There was an error while writing to MongoDB: " + str(e))
 
-    def get_information_about_database(self) -> DatabaseInformation:
+    def __get_information_about_database(self) -> DatabaseInformation:
         database_name = self.__data_to_write['database_name'].iloc[0]
         lines_in_database = len(self.__data_to_write)
         breach_date = self.__data_to_write['breach_date'].iloc[0]
         return DatabaseInformation(database_name, lines_in_database, breach_date)
 
-    def insert_information_without_breach_date(self, database_information):
+    def __insert_information_without_breach_date(self, database_information):
         self.mongo_databases_collection.insert_one(
             {'database_name': database_information.database_name,
              'lines_in_database': database_information.lines_in_database,
              'added': datetime.now()})
 
-    def insert_information_with_breach_date(self, database_information):
+    def __insert_information_with_breach_date(self, database_information):
         self.mongo_databases_collection.insert_one(
             {'database_name': database_information.database_name,
              'lines_in_database': database_information.lines_in_database,
