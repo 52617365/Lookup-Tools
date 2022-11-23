@@ -41,7 +41,7 @@ class JsonWriter:
     def __get_information_about_database(self) -> DatabaseInformation:
         database_name = self.__combined_database_contents['database_name'].iloc[0]
         lines_in_database = len(self.__combined_database_contents)
-        breach_date = self.__combined_database_contents['breach_date'].iloc[0]
+        breach_date = self.__combined_database_contents.get("breach_date", None)
         return DatabaseInformation(database_name, lines_in_database, breach_date)
 
     def __insert_information_without_breach_date(self, database_information):
