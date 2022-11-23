@@ -18,7 +18,7 @@ class TestJsonWriter(TestCase):
         csv_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
 
         writer = JsonWriter(csv_data, data_collection, None)
-        writer.write_as_json()
+        writer.insert_database_contents_as_json()
         self.assertTrue(data_collection.find_one({'dir': "asd1"}, {'_id': 1}))
 
     def test_write_additional_information(self):
@@ -28,7 +28,7 @@ class TestJsonWriter(TestCase):
         csv_data = pd.DataFrame({"database_name": ["test"], "breach_date": ["2020-01-01"]})
 
         writer = JsonWriter(csv_data, None, databases_collection)
-        writer.write_additional_information()
+        writer.insert_database_additional_information()
         self.assertTrue(databases_collection.find_one({'database_name': "test"}, {'_id': 1}))
         self.assertTrue(databases_collection.find_one({'breach_date': "2020-01-01"}, {'_id': 1}))
 
