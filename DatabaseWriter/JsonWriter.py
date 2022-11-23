@@ -1,18 +1,17 @@
-import pandas as pd
+from typing import Mapping, Any
 
-from Database.DatabaseCombiner import DatabaseCombiner
+import pandas as pd
+from pymongo.collection import Collection
 
 
 class JsonWriter:
-    def __init__(self, database_file: str, data_to_write: pd.DataFrame):
-        self.__database_file_name = DatabaseCombiner.get_file_name(database_file)
+    def __init__(self, data_to_write: pd.DataFrame, mongo_collection: Collection[Mapping[str, Any]]):
         self.__data_to_write = data_to_write
+        self.mongo_collection = mongo_collection
 
     def write_as_json(self):
         try:
-            self.__data_to_write.to_json(F"parsed/{self.__get_json_file_name()}", orient='records')
-        except OSError:
-            quit("Make sure the 'parsed' folder exists")
-
-    def __get_json_file_name(self):
-        return self.__database_file_name + ".json"
+            data_to_write_in_json = self.__data_to_write.to_dict(orient='records')
+            self.mongo_collection.insert_many(data_to_write_in_json)
+        except Exception as e:
+            quit("There was an error while writing to MongoDB: " + str(e))
