@@ -5,6 +5,7 @@ from unittest.mock import patch
 import pandas as pd
 from pyfakefs.fake_filesystem_unittest import TestCase
 
+from Connection.DatabaseConnection import DatabaseConnection
 from DatabaseWriter.DatabaseReader import DatabaseReader
 from DatabaseWriter.HashWriter import HashWriter
 
@@ -38,9 +39,12 @@ class TestDatabaseReader(TestCase):
         mock_dotenv_values.return_value = OrderedDict(
             {"CONNECTION_STRING": "test_connection_string", "DATABASE_NAME": "test_database_name",
              "HASHES_COLLECTION_NAME": "test_collection_name",
-             "DATABASES_COLLECTION_NAME": "test_databases_collection_name"})
+             "DATABASES_COLLECTION_NAME": "test_databases_collection_name",
+             "DATA_COLLECTION_NAME": "test_data_collection_name"})
 
-        hash_writer = HashWriter()
+        hash_collection = DatabaseConnection().hash_collection
+        hash_writer = HashWriter(hash_collection)
+
         reader = DatabaseReader(testing_file_path, hash_writer)
         csv_file, file_identifier = reader.get_database()
 
