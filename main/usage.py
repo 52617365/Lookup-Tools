@@ -48,7 +48,6 @@ class Usage:
                                                                                            database_path)
             self.__write_file_to_database(combined_database_contents)
             self.hash_writer.write_valid_hash(file_identifier)
-            # TODO: write to databases here with additional information
 
     def __read_database(self, database_path):
         database_contents, file_identifier = DatabaseReader(database_path, self.hash_writer).get_database()
