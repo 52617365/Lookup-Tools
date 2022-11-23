@@ -3,15 +3,50 @@
 ## Lookup-Tools is an automated parsing project that uses pandas made to assist with my main project Lookup.
 
 <details>
+<summary>What is my end goal?</summary>
+
+- Have a search engine that can search through ~1TB of data in milliseconds.
+- Each search result from the search engine should know the dataset it belongs to and the date of the dataset it belongs
+  to.
+- Have a catalog with all the datasets and additional related information, notably; the name of the dataset, the date of
+  the dataset, and the
+  number of rows in the dataset.
+
+</details>
+
+<details>
+<summary>How will I achieve this goal?</summary>
+
+- I will use MongoDB to store the data and I will be creating indexes on the fields that can be searched.
+- I have to parse tons of data, this is where Lookup-Tools comes in to automate a lot of it.
+
+</details>
+
+<details>
 <summary>What problems is this project trying to solve?</summary>
 
 - Lookup uses MongoDB to store data, the data has to be parsed, and preferably (not mandatory), in JSON format before it
   can be stored
   there.
 - Parsing the data is a very time-consuming task, and it is not very time-efficient to do it all manually.
-- Lookup-Tools is a project that will help me with the act of parsing data and adding additional data related to the
-  dataset partly *automagically*, leaving me with less manual work to achieve
-  my end goal.
+
+</details>
+
+<details>
+<summary>What does Lookup-Tools do?</summary>
+
+Lookup-Tools is a project that will help me with the act of parsing data by automating the process and minimizing the
+manual labor needed.
+
+It will:
+
+- Parse data from a delimited file format.
+- Capture the dataset name from the file name, store it within the dataset.
+- Use the dataset name to find additional information about the dataset, such as the date of the dataset, if found,
+  store it within the dataset.
+- It will convert the dataset into a *.json format and import it into MongoDB.
+- Finally, it will analyze the dataset for additional information, such as the number of rows in the dataset and import
+  it into a separate collection in MongoDB.
 
 </details>
 
@@ -20,7 +55,9 @@
 
 > You are able to mongoimport data in a .csv format, why would you turn it into JSON first?
 
-- **TLDR;** I can't guarantee the format of the file and converting it to JSON will minimize data loss.
+- **TLDR;** I can't guarantee the format of the file and converting it to JSON will minimize data loss, on top of this,
+  to avoid the extra step of having to use mongoimport, the importing of JSON strings into MongoDB is automated by this
+  tool.
 
 For example, if you have a csv dataset that contains the following data:
 
