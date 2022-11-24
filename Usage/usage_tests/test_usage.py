@@ -10,7 +10,6 @@ from pyfakefs.fake_filesystem_unittest import TestCase
 from Usage.usage import Usage
 
 
-# TODO: Add tests for the following: handle_database.
 class TestUsage(TestCase):
     def setUp(self) -> None:
         self.setUpPyfakefs()
