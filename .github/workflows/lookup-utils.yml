@@ -17,4 +17,5 @@ jobs:
       - run: pipreqs --force .
       - run: pip install -r requirements.txt
       - run: python -m unittest discover -p test_*.py
+      - run: pyinstaller main.py --onefile --name lookup-tools
 
