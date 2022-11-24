@@ -12,12 +12,12 @@ from Usage.UserArguments import CommandLineArguments
 class Usage:
     def __init__(self, hash_collection, data_collection, database_collection):
         self.__user_arguments = CommandLineArguments().get()
-        self.additional_information = self.get_additional_information()
+        self.additional_information = self.__get_additional_information()
         self.hash_writer = HashWriter(hash_collection)
         self.__data_collection = data_collection
         self.__database_collection = database_collection
 
-    def get_additional_information(self):
+    def __get_additional_information(self):
         try:
             additional_information = pd.read_csv(self.__user_arguments.additional)
             return additional_information
