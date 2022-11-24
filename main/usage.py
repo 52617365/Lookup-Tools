@@ -46,7 +46,7 @@ class Usage:
         else:
             combined_database_contents = self.__combine_additional_information_to_database(database_contents,
                                                                                            database_path)
-            self.__write_file_to_database(combined_database_contents)
+            self.__write_file_to_database(combined_database_contents, file_identifier)
             self.hash_writer.write_valid_hash(file_identifier)
 
     def __read_database(self, database_path):
@@ -58,10 +58,12 @@ class Usage:
         combined_database_contents = combined_delimited_database.combine(database_contents, database_path)
         return combined_database_contents
 
-    def __write_file_to_database(self, combined_database_contents: DataFrame):
+    def __write_file_to_database(self, combined_database_contents: DataFrame, file_identifier: str):
         database_writer = JsonWriter(combined_database_contents, self.__data_collection, self.__database_collection)
-        database_writer.insert_database_contents_as_json()
-        database_writer.insert_database_additional_information()
+
+        if self.hash_writer.hash_is_unique(file_identifier):
+            database_writer.insert_database_contents_as_json()
+            database_writer.insert_database_additional_information()
 
 
 if __name__ == '__main__':
