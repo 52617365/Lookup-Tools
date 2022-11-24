@@ -1,5 +1,5 @@
 from Connection.DatabaseConnection import DatabaseConnection
-from main.usage import Usage
+from Usage.usage import Usage
 
 if __name__ == '__main__':
     collections = DatabaseConnection()

@@ -1,17 +1,15 @@
 import pandas as pd
 from pandas import DataFrame
 
-from Connection.DatabaseConnection import DatabaseConnection
 from Database.DatabaseCombiner import DatabaseCombiner
 from DatabaseWriter.DatabaseReader import DatabaseReader
 from DatabaseWriter.HashWriter import HashWriter
 from DatabaseWriter.JsonWriter import JsonWriter
 from FileGlob.FileGlob import FileGlob
-from main.UserArguments import CommandLineArguments
+from Usage.UserArguments import CommandLineArguments
 
 
 class Usage:
-    # TODO: pass all collections to constructor?
     def __init__(self, hash_collection, data_collection, database_collection):
         self.__user_arguments = CommandLineArguments().get()
         self.additional_information = self.get_additional_information()
@@ -64,12 +62,3 @@ class Usage:
         if self.hash_writer.hash_is_unique(file_identifier):
             database_writer.insert_database_contents_as_json()
             database_writer.insert_database_additional_information()
-
-
-if __name__ == '__main__':
-    collections = DatabaseConnection()
-    hash_collection = collections.hash_collection
-    data_collection = collections.data_collection
-    database_collection = collections.database_collection
-
-    Usage(hash_collection, data_collection, database_collection).run()
