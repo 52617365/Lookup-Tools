@@ -40,8 +40,6 @@ class Usage:
         database_contents, file_identifier = self.__read_database(database_path)
         if database_contents.empty:
             quit(F"Format of database in path {database_path} is not correct")
-            # self.hash_writer.write_invalid_hash(file_identifier)
-            # return
         else:
             combined_database_contents = self.__combine_additional_information_to_database(database_contents,
                                                                                            database_path)

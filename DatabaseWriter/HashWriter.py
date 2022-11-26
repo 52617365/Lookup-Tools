@@ -9,10 +9,6 @@ class HashWriter:
         if self.hash_is_unique(hash):
             self.mongo_hash_collection.insert_one({"hash": hash, "valid": True})
 
-    def write_invalid_hash(self, hash):
-        if self.hash_is_unique(hash):
-            self.mongo_hash_collection.insert_one({"hash": hash, "valid": False})
-
     def hash_is_unique(self, hash: str):
         return self.mongo_hash_collection.find_one({"hash": hash}) is None
 
