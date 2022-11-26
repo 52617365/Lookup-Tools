@@ -17,7 +17,7 @@ class DatabaseReader:
         try:
             csv_file = self.get_database_as_dataframe()
             return csv_file, file_identifier
-        except ParserWarning:
+        except ParserWarning as e:
             return pd.DataFrame(), file_identifier
 
     def get_database_as_dataframe(self) -> pd.DataFrame:

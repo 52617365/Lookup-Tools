@@ -6,8 +6,8 @@ import pandas as pd
 from pyfakefs.fake_filesystem_unittest import TestCase
 
 from Connection.DatabaseConnection import DatabaseConnection
-from DatabaseWriter.DatabaseReader import DatabaseReader
 from DatabaseWriter.HashWriter import HashWriter
+from Reader.DatabaseReader import DatabaseReader
 
 
 class TestDatabaseReader(TestCase):
@@ -15,8 +15,16 @@ class TestDatabaseReader(TestCase):
     def setUp(self):
         self.setUpPyfakefs()
 
-    def test_get_valid_file_as_dataframe(self):
+    def test_get_valid_comma_delimited_file_as_dataframe(self):
         testing_file_path = self.create_fake_file("testing_file.csv", "dir,test2,test3\nasd1,asd2,asd3")
+
+        example_delimited_file = DatabaseReader(testing_file_path, None)
+        data = example_delimited_file.get_database_as_dataframe()
+        expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
+        self.assertEqual(data.equals(expected_data), True)
+
+    def test_get_valid_colon_delimited_file_as_dataframe(self):
+        testing_file_path = self.create_fake_file("testing_file.csv", "dir:test2:test3\nasd1:asd2:asd3")
 
         example_delimited_file = DatabaseReader(testing_file_path, None)
         data = example_delimited_file.get_database_as_dataframe()

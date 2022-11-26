@@ -73,13 +73,10 @@ class TestUsage(TestCase):
         command_line_arguments_mock.return_value = SimpleNamespace(input='invalid_test_input.txt',
                                                                    additional='test_additional.txt',
                                                                    glob=False)
-        hash_collection, data_collection, database_collection = self.create_mocks()
-        instance = Usage(hash_collection, data_collection, database_collection)
-        instance.handle_database('invalid_test_input.txt')
-        expected_file_identifier = '85787c3d361f7f950069a651fd475ec32cf02510c8ac88110184c95cb93a9e51368c02b8c0c5d43e25e727bb6c54b705b6978be19b6ec0cd606862af6d883365'
-
-        documents = hash_collection.count_documents({'hash': expected_file_identifier, 'valid': False})
-        self.assertNotEqual(documents, 0)
+        with self.assertRaises(SystemExit):
+            hash_collection, data_collection, database_collection = self.create_mocks()
+            instance = Usage(hash_collection, data_collection, database_collection)
+            instance.handle_database('invalid_test_input.txt')
 
     def create_mocks(self):
         self.create_mock_files()
