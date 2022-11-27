@@ -14,14 +14,18 @@ class DatabaseReader:
         self.hash = Hash(self.database_file_path)
 
     def get_database(self) -> (pd.DataFrame, str):
+        database = self.get_database_as_json_or_csv()
         file_identifier = self.hash.get_hash_from_file_contents()
+        return database, file_identifier
+
+    def get_database_as_json_or_csv(self):
         try:
             if self.is_json:
                 data_frame = self.get_database_from_json()
-                return data_frame, file_identifier
+                return data_frame
             else:
                 data_frame = self.get_database_from_csv()
-                return data_frame, file_identifier
+                return data_frame
         except ParserWarning:
             quit(F"Format of database in path {self.database_file_path} is not correct")
 
