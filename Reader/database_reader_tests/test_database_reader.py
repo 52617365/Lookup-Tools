@@ -39,6 +39,22 @@ class TestDatabaseReader(TestCase):
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(data.equals(expected_data), True)
 
+    def test_get_valid_dot_delimited_file_as_dataframe(self):
+        testing_file_path = self.create_fake_file("testing_file.csv", "dir.test2.test3\nasd1.asd2.asd3")
+
+        example_delimited_file = DatabaseReader(testing_file_path, None)
+        data = example_delimited_file.get_database_as_dataframe()
+        expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
+        self.assertEqual(data.equals(expected_data), True)
+
+    def test_get_valid_tab_delimited_file_as_dataframe(self):
+        testing_file_path = self.create_fake_file("testing_file.csv", "dir\ttest2\ttest3\nasd1\tasd2\tasd3")
+
+        example_delimited_file = DatabaseReader(testing_file_path, None)
+        data = example_delimited_file.get_database_as_dataframe()
+        expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
+        self.assertEqual(data.equals(expected_data), True)
+
     def test_get_dataframe_file_with_file_that_has_invalid_format(self):
         with self.assertRaises(Exception):
             testing_file_path = self.create_fake_file("invalid_format_file.csv", "field1,field2\nvalue1,value2,value3")
