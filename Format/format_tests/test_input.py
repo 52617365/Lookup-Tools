@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from Format.Input import get_file_format_from_user, get_file_delimiter_from_user
+from Format.Input import get_file_format_from_user, get_file_delimiter_from_user, IDKException
 
 
 class TestInput(unittest.TestCase):
@@ -24,6 +24,12 @@ class TestInput(unittest.TestCase):
         self.assertEqual(file_format, ["field"])
 
     @patch("builtins.input")
+    def test_exception_raised_if_file_format_is_idk(self, user_input):
+        user_input.return_value = "idk"
+        with self.assertRaises(IDKException):
+            get_file_format_from_user()
+
+    @patch("builtins.input")
     def test_get_invalid_file_delimiter_from_user(self, user_input):
         with self.assertRaises(SystemExit):
             user_input.return_value = ",,"
@@ -35,6 +41,12 @@ class TestInput(unittest.TestCase):
         for delimiter in valid_delimiters:
             user_input.return_value = delimiter
             self.assertEqual(get_file_delimiter_from_user(), delimiter)
+
+    @patch("builtins.input")
+    def test_exception_raised_if_file_delimiter_is_idk(self, user_input):
+        user_input.return_value = "idk"
+        with self.assertRaises(IDKException):
+            get_file_delimiter_from_user()
 
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
+# TODO: when calling these, catch the IDKException and skip when caught.
 def get_file_format_from_user():
     user_input = get_user_input("Enter the format of the file:\t")
 
@@ -30,18 +31,18 @@ def validate_delimiter(user_input):
 
 def get_user_input(text_to_prompt: str):
     user_input = input(text_to_prompt)
-
-    if is_idk_prompt(user_input):
-        # TODO: do something here, E.g. skip this file etc.
-        return
+    raise_if_idk_prompt(user_input)
 
     return user_input
 
 
-def is_idk_prompt(user_input: str):
+def raise_if_idk_prompt(user_input: str):
     if user_input == "idk":
-        print("Okay, skipping this one.")
-        # TODO: return or something.
+        raise IDKException("You specified that you don't know the format or delimiter.")
+
+
+class IDKException(Exception):
+    pass
 
 
 def print_file_format_instructions():
