@@ -14,7 +14,7 @@ class DatabaseReader:
         self.hash = Hash(self.database_file_path)
 
     def get_database(self) -> (pd.DataFrame, str):
-        file_identifier = self.hasher.get_hash_from_file_contents(self.database_file_path)
+        file_identifier = self.hash.get_hash_from_file_contents()
         try:
             if self.is_json:
                 data_frame = self.get_database_from_json()
