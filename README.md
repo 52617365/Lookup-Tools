@@ -40,7 +40,11 @@ manual labor needed.
 
 It will:
 
-- Parse data from a delimited file format.
+- Parse data from a delimited file format with one of the following delimiters `:;.,\\s+|__`.
+- The pandas python engine supports getting the dynamic delimiters from the file, but it is not very reliable, so I have
+  to
+  manually specify the
+  delimiter.
 - Capture the dataset name from the file name, store it within the dataset.
 - Use the dataset name to find additional information about the dataset, such as the date of the dataset, if found,
   store it within the dataset.
