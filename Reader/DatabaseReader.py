@@ -8,23 +8,24 @@ from DatabaseWriter.HashWriter import HashWriter
 
 
 class DatabaseReader:
-    def __init__(self, database_file_path: str, hasher: HashWriter | None):
+    def __init__(self, database_file_path: str, hasher: HashWriter | None, is_json: bool = False):
         self.database_file_path = database_file_path
         self.hasher = hasher
+        self.is_json = is_json
 
     def get_database(self) -> (pd.DataFrame, str):
         file_identifier = self.hasher.get_hash_from_file_contents(self.database_file_path)
         try:
-            csv_file = self.get_database_as_dataframe()
-            return csv_file, file_identifier
-        except ParserWarning as e:
+            if self.is_json:
+                data_frame = self.get_database_from_json()
+                return data_frame, file_identifier
+            else:
+                data_frame = self.get_database_from_csv()
+                return data_frame, file_identifier
+        except ParserWarning:
             return pd.DataFrame(), file_identifier
 
-    def get_database_as_dataframe(self) -> pd.DataFrame:
-        csv_file: DataFrame = self.__get_csv_with_custom_delimiter_turning_warnings_into_errors()
-        return csv_file
-
-    def __get_csv_with_custom_delimiter_turning_warnings_into_errors(self) -> DataFrame:
+    def get_database_from_csv(self) -> DataFrame:
         # Hack to turn warnings into errors.
         with warnings.catch_warnings():
             warnings.simplefilter("error", category=ParserWarning)
