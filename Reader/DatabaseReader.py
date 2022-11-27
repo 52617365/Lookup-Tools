@@ -28,7 +28,6 @@ class DatabaseReader:
         # Hack to turn warnings into errors.
         with warnings.catch_warnings():
             warnings.simplefilter("error", category=ParserWarning)
-            csv_file = pd.read_csv(self.database_file_path, engine='python', sep=None,
-                                   skipinitialspace=True,
+            csv_file = pd.read_csv(self.database_file_path, engine='python', sep='[:;.,\\s+|__]',
                                    index_col=False)
             return csv_file
