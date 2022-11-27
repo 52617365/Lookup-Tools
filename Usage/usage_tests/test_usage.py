@@ -7,7 +7,7 @@ import mongomock
 import pandas as pd
 from pyfakefs.fake_filesystem_unittest import TestCase
 
-from Usage.usage import Usage
+from Usage.Usage import Usage
 
 
 class TestUsage(TestCase):
