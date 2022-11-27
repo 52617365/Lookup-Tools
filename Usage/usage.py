@@ -44,7 +44,7 @@ class Usage:
         self.hash_writer.write_valid_hash(file_identifier)
 
     def __read_database(self, database_path):
-        database_contents, file_identifier = DatabaseReader(database_path, self.hash_writer,
+        database_contents, file_identifier = DatabaseReader(database_path,
                                                             is_json=self.__user_arguments.json).get_database()
         return database_contents, file_identifier
 

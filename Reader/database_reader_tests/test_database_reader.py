@@ -65,17 +65,13 @@ class TestDatabaseReader(TestCase):
     def test_get_json_invalid_format(self):
         with self.assertRaises(ParserWarning):
             testing_file_path = self.create_fake_file("invalid_format_file.json", "field1,field2\nvalue1,value2,value3")
-            f = DatabaseReader(testing_file_path, None, True)
+            f = DatabaseReader(testing_file_path, True)
             f.get_database_from_json()
 
-    @patch('Connection.DatabaseConnection.pymongo.MongoClient.server_info')
-    @patch('Connection.DatabaseConnection.dotenv_values')
-    def test_get_database(self, mock_dotenv_values, mongo_server_info):
+    def test_get_database(self):
         testing_file_path = self.create_fake_file("testing_file.csv", "field1,field2,field3\nasd1,asd2,asd3")
 
-        hash_writer = self.init_get_database(mock_dotenv_values, mongo_server_info)
-
-        reader = DatabaseReader(testing_file_path, hash_writer)
+        reader = DatabaseReader(testing_file_path)
         data_frame, file_identifier = reader.get_database()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
@@ -89,9 +85,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.json",
                                                   '{"field1": "asd1", "field2": "asd2", "field3": "asd3"}')
 
-        hash_writer = self.init_get_database(mock_dotenv_values, mongo_server_info)
-
-        reader = DatabaseReader(testing_file_path, hash_writer, True)
+        reader = DatabaseReader(testing_file_path, True)
         data_frame, file_identifier = reader.get_database()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
