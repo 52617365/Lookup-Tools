@@ -23,7 +23,7 @@ class DatabaseReader:
                 data_frame = self.get_database_from_csv()
                 return data_frame, file_identifier
         except ParserWarning:
-            return pd.DataFrame(), file_identifier
+            quit(F"Format of database in path {self.database_file_path} is not correct")
 
     def get_database_from_csv(self) -> DataFrame:
         # Hack to turn warnings into errors.

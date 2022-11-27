@@ -38,13 +38,10 @@ class Usage:
 
     def handle_database(self, database_path):
         database_contents, file_identifier = self.__read_database(database_path)
-        if database_contents.empty:
-            quit(F"Format of database in path {database_path} is not correct")
-        else:
-            combined_database_contents = self.__combine_additional_information_to_database(database_contents,
-                                                                                           database_path)
-            self.__write_file_to_database(combined_database_contents, file_identifier)
-            self.hash_writer.write_valid_hash(file_identifier)
+        combined_database_contents = self.__combine_additional_information_to_database(database_contents,
+                                                                                       database_path)
+        self.__write_file_to_database(combined_database_contents, file_identifier)
+        self.hash_writer.write_valid_hash(file_identifier)
 
     def __read_database(self, database_path):
         database_contents, file_identifier = DatabaseReader(database_path, self.hash_writer,
