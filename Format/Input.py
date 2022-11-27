@@ -1,9 +1,5 @@
 def get_file_format_from_user():
-    user_input = input("Enter the format of the file:\t").strip()
-
-    if user_input == "idk":
-        print("Okay, skipping this one.")
-        # TODO: return or something.
+    user_input = get_user_input("Enter the format of the file:\t")
 
     validate_format_user_input(user_input)
 
@@ -14,30 +10,38 @@ def get_file_format_from_user():
 
 def validate_format_user_input(user_input):
     if len(user_input) == 0:
-        print("You didn't specify a format. If you don't know, input 'idk'.", flush=True)
-        get_file_format_from_user()
+        quit("You didn't specify a format. If you don't know, input 'idk'.")
 
 
 def get_file_delimiter_from_user():
-    file_delimiter = input("Enter the delimiter of the file:\t").strip()
+    user_input = get_user_input("Enter the delimiter of the file:\t")
 
-    if file_delimiter == "idk":
-        print("Okay, skipping this one.")
-        # TODO: return or something.
+    validate_delimiter(user_input)
 
-    validate_delimiter(file_delimiter)
-
-    return file_delimiter
+    return user_input
 
 
 def validate_delimiter(user_input):
     if len(user_input) == 0:
-        print("You didn't specify a delimiter. If you don't know, input 'idk'.", flush=True)
-        get_file_delimiter_from_user()
+        quit("You didn't specify a delimiter. If you don't know, input 'idk'.")
     if len(user_input) > 1:
-        print("You specified a delimiter that is more than one character. Please specify a single character.",
-              flush=True)
-        get_file_delimiter_from_user()
+        quit("You specified a delimiter that is more than one character. Please specify a single character.")
+
+
+def get_user_input(text_to_prompt: str):
+    user_input = input(text_to_prompt)
+
+    if is_idk_prompt(user_input):
+        # TODO: do something here, E.g. skip this file etc.
+        return
+
+    return user_input
+
+
+def is_idk_prompt(user_input: str):
+    if user_input == "idk":
+        print("Okay, skipping this one.")
+        # TODO: return or something.
 
 
 def print_file_format_instructions():
