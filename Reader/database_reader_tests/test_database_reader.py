@@ -3,6 +3,7 @@ from collections import OrderedDict
 from unittest.mock import patch
 
 import pandas as pd
+from pandas.errors import ParserWarning
 from pyfakefs.fake_filesystem_unittest import TestCase
 
 from Connection.DatabaseConnection import DatabaseConnection
@@ -55,11 +56,17 @@ class TestDatabaseReader(TestCase):
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(data.equals(expected_data), True)
 
-    def test_get_dataframe_file_with_file_that_has_invalid_format(self):
-        with self.assertRaises(Exception):
+    def test_get_csv_invalid_format(self):
+        with self.assertRaises(ParserWarning):
             testing_file_path = self.create_fake_file("invalid_format_file.csv", "field1,field2\nvalue1,value2,value3")
             f = DatabaseReader(testing_file_path, None)
             f.get_database_from_csv()
+
+    def test_get_json_invalid_format(self):
+        with self.assertRaises(ParserWarning):
+            testing_file_path = self.create_fake_file("invalid_format_file.json", "field1,field2\nvalue1,value2,value3")
+            f = DatabaseReader(testing_file_path, None, True)
+            f.get_database_from_json()
 
     @patch('Connection.DatabaseConnection.pymongo.MongoClient.server_info')
     @patch('Connection.DatabaseConnection.dotenv_values')
