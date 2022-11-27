@@ -22,4 +22,4 @@ class FileGlob:
 
     @staticmethod
     def __has_supported_extension(file_path: str) -> bool:
-        return file_path.endswith('.txt') or file_path.endswith('.csv')
+        return file_path.endswith('.txt') or file_path.endswith('.csv') or file_path.endswith('.json')
