@@ -4,14 +4,14 @@ import pandas as pd
 from pandas import DataFrame
 from pandas.errors import ParserWarning
 
-from DatabaseWriter.HashWriter import HashWriter
+from Reader.Hash import Hash
 
 
 class DatabaseReader:
-    def __init__(self, database_file_path: str, hasher: HashWriter | None, is_json: bool = False):
+    def __init__(self, database_file_path: str, is_json: bool = False):
         self.database_file_path = database_file_path
-        self.hasher = hasher
         self.is_json = is_json
+        self.hash = Hash(self.database_file_path)
 
     def get_database(self) -> (pd.DataFrame, str):
         file_identifier = self.hasher.get_hash_from_file_contents(self.database_file_path)
