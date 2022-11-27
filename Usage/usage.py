@@ -47,7 +47,8 @@ class Usage:
             self.hash_writer.write_valid_hash(file_identifier)
 
     def __read_database(self, database_path):
-        database_contents, file_identifier = DatabaseReader(database_path, self.hash_writer).get_database()
+        database_contents, file_identifier = DatabaseReader(database_path, self.hash_writer,
+                                                            is_json=self.__user_arguments.json).get_database()
         return database_contents, file_identifier
 
     def __combine_additional_information_to_database(self, database_contents: DataFrame, database_path: str):
