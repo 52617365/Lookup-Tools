@@ -48,10 +48,10 @@ class IDKException(Exception):
 def print_file_format_instructions():
     print("=======Format Instructions=======")
     print("Determine the file format with the following options:")
-    print("- 'idk' if you don't know the format.")
+    print("- idk if you don't know the format.")
     print("- prefix fields with '_' if you want to ignore them.")
     print("- specify the format as a comma delimited sequence of characters.")
-    print("example format input:\t_id,name,age\n")
+    print("example format input: '_id,name,age'\n")
 
 
 def print_file_delimiter_instructions():
@@ -59,4 +59,4 @@ def print_file_delimiter_instructions():
     print("Determine the file delimiter with the following options:")
     print("- 'idk' if you don't know the delimiter.")
     print("- specify the delimiter as a single character.")
-    print("example delimiter input:\t,\n")
+    print("example delimiter input: ','\n")

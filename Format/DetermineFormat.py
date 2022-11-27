@@ -11,30 +11,27 @@ class FileFormat:
 
 
 class FileFormatDeterminer:
-    def __init__(self, database_path: str):
+    def __init__(self, database_path: str, n: int):
         self.database_path = database_path
-        self.n = 3
+        self.n = n
 
+    # TODO: caller of this should catch IDKException and StopIteration and skip when caught.
     def determine(self) -> FileFormat | None:
-        try:
-            self.express_file_format()
-            file_format = get_file_format_from_user()
-            file_delimiter = get_file_delimiter_from_user()
-            return FileFormat(file_format, file_delimiter)
-        except StopIteration:
-            print(F"File {self.database_path} has less than {self.n} lines, skipping because it's probably junk.")
-            return None
+        self.express_file_format()
+        file_format = get_file_format_from_user()
+        file_delimiter = get_file_delimiter_from_user()
+        return FileFormat(file_format, file_delimiter)
 
     def express_file_format(self):
         print_file_format_instructions()
         print_file_delimiter_instructions()
-        n_lines = self.read_the_first_n_lines_from_file(self.n)
+        n_lines = self.read_the_first_n_lines_from_file_whilst_deleting_new_lines()
         self.print_lines_to_user(n_lines)
 
-    def read_the_first_n_lines_from_file(self, n: int) -> list:
+    def read_the_first_n_lines_from_file_whilst_deleting_new_lines(self) -> list:
         try:
             with open(self.database_path, 'r') as file:
-                n_lines = [next(file) for x in range(n)]
+                n_lines = [next(file).rstrip() for _ in range(self.n)]
                 return n_lines
         except IOError:
             quit(F"File {self.database_path} does not exist or it's not accessible.")
