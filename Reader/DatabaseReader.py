@@ -31,3 +31,10 @@ class DatabaseReader:
             csv_file = pd.read_csv(self.database_file_path, engine='python', sep='[:;.,\\s+|__]',
                                    index_col=False)
             return csv_file
+
+    def get_database_from_json(self):
+        try:
+            json_file = pd.read_json(self.database_file_path, lines=True)
+            return json_file
+        except ValueError:
+            raise ParserWarning
