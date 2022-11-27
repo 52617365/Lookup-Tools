@@ -3,6 +3,7 @@ import unittest
 from pyfakefs.fake_filesystem_unittest import TestCase
 
 from Format.DetermineFormat import FileFormatDeterminer
+from Format.format_tests.HiddenPrints import HiddenPrints
 
 
 class TestFileFormatDeterminer(TestCase):
@@ -25,7 +26,8 @@ class TestFileFormatDeterminer(TestCase):
         self.fs.create_file("path", contents="line1\nline2")
         file_format_determiner = FileFormatDeterminer("path", n=5)
         with self.assertRaises(StopIteration):
-            file_format_determiner.determine()
+            with HiddenPrints():
+                file_format_determiner.determine()
 
 
 if __name__ == '__main__':

@@ -5,6 +5,7 @@ from Format.Input import get_file_format_from_user, get_file_delimiter_from_user
 
 
 class TestInput(unittest.TestCase):
+
     @patch("builtins.input")
     def test_get_valid_file_format_from_user(self, user_input):
         user_input.return_value = "field1,field2,field3"
