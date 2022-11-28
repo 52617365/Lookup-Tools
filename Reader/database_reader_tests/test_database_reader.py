@@ -100,18 +100,18 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.json",
                                                   '{"field1": "asd1", "field2": "asd2", "field3": "asd3"}')
 
-        # TODO: do we really want to make a shell for this? Instead, should we not require it passed in if we're dealing with json?
-        # or should we support JSON too and let people specify the format for JSON????
+        reader = DatabaseReader(testing_file_path, None, True)
 
-        file_format_shell = FileFormat(fields=["field1", "field2", "field3"], delimiter=",")
-
-        reader = DatabaseReader(testing_file_path, file_format_shell, True)
         data_frame, file_identifier = reader.get_database()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
         expected_file_identifier = "d289a3d105ee93820097961254f121a551729a3095963172b7130987f36f941390cc08a4b4c18e2d282fd578e2b54d2fddc1a937ebbaef8a42708b0c842a71b2"
         self.assertEqual(data_frame.equals(expected_data_frame), True)
         self.assertEqual(expected_file_identifier, file_identifier)
+
+    def test_database_reader_terminates_if_format_none_and_json_false(self):
+        with self.assertRaises(SystemExit):
+            DatabaseReader("test", None, False)
 
     def init_get_database(self, mock_dotenv_values, mongo_server_info):
         self.avoid_exit_if_instance_mongo_instance_does_not_exist(mongo_server_info)

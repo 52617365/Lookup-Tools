@@ -9,11 +9,17 @@ from Reader.Hash import Hash
 
 
 class DatabaseReader:
-    def __init__(self, database_file_path: str, file_format: FileFormat, is_json: bool = False):
+    def __init__(self, database_file_path: str, file_format: FileFormat | None, is_json: bool = False):
+        self.terminate_on_invalid_arguments(file_format, is_json)
+
         self.database_file_path = database_file_path
         self.file_format = file_format
         self.is_json = is_json
         self.hash = Hash(self.database_file_path)
+
+    def terminate_on_invalid_arguments(self, file_format, is_json):
+        if file_format is None and is_json is False:
+            quit("file_format can only be None if is_json is True")
 
     def get_database(self) -> (pd.DataFrame, str):
         database = self.get_database_as_json_or_csv()
