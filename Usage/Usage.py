@@ -39,13 +39,13 @@ class Usage:
         return databases
 
     def handle_database(self, database_path):
-        # TODO: ask user to determine format somewhere around here.
         file_format = self.get_file_format(database_path)
         if file_format is None:
             return
 
         database_contents, file_identifier = DatabaseReader(database_path,
-                                                            is_json=self.__user_arguments.json).get_database()
+                                                            is_json=self.__user_arguments.json,
+                                                            file_format=file_format).get_database()
         combined_database_contents = self.__combine_additional_information_to_database(database_contents,
                                                                                        database_path)
         self.__write_file_to_database(combined_database_contents, file_identifier)

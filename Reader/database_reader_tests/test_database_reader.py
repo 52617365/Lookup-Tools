@@ -1,6 +1,5 @@
 import unittest
 from collections import OrderedDict
-from unittest.mock import patch
 
 import pandas as pd
 from pandas.errors import ParserWarning
@@ -8,6 +7,7 @@ from pyfakefs.fake_filesystem_unittest import TestCase
 
 from Connection.DatabaseConnection import DatabaseConnection
 from DatabaseWriter.HashWriter import HashWriter
+from Format.FileFormatDeterminer import FileFormat
 from Reader.DatabaseReader import DatabaseReader
 
 
@@ -79,13 +79,16 @@ class TestDatabaseReader(TestCase):
         self.assertEqual(data_frame.equals(expected_data_frame), True)
         self.assertEqual(expected_file_identifier, file_identifier)
 
-    @patch('Connection.DatabaseConnection.pymongo.MongoClient.server_info')
-    @patch('Connection.DatabaseConnection.dotenv_values')
-    def test_get_database_as_json(self, mock_dotenv_values, mongo_server_info):
+    def test_get_database_as_json(self):
         testing_file_path = self.create_fake_file("testing_file.json",
                                                   '{"field1": "asd1", "field2": "asd2", "field3": "asd3"}')
 
-        reader = DatabaseReader(testing_file_path, True)
+        # TODO: do we really want to make a shell for this? Instead, should we not require it passed in if we're dealing with json?
+        # or should we support JSON too and let people specify the format for JSON????
+
+        file_format_shell = FileFormat(fields=["field1", "field2", "field3"], delimiter=",")
+
+        reader = DatabaseReader(testing_file_path, file_format_shell, True)
         data_frame, file_identifier = reader.get_database()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})

@@ -1,4 +1,3 @@
-# TODO: when calling these, catch the IDKException and skip when caught.
 def get_file_format_from_user():
     user_input = get_user_input("Enter the format of the file:\t")
 

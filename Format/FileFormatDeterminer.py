@@ -15,7 +15,6 @@ class FileFormatDeterminer:
         self.database_path = database_path
         self.n = n
 
-    # TODO: caller of this should catch IDKException and StopIteration and skip when caught.
     def determine_file_format(self) -> FileFormat:
         self.express_file_format()
         file_format = get_file_format_from_user()

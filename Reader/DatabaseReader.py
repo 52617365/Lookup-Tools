@@ -4,12 +4,14 @@ import pandas as pd
 from pandas import DataFrame
 from pandas.errors import ParserWarning
 
+from Format.FileFormatDeterminer import FileFormat
 from Reader.Hash import Hash
 
 
 class DatabaseReader:
-    def __init__(self, database_file_path: str, is_json: bool = False):
+    def __init__(self, database_file_path: str, file_format: FileFormat | None = None, is_json: bool = False):
         self.database_file_path = database_file_path
+        self.file_format = file_format
         self.is_json = is_json
         self.hash = Hash(self.database_file_path)
 
