@@ -2,14 +2,14 @@ import warnings
 
 import pandas as pd
 from pandas import DataFrame
-from pandas.errors import ParserWarning
+from pandas.errors import ParserWarning, ParserError
 
 from Format.FileFormatDeterminer import FileFormat
 from Reader.Hash import Hash
 
 
 class DatabaseReader:
-    def __init__(self, database_file_path: str, file_format: FileFormat | None = None, is_json: bool = False):
+    def __init__(self, database_file_path: str, file_format: FileFormat, is_json: bool = False):
         self.database_file_path = database_file_path
         self.file_format = file_format
         self.is_json = is_json
@@ -28,21 +28,23 @@ class DatabaseReader:
             else:
                 data_frame = self.get_database_from_csv()
                 return data_frame
-        except ParserWarning:
+        except ParserError:
             quit(F"Format of database in path {self.database_file_path} is not correct")
 
     def get_database_from_csv(self) -> DataFrame:
         # Hack to turn warnings into errors.
-        with warnings.catch_warnings():
-            warnings.simplefilter("error", category=ParserWarning)
-            csv_file = pd.read_csv(self.database_file_path, engine='python', sep='[:;.,\\s+|__]',
-                                   index_col=False)
-            return csv_file
+        # with warnings.catch_warnings():
+        #     warnings.simplefilter("error", category=ParserWarning)
+        #     csv_file = pd.read_csv(self.database_file_path, engine='python', sep='[:;.,\\s+|__]',
+        #                            index_col=False)
+        #     return csv_file
 
         # TODO: this change will require you to rethink a lot of tests, uncomment when you're ready for it.
-        # csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.delimiter,
-        #                        names=self.file_format.fields, header=None)
-        # return csv_file
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", category=ParserWarning)
+            csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.delimiter,
+                                   names=self.file_format.fields, header=None, index_col=False)
+            return csv_file
 
     def get_database_from_json(self):
         try:
