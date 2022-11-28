@@ -59,7 +59,7 @@ class DatabaseReader:
         return csv_file
 
     def ignored_fields_exist(self):
-        return len(self.file_format.ignored_fields) is not 0
+        return len(self.file_format.ignored_fields) != 0
 
     def get_fields_we_want_to_keep(self):
         return list(filter(lambda x: x not in self.file_format.ignored_fields, self.file_format.fields))
