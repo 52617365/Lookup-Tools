@@ -32,14 +32,6 @@ class DatabaseReader:
             quit(F"Format of database in path {self.database_file_path} is not correct")
 
     def get_database_from_csv(self) -> DataFrame:
-        # Hack to turn warnings into errors.
-        # with warnings.catch_warnings():
-        #     warnings.simplefilter("error", category=ParserWarning)
-        #     csv_file = pd.read_csv(self.database_file_path, engine='python', sep='[:;.,\\s+|__]',
-        #                            index_col=False)
-        #     return csv_file
-
-        # TODO: this change will require you to rethink a lot of tests, uncomment when you're ready for it.
         with warnings.catch_warnings():
             warnings.simplefilter("error", category=ParserWarning)
             csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.delimiter,
