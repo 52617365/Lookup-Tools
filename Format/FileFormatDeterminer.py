@@ -6,17 +6,17 @@ from Format.Input import print_file_format_instructions, print_file_delimiter_in
 
 @dataclass
 class FileFormat:
-    format: list
+    fields: list
     delimiter: str
 
 
 class FileFormatDeterminer:
-    def __init__(self, database_path: str, n: int):
+    def __init__(self, database_path: str, n: int = 5):
         self.database_path = database_path
         self.n = n
 
     # TODO: caller of this should catch IDKException and StopIteration and skip when caught.
-    def determine(self) -> FileFormat | None:
+    def determine_file_format(self) -> FileFormat:
         self.express_file_format()
         file_format = get_file_format_from_user()
         file_delimiter = get_file_delimiter_from_user()
@@ -31,10 +31,14 @@ class FileFormatDeterminer:
     def read_the_first_n_lines_from_file_whilst_deleting_new_lines(self) -> list:
         try:
             with open(self.database_path, 'r') as file:
-                n_lines = [next(file).rstrip() for _ in range(self.n)]
+                n_lines = [self.delete_new_lines(next(file)) for _ in range(self.n)]
                 return n_lines
         except IOError:
             quit(F"File {self.database_path} does not exist or it's not accessible.")
+
+    @staticmethod
+    def delete_new_lines(line):
+        return line.rstrip()
 
     def print_lines_to_user(self, lines: list):
         print(F"printing the first {self.n} lines of {self.database_path}, please specify the format of the file.\n")

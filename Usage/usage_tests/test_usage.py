@@ -7,6 +7,7 @@ import mongomock
 import pandas as pd
 from pyfakefs.fake_filesystem_unittest import TestCase
 
+from Format.FileFormatDeterminer import FileFormat
 from Usage.Usage import Usage
 
 
@@ -56,7 +57,10 @@ class TestUsage(TestCase):
                           os.path.join('test_glob_dir', 'test_file2.txt', )])
 
     @patch('Usage.UserArguments.argparse.ArgumentParser.parse_args')
-    def test_handle_database_if_valid_format_content(self, command_line_arguments_mock):
+    @patch('Format.FileFormatDeterminer.FileFormatDeterminer.determine_file_format')
+    def test_handle_database_if_valid_format_content(self, file_format_mock, command_line_arguments_mock):
+        # TODO: this test might need changing, because of file_format_mock.
+        file_format_mock.return_value = FileFormat(['field1', 'field2', 'field3'], ',')
         command_line_arguments_mock.return_value = SimpleNamespace(input='test_input.txt',
                                                                    additional='test_additional.txt',
                                                                    glob=False,
@@ -70,7 +74,10 @@ class TestUsage(TestCase):
         self.assertNotEqual(documents, 0)
 
     @patch('Usage.UserArguments.argparse.ArgumentParser.parse_args')
-    def test_handle_database_if_invalid_format_content(self, command_line_arguments_mock):
+    @patch('Format.FileFormatDeterminer.FileFormatDeterminer.determine_file_format')
+    def test_handle_database_if_invalid_format_content(self, file_format_mock, command_line_arguments_mock):
+        # TODO: this test might need changing, because of file_format_mock.
+        file_format_mock.return_value = FileFormat(['field1', 'field2', 'field3'], ',')
         command_line_arguments_mock.return_value = SimpleNamespace(input='invalid_test_input.txt',
                                                                    additional='test_additional.txt',
                                                                    json=False,
@@ -100,6 +107,9 @@ class TestUsage(TestCase):
         self.fs.create_file('test_glob_dir/test_file.txt')
         self.fs.create_file('test_glob_dir/test_file2.txt')
 
+    def create_fake_file(self, file_path, file_contents):
+        self.fs.create_file(file_path, contents=file_contents)
+
     @staticmethod
     def create_mock_collections():
         client = mongomock.MongoClient()
@@ -108,9 +118,6 @@ class TestUsage(TestCase):
         data_collection = database["data"]
         database_collection = database["database"]
         return hash_collection, data_collection, database_collection
-
-    def create_fake_file(self, file_path, file_contents):
-        self.fs.create_file(file_path, contents=file_contents)
 
 
 if __name__ == '__main__':
