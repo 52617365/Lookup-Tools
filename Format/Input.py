@@ -1,4 +1,4 @@
-def get_file_format_from_user():
+def get_file_fields_from_user():
     user_input = get_user_input("Enter the format of the file:\t")
 
     validate_format_user_input(user_input)
