@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from Format.Input import get_file_format_from_user, get_file_delimiter_from_user, IDKException
+from Format.Input import get_file_fields_from_user, get_file_delimiter_from_user, IDKException
 
 
 class TestInput(unittest.TestCase):
@@ -9,26 +9,26 @@ class TestInput(unittest.TestCase):
     @patch("builtins.input")
     def test_get_valid_file_format_from_user(self, user_input):
         user_input.return_value = "field1,field2,field3"
-        file_format = get_file_format_from_user()
+        file_format = get_file_fields_from_user()
         self.assertEqual(file_format, ["field1", "field2", "field3"])
 
     @patch("builtins.input")
     def test_get_invalid_file_format_from_user(self, user_input):
         user_input.return_value = ""
         with self.assertRaises(SystemExit):
-            get_file_format_from_user()
+            get_file_fields_from_user()
 
     @patch("builtins.input")
     def test_get_file_format_from_user_with_one_field(self, user_input):
         user_input.return_value = "field"
-        file_format = get_file_format_from_user()
+        file_format = get_file_fields_from_user()
         self.assertEqual(file_format, ["field"])
 
     @patch("builtins.input")
     def test_exception_raised_if_file_format_is_idk(self, user_input):
         user_input.return_value = "idk"
         with self.assertRaises(IDKException):
-            get_file_format_from_user()
+            get_file_fields_from_user()
 
     @patch("builtins.input")
     def test_get_invalid_file_delimiter_from_user(self, user_input):

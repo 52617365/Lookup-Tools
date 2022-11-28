@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 
 from pyfakefs.fake_filesystem_unittest import TestCase
 
@@ -28,6 +29,19 @@ class TestFileFormatDeterminer(TestCase):
         with self.assertRaises(StopIteration):
             with HiddenPrints():
                 file_format_determiner.determine_file_format()
+
+    @patch('Format.FileFormatDeterminer.get_file_delimiter_from_user')
+    @patch('Format.FileFormatDeterminer.get_file_fields_from_user')
+    def test_determine_file_format_with_ignored_fields(self, file_fields_mock, file_delimiter_mock):
+        file_fields_mock.return_value = ["field1", "field2", "_field3"]
+        file_delimiter_mock.return_value = ","
+        self.fs.create_file("path", contents="line1,line2,line3\nline4,line5,line6")
+        file_format_determiner = FileFormatDeterminer("path", n=2)
+        with HiddenPrints():
+            file_format = file_format_determiner.determine_file_format()
+        self.assertEqual(file_format.fields, ["field1", "field2", "_field3"])
+        self.assertEqual(file_format.ignored_fields, ["_field3"])
+        self.assertEqual(file_format.file_delimiter, ",")
 
 
 if __name__ == '__main__':
