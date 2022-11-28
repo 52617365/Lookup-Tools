@@ -1,13 +1,14 @@
 from dataclasses import dataclass
 
-from Format.Input import print_file_format_instructions, print_file_delimiter_instructions, get_file_format_from_user, \
+from Format.Input import print_file_format_instructions, print_file_delimiter_instructions, get_file_fields_from_user, \
     get_file_delimiter_from_user
 
 
 @dataclass
 class FileFormat:
     fields: list
-    delimiter: str
+    ignored_fields: list
+    file_delimiter: str
 
 
 class FileFormatDeterminer:
@@ -17,9 +18,10 @@ class FileFormatDeterminer:
 
     def determine_file_format(self) -> FileFormat:
         self.express_file_format()
-        file_format = get_file_format_from_user()
+        file_fields = get_file_fields_from_user()
         file_delimiter = get_file_delimiter_from_user()
-        return FileFormat(file_format, file_delimiter)
+        ignored_fields = self.get_ignored_fields(file_fields)
+        return FileFormat(fields=file_fields, ignored_fields=ignored_fields, file_delimiter=file_delimiter)
 
     def express_file_format(self):
         print_file_format_instructions()
@@ -45,11 +47,14 @@ class FileFormatDeterminer:
             print(line)
         print("\n\n")
 
-# TODO: this should not be called from here, instead call it when we're reading the csv.
-# @staticmethod
-# def get_ignored_fields(user_input: list) -> list:
-#     ignored_fields = []
-#     for field in user_input:
-#         if field.startswith("_"):
-#             ignored_fields.append(field)
-#     return ignored_fields
+    @staticmethod
+    def get_ignored_fields(user_input: list) -> list:
+        ignored_fields = []
+        for field in user_input:
+            if field_is_ignored(field):
+                ignored_fields.append(field)
+        return ignored_fields
+
+
+def field_is_ignored(field: str) -> bool:
+    return field.startswith("_")
