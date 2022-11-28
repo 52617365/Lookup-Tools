@@ -39,6 +39,11 @@ class DatabaseReader:
                                    index_col=False)
             return csv_file
 
+        # TODO: this change will require you to rethink a lot of tests, uncomment when you're ready for it.
+        # csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.delimiter,
+        #                        names=self.file_format.fields, header=None)
+        # return csv_file
+
     def get_database_from_json(self):
         try:
             json_file = pd.read_json(self.database_file_path, lines=True)

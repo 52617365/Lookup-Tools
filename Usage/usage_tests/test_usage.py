@@ -77,7 +77,7 @@ class TestUsage(TestCase):
     @patch('Format.FileFormatDeterminer.FileFormatDeterminer.determine_file_format')
     def test_handle_database_if_invalid_format_content(self, file_format_mock, command_line_arguments_mock):
         # TODO: this test might need changing, because of file_format_mock.
-        file_format_mock.return_value = FileFormat(['field1', 'field2', 'field3'], ',')
+        file_format_mock.return_value = FileFormat(['test1', 'test2'], ',')
         command_line_arguments_mock.return_value = SimpleNamespace(input='invalid_test_input.txt',
                                                                    additional='test_additional.txt',
                                                                    json=False,
