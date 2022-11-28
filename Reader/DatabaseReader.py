@@ -2,7 +2,7 @@ import warnings
 
 import pandas as pd
 from pandas import DataFrame
-from pandas.errors import ParserWarning, ParserError
+from pandas.errors import ParserWarning
 
 from Format.FileFormatDeterminer import FileFormat
 from Reader.Hash import Hash
@@ -28,7 +28,7 @@ class DatabaseReader:
             else:
                 data_frame = self.get_database_from_csv()
                 return data_frame
-        except ParserError:
+        except ParserWarning:
             quit(F"Format of database in path {self.database_file_path} is not correct")
 
     def get_database_from_csv(self) -> DataFrame:

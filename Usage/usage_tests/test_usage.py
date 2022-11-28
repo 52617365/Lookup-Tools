@@ -59,7 +59,6 @@ class TestUsage(TestCase):
     @patch('Usage.UserArguments.argparse.ArgumentParser.parse_args')
     @patch('Format.FileFormatDeterminer.FileFormatDeterminer.determine_file_format')
     def test_handle_database_if_valid_format_content(self, file_format_mock, command_line_arguments_mock):
-        # TODO: this test might need changing, because of file_format_mock.
         file_format_mock.return_value = FileFormat(['field1', 'field2', 'field3'], ',')
         command_line_arguments_mock.return_value = SimpleNamespace(input='test_input.txt',
                                                                    additional='test_additional.txt',
@@ -68,22 +67,21 @@ class TestUsage(TestCase):
         hash_collection, data_collection, database_collection = self.create_mocks()
         instance = Usage(hash_collection, data_collection, database_collection)
         instance.handle_database('test_input.txt')
-        expected_file_identifier = '90ef5c01547491a04c0cced99c46aa0c7e836acc4bede383d70a85b07b9e7123164999c7a60f846d6b82dac38c1b2fa22955e372bd06177c1b80de668f240951'
+        expected_file_identifier = '26760818823f83ae3ced756d6ad666db7c6a1a6b62db9713c5adf3e3f376a6ec45d4f9370626e87aaeac1f051e5ed417c030eda59a5aba18dcbbf1854609ed9f'
 
-        documents = hash_collection.count_documents({'hash': expected_file_identifier, 'valid': True})
+        documents = hash_collection.count_documents({'hash': expected_file_identifier})
         self.assertNotEqual(documents, 0)
 
     @patch('Usage.UserArguments.argparse.ArgumentParser.parse_args')
     @patch('Format.FileFormatDeterminer.FileFormatDeterminer.determine_file_format')
     def test_handle_database_if_invalid_format_content(self, file_format_mock, command_line_arguments_mock):
-        # TODO: this test might need changing, because of file_format_mock.
         file_format_mock.return_value = FileFormat(['test1', 'test2'], ',')
         command_line_arguments_mock.return_value = SimpleNamespace(input='invalid_test_input.txt',
                                                                    additional='test_additional.txt',
                                                                    json=False,
                                                                    glob=False)
+        hash_collection, data_collection, database_collection = self.create_mocks()
         with self.assertRaises(SystemExit):
-            hash_collection, data_collection, database_collection = self.create_mocks()
             instance = Usage(hash_collection, data_collection, database_collection)
             instance.handle_database('invalid_test_input.txt')
 
@@ -93,11 +91,11 @@ class TestUsage(TestCase):
 
     def create_mock_files(self):
         input_file_mock = "test_input.txt"
-        input_file_contents = "test1,test2,test3\n1,2,3"
+        input_file_contents = "1,2,3"
         self.create_fake_file(input_file_mock, input_file_contents)
 
         invalid_input_file_mock = "invalid_test_input.txt"
-        invalid_input_file_contents = "test1,test2\n1,2,3"
+        invalid_input_file_contents = "1,2,3\n4,5,6\n7,8,9"
         self.create_fake_file(invalid_input_file_mock, invalid_input_file_contents)
 
         additional_information_file = "test_additional.txt"

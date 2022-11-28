@@ -54,7 +54,7 @@ class Usage:
     @staticmethod
     def get_file_format(database_path):
         try:
-            determiner = FileFormatDeterminer(database_path, 1)
+            determiner = FileFormatDeterminer(database_path, 5)
             file_format = determiner.determine_file_format()
             return file_format
         except IDKException:
