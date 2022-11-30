@@ -52,9 +52,8 @@ class TestUsage(TestCase):
         instance = Usage(hash_collection, data_collection, database_collection)
 
         database_paths = instance.get_database_paths()
-        self.assertEqual(database_paths,
-                         [os.path.join('test_glob_dir', 'test_file.txt'),
-                          os.path.join('test_glob_dir', 'test_file2.txt', )])
+        self.assertEqual([os.path.join(os.getcwd(), 'test_glob_dir', 'test_file.txt'),
+                          os.path.join(os.getcwd(), 'test_glob_dir', 'test_file2.txt', )], database_paths)
 
     @patch('Usage.UserArguments.argparse.ArgumentParser.parse_args')
     @patch('Format.FileFormatDeterminer.FileFormatDeterminer.determine_file_format')

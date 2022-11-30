@@ -119,14 +119,6 @@ class TestDatabaseReader(TestCase):
         self.assertEqual(expected_file_identifier, file_identifier)
 
     @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
-    def test_database_reader_terminates_if_format_none_and_json_false(self, mock_get_file_format_for_csv):
-        mock_get_file_format_for_csv.return_value = None
-        self.create_fake_file("testing_file.csv",
-                              '{"field1": "asd1", "field2": "asd2", "field3": "asd3"}')
-        with self.assertRaises(SystemExit):
-            DatabaseReader("testing_file.csv")
-
-    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
     def test_get_database_with_ignored_fields(self, mock_get_file_format_for_csv):
         mock_get_file_format_for_csv.return_value = FileFormat(["field1", "field2", "field3"], ["field2"], ',')
 

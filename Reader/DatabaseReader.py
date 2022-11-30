@@ -15,18 +15,14 @@ class DatabaseReader:
         self.is_json = self.is_json(database_file_path)
         if not self.is_json:
             self.file_format = self.get_file_format_for_csv(database_file_path)
-            self.terminate_on_invalid_arguments(self.file_format)
+            if self.file_format is None:
+                return
 
         self.hash = Hash(self.database_file_path)
 
     @staticmethod
     def is_json(file_path: str) -> bool:
         return file_path.endswith(".json")
-
-    @staticmethod
-    def terminate_on_invalid_arguments(file_format):
-        if file_format is None:
-            quit("You have to specify the format for a csv file")
 
     @staticmethod
     def get_file_format_for_csv(database_path: str) -> FileFormat | None:
