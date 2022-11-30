@@ -4,23 +4,40 @@ import pandas as pd
 from pandas import DataFrame
 from pandas.errors import ParserWarning
 
-from Format.FileFormatDeterminer import FileFormat
+from Format.FileFormatDeterminer import FileFormat, FileFormatDeterminer
+from Format.Input import IDKException
 from Reader.Hash import Hash
 
 
 class DatabaseReader:
-    def __init__(self, database_file_path: str, file_format: FileFormat | None, is_json: bool = False):
-        self.terminate_on_invalid_arguments(file_format, is_json)
-
+    def __init__(self, database_file_path: str):
         self.database_file_path = database_file_path
-        self.file_format = file_format
-        self.is_json = is_json
+        self.is_json = self.is_json(database_file_path)
+        if not self.is_json:
+            self.file_format = self.get_file_format_for_csv(database_file_path)
+            self.terminate_on_invalid_arguments(self.file_format)
+
         self.hash = Hash(self.database_file_path)
 
     @staticmethod
-    def terminate_on_invalid_arguments(file_format, is_json):
-        if file_format is None and is_json is False:
-            quit("file_format can only be None if is_json is True")
+    def is_json(file_path: str) -> bool:
+        return file_path.endswith(".json")
+
+    @staticmethod
+    def terminate_on_invalid_arguments(file_format):
+        if file_format is None:
+            quit("You have to specify the format for a csv file")
+
+    @staticmethod
+    def get_file_format_for_csv(database_path: str) -> FileFormat | None:
+        try:
+            determiner = FileFormatDeterminer(database_path, 5)
+            file_format = determiner.determine_file_format()
+            return file_format
+        except IDKException:
+            return None
+        except StopIteration:
+            return None
 
     def get_database(self) -> (pd.DataFrame, str):
         database = self.get_database_as_json_or_csv()
