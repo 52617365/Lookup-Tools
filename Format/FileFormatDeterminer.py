@@ -32,13 +32,13 @@ class FileFormatDeterminer:
     def read_the_first_n_lines_from_file_whilst_deleting_new_lines(self) -> list:
         try:
             with open(self.database_path, 'r') as file:
-                n_lines = [self.delete_new_lines(next(file)) for _ in range(self.n)]
+                n_lines = [self.delete_line_breaks(next(file)) for _ in range(self.n)]
                 return n_lines
         except IOError:
             quit(F"File {self.database_path} does not exist or it's not accessible.")
 
     @staticmethod
-    def delete_new_lines(line):
+    def delete_line_breaks(line):
         return line.rstrip()
 
     def print_lines_to_user(self, lines: list):
