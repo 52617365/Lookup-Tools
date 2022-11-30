@@ -83,7 +83,7 @@ class DatabaseReader:
 
     def get_database_from_json(self):
         try:
-            json_file = pd.read_json(self.database_file_path, lines=True)
+            json_file = pd.read_json(self.database_file_path)
             return json_file
         except ValueError:
             raise ParserWarning

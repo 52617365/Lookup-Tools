@@ -106,14 +106,15 @@ class TestDatabaseReader(TestCase):
 
     def test_get_database_as_json(self):
         testing_file_path = self.create_fake_file("testing_file.json",
-                                                  '{"field1": "asd1", "field2": "asd2", "field3": "asd3"}')
+                                                  '[{"field1": "asd1", "field2": "asd2", "field3": "asd3"}, {"field1": "asd4", "field2": "asd5", "field3": "asd6"}]')
 
         reader = DatabaseReader(testing_file_path)
 
         data_frame, file_identifier = reader.get_database()
 
-        expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
-        expected_file_identifier = "d289a3d105ee93820097961254f121a551729a3095963172b7130987f36f941390cc08a4b4c18e2d282fd578e2b54d2fddc1a937ebbaef8a42708b0c842a71b2"
+        expected_data_frame = pd.DataFrame(
+            {'field1': ["asd1", "asd4"], 'field2': ["asd2", "asd5"], 'field3': ["asd3", "asd6"]})
+        expected_file_identifier = "c081244bd17fa058e854e199f4c9bfc16990535b204068b5a1c22d53379de00693496beeca231a98179b178be9b70af120f40de6b1eda24a9c5f41775fab49ca"
         self.assertEqual(data_frame.equals(expected_data_frame), True)
         self.assertEqual(expected_file_identifier, file_identifier)
 
