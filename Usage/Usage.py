@@ -5,7 +5,7 @@ from Database.DatabaseCombiner import DatabaseCombiner
 from DatabaseWriter.HashWriter import HashWriter
 from DatabaseWriter.JsonWriter import JsonWriter
 from FileGlob.FileGlob import FileGlob
-from Format.FileFormatDeterminer import FileFormatDeterminer
+from Format.FileFormatDeterminer import FileFormatDeterminer, FileFormat
 from Format.Input import IDKException
 from Reader.DatabaseReader import DatabaseReader
 from Usage.UserArguments import CommandLineArguments
@@ -39,20 +39,14 @@ class Usage:
         return databases
 
     def handle_database(self, database_path):
-        file_format = self.get_file_format(database_path)
-        if file_format is None:
-            return
-
-        database_contents, file_identifier = DatabaseReader(database_path,
-                                                            is_json=self.__user_arguments.json,
-                                                            file_format=file_format).get_database()
+        database_contents, file_identifier = DatabaseReader(database_path).get_database()
         combined_database_contents = self.__combine_additional_information_to_database(database_contents,
                                                                                        database_path)
         self.__write_file_to_database(combined_database_contents, file_identifier)
         self.hash_writer.write_valid_hash(file_identifier)
 
     @staticmethod
-    def get_file_format(database_path):
+    def get_file_format_for_csv(database_path: str) -> FileFormat | None:
         try:
             determiner = FileFormatDeterminer(database_path, 5)
             file_format = determiner.determine_file_format()

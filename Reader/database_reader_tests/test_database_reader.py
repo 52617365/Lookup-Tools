@@ -1,5 +1,6 @@
 import unittest
 from collections import OrderedDict
+from unittest.mock import patch
 
 import pandas as pd
 from pandas.errors import ParserWarning
@@ -16,79 +17,86 @@ class TestDatabaseReader(TestCase):
     def setUp(self):
         self.setUpPyfakefs()
 
-    def test_get_valid_comma_delimited_file_as_dataframe(self):
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_get_valid_comma_delimited_file_as_dataframe(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = FileFormat(["dir", "test2", "test3"], [], ',')
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
-        file_format = FileFormat(["dir", "test2", "test3"], [], ',')
 
-        example_delimited_file = DatabaseReader(testing_file_path, file_format)
+        example_delimited_file = DatabaseReader(testing_file_path)
         data = example_delimited_file.get_database_from_csv_with_optional_ignored_fields()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(data.equals(expected_data), True)
 
-    def test_get_valid_colon_delimited_file_as_dataframe(self):
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_get_valid_colon_delimited_file_as_dataframe(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = FileFormat(["dir", "test2", "test3"], [], ':')
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1:asd2:asd3")
-        file_format = FileFormat(["dir", "test2", "test3"], [], ':')
 
-        example_delimited_file = DatabaseReader(testing_file_path, file_format)
+        example_delimited_file = DatabaseReader(testing_file_path)
 
         data = example_delimited_file.get_database_from_csv_with_optional_ignored_fields()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(data.equals(expected_data), True)
 
-    def test_get_valid_pipe_delimited_file_as_dataframe(self):
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_get_valid_pipe_delimited_file_as_dataframe(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = FileFormat(["dir", "test2", "test3"], [], '|')
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1|asd2|asd3")
-        file_format = FileFormat(["dir", "test2", "test3"], [], '|')
 
-        example_delimited_file = DatabaseReader(testing_file_path, file_format)
+        example_delimited_file = DatabaseReader(testing_file_path)
         data = example_delimited_file.get_database_from_csv_with_optional_ignored_fields()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(data.equals(expected_data), True)
 
-    def test_get_valid_dot_delimited_file_as_dataframe(self):
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_get_valid_dot_delimited_file_as_dataframe(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = FileFormat(["dir", "test2", "test3"], [], '.')
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1.asd2.asd3")
-        file_format = FileFormat(["dir", "test2", "test3"], [], '.')
 
-        example_delimited_file = DatabaseReader(testing_file_path, file_format)
+        example_delimited_file = DatabaseReader(testing_file_path)
 
         data = example_delimited_file.get_database_from_csv_with_optional_ignored_fields()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(data.equals(expected_data), True)
 
-    def test_get_valid_tab_delimited_file_as_dataframe(self):
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_get_valid_tab_delimited_file_as_dataframe(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = FileFormat(["dir", "test2", "test3"], [], '\t')
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1\tasd2\tasd3")
 
-        file_format = FileFormat(["dir", "test2", "test3"], [], '\t')
-
-        example_delimited_file = DatabaseReader(testing_file_path, file_format)
+        example_delimited_file = DatabaseReader(testing_file_path)
 
         data = example_delimited_file.get_database_from_csv_with_optional_ignored_fields()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(data.equals(expected_data), True)
 
-    def test_get_csv_invalid_format(self):
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_get_csv_invalid_format(self, mock_get_file_format_for_csv):
         with self.assertRaises(ParserWarning):
+            mock_get_file_format_for_csv.return_value = FileFormat(fields=["field1", "field2"], ignored_fields=[],
+                                                                   file_delimiter=',')
             testing_file_path = self.create_fake_file("invalid_format_file.csv", "value1,value2,value3")
 
-            file_format = FileFormat(fields=["field1", "field2"], ignored_fields=[], file_delimiter=',')
-
-            reader = DatabaseReader(testing_file_path, file_format)
+            reader = DatabaseReader(testing_file_path)
 
             reader.get_database_from_csv_with_optional_ignored_fields()
 
-    def test_get_json_invalid_format(self):
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_get_json_invalid_format(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = FileFormat(["field1", "field2"], [], ',')
         with self.assertRaises(ParserWarning):
             testing_file_path = self.create_fake_file("invalid_format_file.json", "value1,value2,value3")
 
-            file_format = FileFormat(["field1", "field2"], [], ',')
-
-            reader = DatabaseReader(testing_file_path, file_format)
+            reader = DatabaseReader(testing_file_path)
             reader.get_database_from_json()
 
-    def test_get_database(self):
-        testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
-        file_format = FileFormat(["field1", "field2", "field3"], [], ',')
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_get_database(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = FileFormat(["field1", "field2", "field3"], [], ',')
 
-        reader = DatabaseReader(testing_file_path, file_format)
+        testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
+
+        reader = DatabaseReader(testing_file_path)
         data_frame, file_identifier = reader.get_database()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
@@ -100,7 +108,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.json",
                                                   '{"field1": "asd1", "field2": "asd2", "field3": "asd3"}')
 
-        reader = DatabaseReader(testing_file_path, None, True)
+        reader = DatabaseReader(testing_file_path)
 
         data_frame, file_identifier = reader.get_database()
 
@@ -109,15 +117,21 @@ class TestDatabaseReader(TestCase):
         self.assertEqual(data_frame.equals(expected_data_frame), True)
         self.assertEqual(expected_file_identifier, file_identifier)
 
-    def test_database_reader_terminates_if_format_none_and_json_false(self):
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_database_reader_terminates_if_format_none_and_json_false(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = None
+        self.create_fake_file("testing_file.csv",
+                              '{"field1": "asd1", "field2": "asd2", "field3": "asd3"}')
         with self.assertRaises(SystemExit):
-            DatabaseReader("test", None, False)
+            DatabaseReader("testing_file.csv")
 
-    def test_get_database_with_ignored_fields(self):
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_get_database_with_ignored_fields(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = FileFormat(["field1", "field2", "field3"], ["field2"], ',')
+
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
-        file_format = FileFormat(["field1", "field2", "field3"], ["field2"], ',')
 
-        reader = DatabaseReader(testing_file_path, file_format)
+        reader = DatabaseReader(testing_file_path)
         data_frame, file_identifier = reader.get_database()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field3': ["asd3"]})
