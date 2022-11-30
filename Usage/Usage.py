@@ -5,7 +5,8 @@ from Database.DatabaseCombiner import DatabaseCombiner
 from DatabaseWriter.HashWriter import HashWriter
 from DatabaseWriter.JsonWriter import JsonWriter
 from FileGlob.FileGlob import FileGlob
-from Reader.DatabaseReader import DatabaseReader
+from Format.Input import IDKException
+from Reader.DatabaseReader import DatabaseReader, FileIsJunk
 from Usage.UserArguments import CommandLineArguments
 
 
@@ -37,11 +38,16 @@ class Usage:
         return databases
 
     def handle_database(self, database_path):
-        database_contents, file_identifier = DatabaseReader(database_path).get_database()
-        combined_database_contents = self.__combine_additional_information_to_database(database_contents,
-                                                                                       database_path)
-        self.__write_file_to_database(combined_database_contents, file_identifier)
-        self.hash_writer.write_valid_hash(file_identifier)
+        try:
+            database_contents, file_identifier = DatabaseReader(database_path).get_database()
+            combined_database_contents = self.__combine_additional_information_to_database(database_contents,
+                                                                                           database_path)
+            self.__write_file_to_database(combined_database_contents, file_identifier)
+            self.hash_writer.write_valid_hash(file_identifier)
+        except IDKException:
+            return
+        except FileIsJunk:
+            return
 
     def __combine_additional_information_to_database(self, database_contents: DataFrame, database_path: str):
         combined_delimited_database = DatabaseCombiner(self.additional_information)

@@ -9,7 +9,8 @@ from pyfakefs.fake_filesystem_unittest import TestCase
 from Connection.DatabaseConnection import DatabaseConnection
 from DatabaseWriter.HashWriter import HashWriter
 from Format.FileFormatDeterminer import FileFormat
-from Reader.DatabaseReader import DatabaseReader
+from Format.format_tests.HiddenPrints import HiddenPrints
+from Reader.DatabaseReader import DatabaseReader, FileIsJunk
 
 
 class TestDatabaseReader(TestCase):
@@ -131,6 +132,14 @@ class TestDatabaseReader(TestCase):
         expected_file_identifier = "bdc56b1c2845a0ff642efb5fc6c6acc35f5cdcc27036deb2493573356a57ce70ecaa72cb71a0b96134afb860519aea1f9ce4b4804478ae3b49f4ce0e4cbc270d"
         self.assertEqual(data_frame.equals(expected_data_frame), True)
         self.assertEqual(expected_file_identifier, file_identifier)
+
+    def test_get_file_format_for_csv_raises_file_is_junk(self):
+        with self.assertRaises(FileIsJunk):
+            with HiddenPrints():
+                testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
+
+                reader = DatabaseReader(testing_file_path)
+                reader.get_file_format_for_csv("testing_file.csv")
 
     def init_get_database(self, mock_dotenv_values, mongo_server_info):
         self.avoid_exit_if_instance_mongo_instance_does_not_exist(mongo_server_info)

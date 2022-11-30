@@ -5,8 +5,11 @@ from pandas import DataFrame
 from pandas.errors import ParserWarning
 
 from Format.FileFormatDeterminer import FileFormat, FileFormatDeterminer
-from Format.Input import IDKException
 from Reader.Hash import Hash
+
+
+class FileIsJunk(Exception):
+    pass
 
 
 class DatabaseReader:
@@ -15,8 +18,6 @@ class DatabaseReader:
         self.is_json = self.is_json(database_file_path)
         if not self.is_json:
             self.file_format = self.get_file_format_for_csv(database_file_path)
-            if self.file_format is None:
-                return
 
         self.hash = Hash(self.database_file_path)
 
@@ -30,10 +31,8 @@ class DatabaseReader:
             determiner = FileFormatDeterminer(database_path, 5)
             file_format = determiner.determine_file_format()
             return file_format
-        except IDKException:
-            return None
         except StopIteration:
-            return None
+            raise FileIsJunk
 
     def get_database(self) -> (pd.DataFrame, str):
         database = self.get_database_as_json_or_csv()
@@ -59,6 +58,9 @@ class DatabaseReader:
                 csv_file = self.get_csv_with_all_fields()
             return csv_file
 
+    def ignored_fields_exist(self):
+        return len(self.file_format.ignored_fields) != 0
+
     def get_csv_with_all_fields(self):
         csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.file_delimiter,
                                names=self.file_format.fields, header=None, index_col=False)
@@ -70,9 +72,6 @@ class DatabaseReader:
                                names=self.file_format.fields, header=None, index_col=False,
                                usecols=fields_to_keep)
         return csv_file
-
-    def ignored_fields_exist(self):
-        return len(self.file_format.ignored_fields) != 0
 
     def get_fields_we_want_to_keep(self):
         return list(filter(lambda x: x not in self.file_format.ignored_fields, self.file_format.fields))
