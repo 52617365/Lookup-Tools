@@ -1,16 +1,30 @@
 def get_file_fields_from_user():
     user_input = get_user_input("Enter the format of the file:\t")
 
-    validate_format_user_input(user_input)
+    validate_user_input(user_input)
 
     file_format = user_input.split(",")
 
     return file_format
 
 
-def validate_format_user_input(user_input):
+def validate_user_input(user_input):
+    terminate_if_user_did_not_specify_format(user_input)
+    terminate_if_user_provided_invalid_file_fields(user_input)
+
+
+def terminate_if_user_did_not_specify_format(user_input):
     if len(user_input) == 0:
         quit("You didn't specify a format. If you don't know, input 'idk'.")
+
+
+def terminate_if_user_provided_invalid_file_fields(user_input):
+    supported_file_fields = ["username", "password", "email", "ip_address", "zipcode", "phone_number", "country",
+                             "state", "city", "hash", "salt", "name", "address", "company", "ssn"]
+    user_fields = user_input.split(",")
+    for field in user_fields:
+        if field not in supported_file_fields:
+            quit(F"You specified a field that is not supported ({field}). Please specify a supported field.")
 
 
 def get_file_delimiter_from_user():

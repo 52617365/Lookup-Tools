@@ -1,16 +1,17 @@
 import unittest
 from unittest.mock import patch
 
-from Format.Input import get_file_fields_from_user, get_file_delimiter_from_user, IDKException
+from Format.Input import get_file_fields_from_user, get_file_delimiter_from_user, IDKException, \
+    terminate_if_user_did_not_specify_format, terminate_if_user_provided_invalid_file_fields
 
 
 class TestInput(unittest.TestCase):
 
     @patch("builtins.input")
     def test_get_valid_file_format_from_user(self, user_input):
-        user_input.return_value = "field1,field2,field3"
+        user_input.return_value = "username,password,email"
         file_format = get_file_fields_from_user()
-        self.assertEqual(file_format, ["field1", "field2", "field3"])
+        self.assertEqual(file_format, ["username", "password", "email"])
 
     @patch("builtins.input")
     def test_get_invalid_file_format_from_user(self, user_input):
@@ -20,9 +21,9 @@ class TestInput(unittest.TestCase):
 
     @patch("builtins.input")
     def test_get_file_format_from_user_with_one_field(self, user_input):
-        user_input.return_value = "field"
+        user_input.return_value = "username"
         file_format = get_file_fields_from_user()
-        self.assertEqual(file_format, ["field"])
+        self.assertEqual(file_format, ["username"])
 
     @patch("builtins.input")
     def test_exception_raised_if_file_format_is_idk(self, user_input):
@@ -48,6 +49,14 @@ class TestInput(unittest.TestCase):
         user_input.return_value = "idk"
         with self.assertRaises(IDKException):
             get_file_delimiter_from_user()
+
+    def test_terminate_if_user_did_not_specify_format(self):
+        with self.assertRaises(SystemExit):
+            terminate_if_user_did_not_specify_format("")
+
+    def test_terminate_if_user_provided_invalid_file_fields(self):
+        with self.assertRaises(SystemExit):
+            terminate_if_user_provided_invalid_file_fields("username,password,invalid_field")
 
 
 if __name__ == '__main__':
