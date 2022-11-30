@@ -25,7 +25,7 @@ def terminate_if_user_provided_invalid_file_fields(user_input):
     for field in user_fields:
         if field not in supported_file_fields:
             quit(
-                F"You specified a field that is not supported ({field}). Please specify a supported field.\nSupported fields are: {[print(i, end=' ') for i in supported_file_fields]}")
+                F"You specified a field that is not supported ({field}). Please specify a supported field.\nSupported fields are: {supported_file_fields}")
 
 
 def get_file_delimiter_from_user():
