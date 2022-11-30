@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 
 from Format.Input import get_file_fields_from_user, get_file_delimiter_from_user, IDKException, \
-    terminate_if_user_did_not_specify_format, terminate_if_user_provided_invalid_file_fields
+    terminate_if_user_did_not_specify_format, terminate_if_user_provided_invalid_file_fields, validate_user_input
 
 
 class TestInput(unittest.TestCase):
@@ -57,6 +57,9 @@ class TestInput(unittest.TestCase):
     def test_terminate_if_user_provided_invalid_file_fields(self):
         with self.assertRaises(SystemExit):
             terminate_if_user_provided_invalid_file_fields("username,password,invalid_field")
+
+    def test_dont_terminate_if_valid_input(self):
+        validate_user_input("username,password,email")
 
 
 if __name__ == '__main__':
