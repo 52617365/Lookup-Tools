@@ -42,7 +42,9 @@ class FileFormatDeterminer:
         return line.rstrip()
 
     def print_lines_to_user(self, lines: list):
-        print(F"printing the first {self.n} lines of {self.database_path}, please specify the format of the file.\n")
+        print(F"Database path: {self.database_path}")
+        print(F"Printing the first {self.n} lines.")
+        print("Please specify the format of the file.")
         for line in lines:
             print(line)
         print("\n\n")

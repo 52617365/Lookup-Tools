@@ -1,5 +1,4 @@
 import glob
-import os
 from os import path
 from pathlib import Path
 
@@ -9,7 +8,7 @@ class FileGlob:
         self.path = path_to_glob
 
     def get_files_from_directories(self):
-        path_to_glob = path.join(os.getcwd(), self.path, "**", "*")
+        path_to_glob = path.join(self.path, "**", "*")
         all_file_paths_from_directories = glob.glob(path_to_glob, recursive=True)
         files = self.__get_files_with_supported_extension(all_file_paths_from_directories)
         return files
