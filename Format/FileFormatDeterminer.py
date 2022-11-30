@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Format.Input import print_file_format_instructions, print_file_delimiter_instructions, get_file_fields_from_user, \
+from Format.Input import get_file_fields_from_user, \
     get_file_delimiter_from_user
 
 
@@ -24,8 +24,6 @@ class FileFormatDeterminer:
         return FileFormat(fields=file_fields, ignored_fields=ignored_fields, file_delimiter=file_delimiter)
 
     def express_file_format(self):
-        print_file_format_instructions()
-        print_file_delimiter_instructions()
         n_lines = self.read_the_first_n_lines_from_file_whilst_deleting_new_lines()
         self.print_lines_to_user(n_lines)
 

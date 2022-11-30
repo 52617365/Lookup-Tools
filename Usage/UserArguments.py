@@ -4,7 +4,18 @@ import argparse
 class CommandLineArguments:
 
     def __init__(self):
-        self.parser = argparse.ArgumentParser(description='Parse delimited files into JSON strings')
+        self.parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter, description=
+        '=======Format Instructions=======\n'
+        'Determine the file format with the following options:\n'
+        '* "idk" if you dont know the format.\n'
+        '* prefix fields with "_" if you want to ignore them.\n'
+        '* specify the format as a comma delimited sequence of characters.\n'
+        'example format input: "_id,name,age"\n\n'
+        '=======Delimiter Instructions=======\n'
+        'Determine the file delimiter with the following options:\n'
+        '* "idk" if you dont know the delimiter.\n'
+        '* specify the delimiter as a single character.\n'
+        'example delimiter input: ","\n')
         self.parser.add_argument('-i', '--input', type=str, help='The delimited file that should be parsed to JSON',
                                  required=True)
         self.parser.add_argument('-a', '--additional', type=str,
