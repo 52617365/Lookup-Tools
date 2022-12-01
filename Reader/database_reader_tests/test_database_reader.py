@@ -141,17 +141,6 @@ class TestDatabaseReader(TestCase):
                 reader = DatabaseReader(testing_file_path)
                 reader.get_file_format_for_csv("testing_file.csv")
 
-    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
-    def test_get_csv_deletes_nan_values(self, mock_get_file_format_for_csv):
-        mock_get_file_format_for_csv.return_value = FileFormat(["field1", "field2", "field3"], [], ',')
-        testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,null")
-
-        reader = DatabaseReader(testing_file_path)
-        data_frame = reader.get_csv_with_all_fields()
-
-        expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"]})
-        self.assertEqual(data_frame.equals(expected_data_frame), True)
-
     def init_get_database(self, mock_dotenv_values, mongo_server_info):
         self.avoid_exit_if_instance_mongo_instance_does_not_exist(mongo_server_info)
         mock_dotenv_values.return_value = OrderedDict(

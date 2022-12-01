@@ -1,6 +1,7 @@
 import unittest
 
 import mongomock
+import numpy as np
 import pandas as pd
 from pyfakefs.fake_filesystem_unittest import TestCase
 
@@ -43,6 +44,13 @@ class TestJsonWriter(TestCase):
         writer.insert_database_additional_information()
         self.assertNotEqual(databases_collection.find_one({'database_name': {"$in": ["test"]}}), None)
         self.assertEqual(databases_collection.find_one({'breach_date': {"$in": ["2020-01-01"]}}), None)
+
+    def test_nan_values_get_deleted(self):
+        data = [{'test1': np.NaN, 'test2': 2, 'test3': 3}, {'test1': 1, 'test2': 2, 'test3': np.NaN}]
+        JsonWriter.delete_nan_values(data)
+
+        expected_data = [{'test2': 2, 'test3': 3}, {'test1': 1, 'test2': 2}]
+        self.assertEqual(data, expected_data)
 
 
 if __name__ == '__main__':

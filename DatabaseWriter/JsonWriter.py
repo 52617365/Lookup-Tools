@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Mapping, Any
 
+import numpy as np
 import pandas as pd
 from pymongo.collection import Collection
 
@@ -24,9 +25,18 @@ class JsonWriter:
     def insert_database_contents_as_json(self):
         try:
             data_to_write_in_json = self.__combined_database_contents.to_dict(orient='records')
+            self.delete_nan_values(data_to_write_in_json)
             self.__data_collection.insert_many(data_to_write_in_json)
         except Exception as e:
             quit("There was an error while writing to MongoDB: " + str(e))
+
+    @staticmethod
+    def delete_nan_values(data_to_write_in_json: list[dict]):
+        for data in data_to_write_in_json:
+            data_keys = [key for key in data]
+            for key in data_keys:
+                if data[key] is np.NaN:
+                    del data[key]
 
     def insert_database_additional_information(self):
         try:
