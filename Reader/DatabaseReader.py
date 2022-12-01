@@ -64,6 +64,8 @@ class DatabaseReader:
     def get_csv_with_all_fields(self):
         csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.file_delimiter,
                                names=self.file_format.fields, header=None, index_col=False)
+        # Deleting NaN values if they're present to save disk space.
+        csv_file = csv_file.dropna(axis=1)
         return csv_file
 
     def get_csv_without_without_ignored_fields(self):
@@ -71,6 +73,8 @@ class DatabaseReader:
         csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.file_delimiter,
                                names=self.file_format.fields, header=None, index_col=False,
                                usecols=fields_to_keep)
+        # Deleting NaN values if they're present to save disk space.
+        csv_file = csv_file.dropna(axis=1)
         return csv_file
 
     def get_fields_we_want_to_keep(self):

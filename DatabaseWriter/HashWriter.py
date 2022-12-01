@@ -5,9 +5,9 @@ class HashWriter:
     def __init__(self, mongo_hash_collection):
         self.mongo_hash_collection = mongo_hash_collection
 
-    def write_valid_hash(self, hash):
+    def write_valid_hash(self, hash: str, database_name: str):
         if self.hash_is_unique(hash):
-            self.mongo_hash_collection.insert_one({"hash": hash})
+            self.mongo_hash_collection.insert_one({"hash": hash, "database_name": database_name})
 
     def hash_is_unique(self, hash: str):
         return self.mongo_hash_collection.find_one({"hash": hash}) is None

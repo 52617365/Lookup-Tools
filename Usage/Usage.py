@@ -43,7 +43,10 @@ class Usage:
             combined_database_contents = self.__combine_additional_information_to_database(database_contents,
                                                                                            database_path)
             self.__write_file_to_database(combined_database_contents, file_identifier)
-            self.hash_writer.write_valid_hash(file_identifier)
+            # get database name from database path
+
+            database_name = combined_database_contents['database_name'].iloc[0]
+            self.hash_writer.write_valid_hash(file_identifier, database_name)
         except IDKException:
             return
         except FileIsJunk:
