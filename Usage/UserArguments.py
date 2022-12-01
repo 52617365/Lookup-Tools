@@ -26,6 +26,7 @@ class CommandLineArguments:
                                  help='A boolean value to determine if the format should be specified by the user. If this flag is false, the format has to be on the first line of the file.',
                                  required=False)
         self.args = self.parser.parse_args()
+        # TODO its not parsing -m correctly when passed in with the -m false flag.
 
     def get(self):
         return self.args
