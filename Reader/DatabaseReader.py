@@ -68,7 +68,6 @@ class DatabaseReader:
             csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.file_delimiter,
                                    names=self.file_format.fields, header=None, index_col=False)
         else:
-            # TODO: make tests for this.
             csv_file = pd.read_csv(self.database_file_path, engine="python", sep='[:;.,\\s+|__]', index_col=False)
         return csv_file
 
