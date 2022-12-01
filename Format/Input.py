@@ -23,9 +23,16 @@ def terminate_if_user_provided_invalid_file_fields(user_input):
                              "state", "city", "hash", "salt", "name", "address", "company", "ssn"]
     user_fields = user_input.split(",")
     for field in user_fields:
+        if field_is_ignored(field):
+            continue
+
         if field not in supported_file_fields:
             quit(
                 F"You specified a field that is not supported ({field}). Please specify a supported field.\nSupported fields are: {supported_file_fields}")
+
+
+def field_is_ignored(field: str) -> bool:
+    return field.startswith("_")
 
 
 def get_file_delimiter_from_user():
