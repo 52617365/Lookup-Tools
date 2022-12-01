@@ -63,6 +63,11 @@ class TestInput(unittest.TestCase):
     def test_dont_terminate_if_valid_input(self):
         validate_user_input("username,password,email")
 
+    def test_dont_terminate_if_user_provided_ignored_fields_with_wrong_field(self):
+        user_input = "username,password,email,_invalid_field"
+        # assert doesnt raise exception
+        terminate_if_user_provided_invalid_file_fields(user_input)
+
 
 if __name__ == '__main__':
     unittest.main()
