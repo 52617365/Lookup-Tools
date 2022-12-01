@@ -39,7 +39,8 @@ class Usage:
 
     def handle_database(self, database_path):
         try:
-            database_contents, file_identifier = DatabaseReader(database_path).get_database()
+            database_contents, file_identifier = DatabaseReader(database_path,
+                                                                self.__user_arguments.manual).get_database()
             combined_database_contents = self.__combine_additional_information_to_database(database_contents,
                                                                                            database_path)
             self.__write_file_to_database(combined_database_contents, file_identifier)

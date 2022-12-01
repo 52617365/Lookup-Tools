@@ -62,7 +62,8 @@ class TestUsage(TestCase):
         command_line_arguments_mock.return_value = SimpleNamespace(input='test_input.txt',
                                                                    additional='test_additional.txt',
                                                                    glob=False,
-                                                                   json=False)
+                                                                   json=False,
+                                                                   manual=True)
         hash_collection, data_collection, database_collection = self.create_mocks()
         instance = Usage(hash_collection, data_collection, database_collection)
         instance.handle_database('test_input.txt')
@@ -78,7 +79,8 @@ class TestUsage(TestCase):
         command_line_arguments_mock.return_value = SimpleNamespace(input='invalid_test_input.txt',
                                                                    additional='test_additional.txt',
                                                                    json=False,
-                                                                   glob=False)
+                                                                   glob=False,
+                                                                   manual=True)
         hash_collection, data_collection, database_collection = self.create_mocks()
         with self.assertRaises(SystemExit):
             instance = Usage(hash_collection, data_collection, database_collection)

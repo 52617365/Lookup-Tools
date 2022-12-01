@@ -13,11 +13,13 @@ class FileIsJunk(Exception):
 
 
 class DatabaseReader:
-    def __init__(self, database_file_path: str):
+    def __init__(self, database_file_path: str, specify_format_manually: bool):
         self.database_file_path = database_file_path
         self.is_json = self.is_json(database_file_path)
+        self.specify_format_manually = specify_format_manually
         if not self.is_json:
-            self.file_format = self.get_file_format_for_csv(database_file_path)
+            if self.specify_format_manually:
+                self.file_format = self.get_file_format_for_csv(database_file_path)
 
         self.hash = Hash(self.database_file_path)
 
@@ -62,8 +64,12 @@ class DatabaseReader:
         return len(self.file_format.ignored_fields) != 0
 
     def get_csv_with_all_fields(self):
-        csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.file_delimiter,
-                               names=self.file_format.fields, header=None, index_col=False)
+        if self.specify_format_manually:
+            csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.file_delimiter,
+                                   names=self.file_format.fields, header=None, index_col=False)
+        else:
+            # TODO: make tests for this.
+            csv_file = pd.read_csv(self.database_file_path, engine="python", sep='[:;.,\\s+|__]', index_col=False)
         return csv_file
 
     def get_csv_without_without_ignored_fields(self):
