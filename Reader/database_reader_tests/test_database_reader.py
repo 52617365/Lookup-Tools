@@ -3,14 +3,13 @@ from collections import OrderedDict
 from unittest.mock import patch
 
 import pandas as pd
-from pandas.errors import ParserWarning
 from pyfakefs.fake_filesystem_unittest import TestCase
 
 from Connection.DatabaseConnection import DatabaseConnection
 from DatabaseWriter.HashWriter import HashWriter
 from Format.FileFormatDeterminer import FileFormat
 from Format.format_tests.HiddenPrints import HiddenPrints
-from Reader.DatabaseReader import DatabaseReader, FileIsJunk
+from Reader.DatabaseReader import DatabaseReader, WeWantToSkipFile
 
 
 class TestDatabaseReader(TestCase):
@@ -24,7 +23,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
 
         example_delimited_file = DatabaseReader(testing_file_path, specify_format_manually=True)
-        data = example_delimited_file.get_csv_database_reader()
+        data = example_delimited_file.get_csv_database_chunks()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -35,7 +34,7 @@ class TestDatabaseReader(TestCase):
 
         example_delimited_file = DatabaseReader(testing_file_path, specify_format_manually=True)
 
-        data = example_delimited_file.get_csv_database_reader()
+        data = example_delimited_file.get_csv_database_chunks()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -45,7 +44,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1|asd2|asd3")
 
         example_delimited_file = DatabaseReader(testing_file_path, specify_format_manually=True)
-        data = example_delimited_file.get_csv_database_reader()
+        data = example_delimited_file.get_csv_database_chunks()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -56,7 +55,7 @@ class TestDatabaseReader(TestCase):
 
         example_delimited_file = DatabaseReader(testing_file_path, specify_format_manually=True)
 
-        data = example_delimited_file.get_csv_database_reader()
+        data = example_delimited_file.get_csv_database_chunks()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -67,31 +66,18 @@ class TestDatabaseReader(TestCase):
 
         example_delimited_file = DatabaseReader(testing_file_path, specify_format_manually=True)
 
-        data = example_delimited_file.get_csv_database_reader()
+        data = example_delimited_file.get_csv_database_chunks()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
     @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
-    def test_get_csv_invalid_format(self, mock_get_file_format_for_csv):
-        with self.assertRaises(ParserWarning):
-            mock_get_file_format_for_csv.return_value = FileFormat(fields=["field1", "field2"], ignored_fields=[],
-                                                                   file_delimiter=',')
-            testing_file_path = self.create_fake_file("invalid_format_file.csv", "value1,value2,value3")
-
-            reader = DatabaseReader(testing_file_path, specify_format_manually=True)
-
-            for chunk in reader.get_csv_database_reader():
-                _ = chunk
-
-    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
     def test_get_json_invalid_format(self, mock_get_file_format_for_csv):
         mock_get_file_format_for_csv.return_value = FileFormat(["field1", "field2"], [], ',')
-        with self.assertRaises(ParserWarning):
+        with self.assertRaises(ValueError):
             testing_file_path = self.create_fake_file("invalid_format_file.json", "value1,value2,value3")
 
             reader = DatabaseReader(testing_file_path, specify_format_manually=True)
-
-            next(reader.get_json_database_reader())
+            next(reader.get_json_or_csv_database_chunks())
 
     @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
     def test_get_database(self, mock_get_file_format_for_csv):
@@ -100,7 +86,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
 
         reader = DatabaseReader(testing_file_path, specify_format_manually=True)
-        data_frame = reader.get_database_reader()
+        data_frame = reader.get_database_chunks()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
         for chunk in data_frame:
@@ -112,11 +98,11 @@ class TestDatabaseReader(TestCase):
 
         reader = DatabaseReader(testing_file_path, specify_format_manually=True)
 
-        data_frame = reader.get_database_reader()
+        data_frame = reader.get_database_chunks()
 
         expected_data_frame = pd.DataFrame(
             {'field1': ["asd1", "asd4"], 'field2': ["asd2", "asd5"], 'field3': ["asd3", "asd6"]})
-        self.assertEqual(data_frame.equals(expected_data_frame), True)
+        self.assertEqual(next(data_frame).equals(expected_data_frame), True)
 
     @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
     def test_get_database_with_ignored_fields(self, mock_get_file_format_for_csv):
@@ -125,13 +111,13 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
 
         reader = DatabaseReader(testing_file_path, specify_format_manually=True)
-        data_frame = reader.get_database_reader()
+        data_frame = reader.get_database_chunks()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field3': ["asd3"]})
         self.assertEqual(next(data_frame).equals(expected_data_frame), True)
 
     def test_get_file_format_for_csv_raises_file_is_junk(self):
-        with self.assertRaises(FileIsJunk):
+        with self.assertRaises(WeWantToSkipFile):
             with HiddenPrints():
                 testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
 

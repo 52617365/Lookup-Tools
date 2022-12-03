@@ -1,12 +1,13 @@
 import pandas as pd
 from pandas import DataFrame
+from pandas.errors import ParserError, ParserWarning
 
 from Database.DatabaseCombiner import DatabaseCombiner
 from DatabaseWriter.HashWriter import HashWriter
 from DatabaseWriter.JsonWriter import JsonWriter
 from FileGlob.FileGlob import FileGlob
-from Format.Input import IDKException
-from Reader.DatabaseReader import DatabaseReader, FileIsJunk
+from Reader.DatabaseReader import DatabaseReader, WeWantToSkipFile
+from Reader.Hash import Hash
 from Usage.UserArguments import CommandLineArguments
 
 
@@ -38,28 +39,39 @@ class Usage:
         return databases
 
     def handle_database(self, database_path):
+        # TODO: make sure the file is in a correct format here or something.
         try:
-            # TODO: 1. Check in chunks that the file is in correct format.
-            # TODO: 2. If it is, then read the file in chunks and write to Mongo.
-            database_contents, file_identifier = DatabaseReader(database_path,
-                                                                self.__user_arguments.manual).get_database()
-            combined_database_contents = self.__combine_additional_information_to_database(database_contents,
+            file_identifier = Hash.get_hash_from_file_contents(database_path)
+
+            reader = DatabaseReader(database_path,
+                                    self.__user_arguments.manual)
+            database_content_chunks = reader.get_database_chunks()
+
+            for chunk in database_content_chunks:
+                self.handle_chunk(chunk, database_path, file_identifier)
+        except WeWantToSkipFile as e:
+            print(e)
+            return
+
+    def handle_chunk(self, chunk, database_path, file_identifier):
+        try:
+            combined_database_contents = self.__combine_additional_information_to_database(chunk,
                                                                                            database_path)
-            self.__write_file_to_database(combined_database_contents, file_identifier)
+            self.__write_file_to_mongo_database(combined_database_contents, file_identifier)
 
             database_name = combined_database_contents['database_name'].iloc[0]
             self.hash_writer.write_valid_hash(file_identifier, database_name)
-        except IDKException:
-            return
-        except FileIsJunk:
-            return
+        except ParserError:
+            quit(F"The file does not have a valid format.")
+        except ParserWarning:
+            quit(F"The file does not have a valid format.")
 
     def __combine_additional_information_to_database(self, database_contents: DataFrame, database_path: str):
         combined_delimited_database = DatabaseCombiner(self.additional_information)
         combined_database_contents = combined_delimited_database.combine(database_contents, database_path)
         return combined_database_contents
 
-    def __write_file_to_database(self, combined_database_contents: DataFrame, file_identifier: str):
+    def __write_file_to_mongo_database(self, combined_database_contents: DataFrame, file_identifier: str):
         database_writer = JsonWriter(combined_database_contents, self.__data_collection, self.__database_collection)
 
         if self.hash_writer.hash_is_unique(file_identifier):
