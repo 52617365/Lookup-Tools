@@ -62,22 +62,32 @@ class DatabaseReader:
 
     def get_csv_with_all_fields(self):
         if self.specify_format_manually:
-            csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.file_delimiter,
-                                   names=self.file_format.fields, header=None, index_col=False)
+            csv_file = DatabaseReader.read_csv(database_file_path=self.database_file_path,
+                                               sep=self.file_format.file_delimiter, names=self.file_format.fields,
+                                               engine="c", header=None)
         else:
-            csv_file = pd.read_csv(self.database_file_path, engine="python", sep='[:;.,\\s+|__]', index_col=False)
+            csv_file = DatabaseReader.read_csv(database_file_path=self.database_file_path, engine="python",
+                                               sep='[:;.,\\s+|__]')
         return csv_file
 
     # TODO: we don't want to do this, instead we want to read the file in chunks.
     def get_csv_without_ignored_fields(self):
         fields_to_keep = self.get_fields_we_want_to_keep()
-        csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.file_delimiter,
-                               names=self.file_format.fields, header=None, index_col=False,
-                               usecols=fields_to_keep)
+        csv_file = DatabaseReader.read_csv(database_file_path=self.database_file_path,
+                                           sep=self.file_format.file_delimiter, names=self.file_format.fields,
+                                           use_cols=fields_to_keep, engine="c", header=None)
         return csv_file
 
     def get_fields_we_want_to_keep(self):
         return list(filter(lambda x: x not in self.file_format.ignored_fields, self.file_format.fields))
+
+    @staticmethod
+    def read_csv(database_file_path: str, engine, use_cols=None, sep: str = ',', names=None,
+                 header: str | None = "infer"):
+        csv_file = pd.read_csv(database_file_path, sep=sep,
+                               names=names, header=header, index_col=False,
+                               usecols=use_cols, engine=engine)
+        return csv_file
 
     # TODO: we don't want to do this, instead we want to read the file in chunks.
     def get_database_from_json(self):
