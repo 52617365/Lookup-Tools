@@ -1,11 +1,7 @@
-import warnings
-
 import pandas as pd
-from pandas import DataFrame
-from pandas.errors import ParserWarning
+from pandas.io.parsers import TextFileReader
 
 from Format.FileFormatDeterminer import FileFormat, FileFormatDeterminer
-from Reader.Hash import Hash
 
 
 class FileIsJunk(Exception):
@@ -15,9 +11,9 @@ class FileIsJunk(Exception):
 class DatabaseReader:
     def __init__(self, database_file_path: str, specify_format_manually: bool):
         self.database_file_path = database_file_path
-        self.is_json = self.is_json(database_file_path)
+        self.file_is_json = self.is_json(database_file_path)
         self.specify_format_manually = specify_format_manually
-        if not self.is_json:
+        if not self.file_is_json:
             if self.specify_format_manually:
                 self.file_format = self.get_file_format_for_csv(database_file_path)
 
@@ -33,10 +29,9 @@ class DatabaseReader:
         except StopIteration:
             raise FileIsJunk
 
-    def get_database(self) -> (pd.DataFrame, str):
-        database = self.get_database_as_json_or_csv()
-        file_identifier = Hash.get_hash_from_file_contents(self.database_file_path)
-        return database, file_identifier
+    def get_database_reader(self) -> (pd.DataFrame, str):
+        database_reader = self.get_json_or_csv_database_reader()
+        return database_reader
 
     def get_database_as_json_or_csv(self):
         try:
