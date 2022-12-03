@@ -21,8 +21,6 @@ class DatabaseReader:
             if self.specify_format_manually:
                 self.file_format = self.get_file_format_for_csv(database_file_path)
 
-        self.hash = Hash(self.database_file_path)
-
     @staticmethod
     def is_json(file_path: str) -> bool:
         return file_path.endswith(".json")
@@ -37,7 +35,7 @@ class DatabaseReader:
 
     def get_database(self) -> (pd.DataFrame, str):
         database = self.get_database_as_json_or_csv()
-        file_identifier = self.hash.get_hash_from_file_contents()
+        file_identifier = Hash.get_hash_from_file_contents(self.database_file_path)
         return database, file_identifier
 
     def get_database_as_json_or_csv(self):
