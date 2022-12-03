@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
-from Format.Input import get_file_fields_from_user, \
-    get_file_delimiter_from_user
+from Format.Input import get_file_fields_from_user, get_file_delimiter_from_user
 
 
 @dataclass

@@ -33,12 +33,6 @@ class TestInput(unittest.TestCase):
             get_file_fields_from_user()
 
     @patch("builtins.input")
-    def test_get_invalid_file_delimiter_from_user(self, user_input):
-        with self.assertRaises(SystemExit):
-            user_input.return_value = ",,"
-            get_file_delimiter_from_user()
-
-    @patch("builtins.input")
     def test_get_valid_file_delimiter_from_user(self, user_input):
         valid_delimiters = ["|", ",", ";", ":", " ", "\t"]
         for delimiter in valid_delimiters:

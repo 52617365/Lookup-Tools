@@ -20,7 +20,7 @@ def terminate_if_user_did_not_specify_format(user_input):
 
 def terminate_if_user_provided_invalid_file_fields(user_input):
     supported_file_fields = ["username", "password", "email", "ip_address", "zipcode", "phone_number", "country",
-                             "state", "city", "hash", "salt", "name", "address", "company", "ssn"]
+                             "state", "city", "hash", "salt", "name", "address", "company", "ssn", "domain"]
     user_fields = user_input.split(",")
     for field in user_fields:
         if field_is_ignored(field):
@@ -46,8 +46,6 @@ def get_file_delimiter_from_user():
 def validate_delimiter(user_input):
     if len(user_input) == 0:
         quit("You didn't specify a delimiter. If you don't know, input 'idk'.")
-    if len(user_input) > 1:
-        quit("You specified a delimiter that is more than one character. Please specify a single character.")
 
 
 def get_user_input(text_to_prompt: str):

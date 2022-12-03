@@ -36,6 +36,7 @@ class DatabaseReader:
         except StopIteration:
             raise FileIsJunk
 
+    # TODO: we don't want to do this, instead we want to read the file in chunks. Maybe return an iterator or something?
     def get_database(self) -> (pd.DataFrame, str):
         database = self.get_database_as_json_or_csv()
         file_identifier = self.hash.get_hash_from_file_contents()
