@@ -30,13 +30,11 @@ class DatabaseReader:
     @staticmethod
     def get_file_format_for_csv(database_path: str) -> FileFormat | None:
         try:
-            determiner = FileFormatDeterminer(database_path, 5)
-            file_format = determiner.determine_file_format()
+            file_format = FileFormatDeterminer.determine_file_format(database_path)
             return file_format
         except StopIteration:
             raise FileIsJunk
 
-    # TODO: we don't want to do this, instead we want to read the file in chunks. Maybe return an iterator or something?
     def get_database(self) -> (pd.DataFrame, str):
         database = self.get_database_as_json_or_csv()
         file_identifier = self.hash.get_hash_from_file_contents()
@@ -56,7 +54,7 @@ class DatabaseReader:
         with warnings.catch_warnings():
             warnings.simplefilter("error", category=ParserWarning)
             if self.ignored_fields_exist():
-                csv_file = self.get_csv_without_without_ignored_fields()
+                csv_file = self.get_csv_without_ignored_fields()
             else:
                 csv_file = self.get_csv_with_all_fields()
             return csv_file
@@ -72,7 +70,8 @@ class DatabaseReader:
             csv_file = pd.read_csv(self.database_file_path, engine="python", sep='[:;.,\\s+|__]', index_col=False)
         return csv_file
 
-    def get_csv_without_without_ignored_fields(self):
+    # TODO: we don't want to do this, instead we want to read the file in chunks.
+    def get_csv_without_ignored_fields(self):
         fields_to_keep = self.get_fields_we_want_to_keep()
         csv_file = pd.read_csv(self.database_file_path, sep=self.file_format.file_delimiter,
                                names=self.file_format.fields, header=None, index_col=False,
@@ -82,6 +81,7 @@ class DatabaseReader:
     def get_fields_we_want_to_keep(self):
         return list(filter(lambda x: x not in self.file_format.ignored_fields, self.file_format.fields))
 
+    # TODO: we don't want to do this, instead we want to read the file in chunks.
     def get_database_from_json(self):
         try:
             json_file = pd.read_json(self.database_file_path)

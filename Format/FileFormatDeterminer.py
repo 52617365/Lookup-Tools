@@ -11,36 +11,37 @@ class FileFormat:
 
 
 class FileFormatDeterminer:
-    def __init__(self, database_path: str, n: int = 5):
-        self.database_path = database_path
-        self.n = n
-
-    def determine_file_format(self) -> FileFormat:
-        self.express_file_format()
+    @staticmethod
+    def determine_file_format(database_path: str) -> FileFormat:
+        FileFormatDeterminer.express_file_format(database_path)
         file_fields = get_file_fields_from_user()
         file_delimiter = get_file_delimiter_from_user()
-        ignored_fields = self.get_ignored_fields(file_fields)
+        ignored_fields = FileFormatDeterminer.get_ignored_fields(file_fields)
         return FileFormat(fields=file_fields, ignored_fields=ignored_fields, file_delimiter=file_delimiter)
 
-    def express_file_format(self):
-        n_lines = self.read_the_first_n_lines_from_file_whilst_deleting_new_lines()
-        self.print_lines_to_user(n_lines)
+    @staticmethod
+    def express_file_format(database_path: str):
+        n_lines = FileFormatDeterminer.read_the_first_n_lines_from_file_whilst_deleting_new_lines(database_path)
+        FileFormatDeterminer.print_lines_to_user(n_lines, database_path)
 
-    def read_the_first_n_lines_from_file_whilst_deleting_new_lines(self) -> list:
+    @staticmethod
+    def read_the_first_n_lines_from_file_whilst_deleting_new_lines(database_path: str) -> list:
         try:
-            with open(self.database_path, 'r') as file:
-                n_lines = [self.delete_line_breaks(next(file)) for _ in range(self.n)]
+            lines_to_read = 5
+            with open(database_path, 'r') as file:
+                n_lines = [FileFormatDeterminer.delete_line_breaks(next(file)) for _ in range(lines_to_read)]
                 return n_lines
         except IOError:
-            quit(F"File {self.database_path} does not exist or it's not accessible.")
+            quit(F"File {database_path} does not exist or it's not accessible.")
 
     @staticmethod
     def delete_line_breaks(line):
         return line.rstrip()
 
-    def print_lines_to_user(self, lines: list):
-        print(F"Database path: {self.database_path}")
-        print(F"Printing the first {self.n} lines.")
+    @staticmethod
+    def print_lines_to_user(lines: list, database_path: str):
+        print(F"Database path: {database_path}")
+        print(F"Printing the first {len(lines)} lines.")
         print("Please specify the format of the file.")
         for line in lines:
             print(line)

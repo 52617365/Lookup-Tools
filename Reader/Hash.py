@@ -19,8 +19,3 @@ class Hash:
         for chunk in iter(lambda: file.read(128 * blake2b_hash.block_size), b""):
             blake2b_hash.update(chunk)
         return blake2b_hash.hexdigest()
-
-    # @staticmethod
-    # def __get_blake2b_hash_from(file_data: bytes) -> str:
-    #     file_hash = hashlib.blake2b(file_data).hexdigest()
-    #     return file_hash

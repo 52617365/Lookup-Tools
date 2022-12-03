@@ -39,6 +39,8 @@ class Usage:
 
     def handle_database(self, database_path):
         try:
+            # TODO: 1. Check in chunks that the file is in correct format.
+            # TODO: 2. If it is, then read the file in chunks and write to Mongo.
             database_contents, file_identifier = DatabaseReader(database_path,
                                                                 self.__user_arguments.manual).get_database()
             combined_database_contents = self.__combine_additional_information_to_database(database_contents,
