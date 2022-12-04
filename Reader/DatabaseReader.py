@@ -108,3 +108,5 @@ class DatabaseReader:
                         break
         except ParserWarning:
             quit(F"The file does not have a valid format.")
+        except ParserError:
+            quit(F"The file does not have a valid format.")
