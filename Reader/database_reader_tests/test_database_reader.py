@@ -22,7 +22,7 @@ class TestDatabaseReader(TestCase):
         mock_get_file_format_for_csv.return_value = FileFormat(["dir", "test2", "test3"], [], ',')
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
         reader = self.get_reader(testing_file_path, True)
-        data = reader.get_csv_database_chunks()
+        data = reader.get_csv_database_chunk_iterator()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -32,7 +32,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1:asd2:asd3")
 
         reader = self.get_reader(testing_file_path, True)
-        data = reader.get_csv_database_chunks()
+        data = reader.get_csv_database_chunk_iterator()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -42,7 +42,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1|asd2|asd3")
 
         reader = self.get_reader(testing_file_path, True)
-        data = reader.get_csv_database_chunks()
+        data = reader.get_csv_database_chunk_iterator()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -53,7 +53,7 @@ class TestDatabaseReader(TestCase):
 
         reader = self.get_reader(testing_file_path, True)
 
-        data = reader.get_csv_database_chunks()
+        data = reader.get_csv_database_chunk_iterator()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -64,7 +64,7 @@ class TestDatabaseReader(TestCase):
 
         reader = self.get_reader(testing_file_path, True)
 
-        data = reader.get_csv_database_chunks()
+        data = reader.get_csv_database_chunk_iterator()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -85,7 +85,7 @@ class TestDatabaseReader(TestCase):
 
         reader = self.get_reader(testing_file_path, True)
 
-        data = reader.get_csv_database_chunks()
+        data = reader.get_csv_database_chunk_iterator()
 
         reader.terminate_if_csv_database_invalid_format(data)
 
@@ -98,7 +98,7 @@ class TestDatabaseReader(TestCase):
         with self.assertRaises(SystemExit):
             reader = self.get_reader(testing_file_path, True)
 
-            data = reader.get_csv_database_chunks()
+            data = reader.get_csv_database_chunk_iterator()
 
             reader.terminate_if_csv_database_invalid_format(data)
 
