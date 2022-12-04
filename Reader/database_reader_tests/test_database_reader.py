@@ -75,7 +75,7 @@ class TestDatabaseReader(TestCase):
             testing_file_path = self.create_fake_file("invalid_format_file.json", "value1,value2,value3")
 
             reader = self.get_reader(testing_file_path, True)
-            reader.get_json_or_csv_database_chunks()
+            next(reader.get_json_or_csv_database_chunks())
 
     @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
     def test_validate_valid_csv_file_chunks(self, mock_get_file_format_for_csv):
@@ -118,7 +118,7 @@ class TestDatabaseReader(TestCase):
 
     def test_get_database_as_json(self):
         testing_file_path = self.create_fake_file("testing_file.json",
-                                                  '[{"field1": "asd1", "field2": "asd2", "field3": "asd3"},{"field1": "asd4", "field2": "asd5", "field3": "asd6"}]')
+                                                  '{"field1": "asd1", "field2": "asd2", "field3": "asd3"},{"field1": "asd4", "field2": "asd5", "field3": "asd6"}')
 
         reader = self.get_reader(testing_file_path, True)
 
@@ -126,7 +126,9 @@ class TestDatabaseReader(TestCase):
 
         expected_data_frame = pd.DataFrame(
             {'field1': ["asd1", "asd4"], 'field2': ["asd2", "asd5"], 'field3': ["asd3", "asd6"]})
-        self.assertEqual(data_frame.equals(expected_data_frame), True)
+        resulting_data_frame = next(data_frame)
+
+        self.assertEqual(resulting_data_frame.equals(expected_data_frame), True)
 
     @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
     def test_get_database_with_ignored_fields(self, mock_get_file_format_for_csv):

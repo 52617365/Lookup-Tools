@@ -46,7 +46,7 @@ class DatabaseReader:
         return database_reader
 
     def get_json_database(self):
-        json_database = pd.read_json(self.database_file_path)
+        json_database = pd.read_json(self.database_file_path, chunksize=1000, lines=True)
         return json_database
 
     def get_csv_database_chunks(self):
