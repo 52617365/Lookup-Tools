@@ -2,7 +2,7 @@ import warnings
 from typing import Iterator
 
 import pandas as pd
-from pandas.errors import ParserWarning
+from pandas.errors import ParserWarning, ParserError
 
 from Format.FileFormatDeterminer import FileFormat, FileFormatDeterminer
 from Format.Input import IDKException
@@ -40,16 +40,17 @@ class DatabaseReader:
 
     def get_json_or_csv_database_chunk_iterator(self):
         if self.file_is_json:
-            database_reader = self.get_json_database()
+            database_reader = self.get_json_database_chunk_iterator()
         else:
-            database_reader = self.get_csv_database_chunks()
+            database_reader = self.get_csv_database_chunk_iterator()
         return database_reader
 
-    def get_json_database(self):
-        json_database = pd.read_json(self.database_file_path, chunksize=1000, lines=True)
-        return json_database
+    def get_json_database_chunk_iterator(self):
+        with pd.read_json(self.database_file_path, chunksize=1000, lines=True) as chunks:
+            for chunk in chunks:
+                yield chunk
 
-    def get_csv_database_chunks(self):
+    def get_csv_database_chunk_iterator(self):
         if self.ignored_fields_exist():
             csv_file = self.get_csv_chunk_iterator_with_deleted_fields()
         else:
@@ -94,7 +95,6 @@ class DatabaseReader:
             for chunk in chunks:
                 yield chunk
 
-    # TODO: fix why this consumes so much memory even though we are iterating a generator here.
     @staticmethod
     def terminate_if_csv_database_invalid_format(database_content_chunks: Iterator):
         print("Validating the format of the database...")
