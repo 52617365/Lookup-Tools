@@ -78,16 +78,43 @@ class TestDatabaseReader(TestCase):
             reader.get_json_or_csv_database_chunks()
 
     @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_validate_valid_csv_file_chunks(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = FileFormat(["field", "field2", "field3"], [], ',')
+        testing_file_path = self.create_fake_file("testing_file.csv",
+                                                  "asd7,asd8,asd9\nasd10,asd11,asd12\nasd13,asd14,asd15\nasd16,asd17,asd18")
+
+        reader = self.get_reader(testing_file_path, True)
+
+        data = reader.get_csv_database_chunks()
+
+        reader.terminate_if_csv_database_invalid_format(data)
+
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_validate_invalid_csv_file_chunks(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = FileFormat(["field", "field2"], [], ',')
+        testing_file_path = self.create_fake_file("testing_file.csv",
+                                                  "asd7,asd8,asd9\nasd10,asd11,asd12\nasd13,asd14,asd15\nasd16,asd17,asd18")
+
+        with self.assertRaises(SystemExit):
+            reader = self.get_reader(testing_file_path, True)
+
+            data = reader.get_csv_database_chunks()
+
+            reader.terminate_if_csv_database_invalid_format(data)
+
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
     def test_get_database(self, mock_get_file_format_for_csv):
         mock_get_file_format_for_csv.return_value = FileFormat(["field1", "field2", "field3"], [], ',')
 
-        testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
+        testing_file_path = self.create_fake_file("testing_file.csv",
+                                                  "asd1,asd2,asd3")
 
         reader = self.get_reader(testing_file_path, True)
         data_frame = reader.get_json_or_csv_database_chunks()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
-        self.assertEqual(next(data_frame).equals(expected_data_frame), True)
+        resulting_data_frame = next(data_frame)
+        self.assertEqual(resulting_data_frame.equals(expected_data_frame), True)
 
     def test_get_database_as_json(self):
         testing_file_path = self.create_fake_file("testing_file.json",
