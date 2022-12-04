@@ -1,5 +1,3 @@
-from itertools import tee
-
 import pandas as pd
 from pandas import DataFrame
 
@@ -45,17 +43,17 @@ class Usage:
 
             reader = DatabaseReader(database_path,
                                     self.__user_arguments.manual)
-            database_content_chunks = reader.get_json_or_csv_database_chunk_iterator()
-            self.handle_chunks(database_content_chunks, database_path, file_identifier, reader)
+            self.handle_chunks(database_path, file_identifier, reader)
         except WeWantToSkipFile as e:
             print(e)
             return
 
-    def handle_chunks(self, database_content_chunks, database_path, file_identifier, reader: DatabaseReader):
-        # Taking a copy of the iterator to avoid the original iterator being exhausted
-        database_content_chunks, database_content_chunks_copy = tee(database_content_chunks)
-        reader.terminate_if_csv_database_invalid_format(database_content_chunks_copy)
+    def handle_chunks(self, database_path, file_identifier, reader: DatabaseReader):
+        # Creating two iterators to avoid having to implement a hack to "reset" the iterator back to start once it's exhausted.
+        iterator_to_check_database_format = reader.get_json_or_csv_database_chunk_iterator()
+        reader.terminate_if_csv_database_invalid_format(iterator_to_check_database_format)
 
+        database_content_chunks = reader.get_json_or_csv_database_chunk_iterator()
         for chunk in database_content_chunks:
             combined_database_contents = self.__combine_additional_information_to_database(chunk,
                                                                                            database_path)
