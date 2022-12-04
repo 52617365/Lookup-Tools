@@ -1,7 +1,4 @@
-import warnings
-
 import pandas as pd
-from pandas.errors import ParserWarning
 
 from Format.FileFormatDeterminer import FileFormat, FileFormatDeterminer
 from Format.Input import IDKException
@@ -61,29 +58,25 @@ class DatabaseReader:
     def get_csv_chunks_with_deleted_fields(self):
         fields_to_keep = self.get_fields_we_want_to_keep()
 
-        with warnings.catch_warnings():
-            warnings.simplefilter("error", category=ParserWarning)
-            csv_file = DatabaseReader.get_csv_chunks(database_file_path=self.database_file_path,
-                                                     sep=self.file_format.file_delimiter, names=self.file_format.fields,
-                                                     use_cols=fields_to_keep, engine="c", header=None)
-            return csv_file
+        csv_file = DatabaseReader.get_csv_chunks(database_file_path=self.database_file_path,
+                                                 sep=self.file_format.file_delimiter, names=self.file_format.fields,
+                                                 use_cols=fields_to_keep, engine="c", header=None)
+        return csv_file
 
     def get_fields_we_want_to_keep(self):
         return list(filter(lambda x: x not in self.file_format.ignored_fields, self.file_format.fields))
 
     def get_csv_chunks_with_all_fields(self):
-        with warnings.catch_warnings():
-            warnings.simplefilter("error", category=ParserWarning)
-            if self.specify_format_manually:
-                csv_file_chunks = DatabaseReader.get_csv_chunks(database_file_path=self.database_file_path,
-                                                                sep=self.file_format.file_delimiter,
-                                                                names=self.file_format.fields,
-                                                                engine="c", header=None)
-            else:
-                csv_file_chunks = DatabaseReader.get_csv_chunks(database_file_path=self.database_file_path,
-                                                                engine="python",
-                                                                sep='[:;.,\\s+|__]')
-            return csv_file_chunks
+        if self.specify_format_manually:
+            csv_file_chunks = DatabaseReader.get_csv_chunks(database_file_path=self.database_file_path,
+                                                            sep=self.file_format.file_delimiter,
+                                                            names=self.file_format.fields,
+                                                            engine="c", header=None)
+        else:
+            csv_file_chunks = DatabaseReader.get_csv_chunks(database_file_path=self.database_file_path,
+                                                            engine="python",
+                                                            sep='[:;.,\\s+|__]')
+        return csv_file_chunks
 
     @staticmethod
     def get_csv_chunks(database_file_path: str, engine, use_cols=None, sep: str = ',', names=None,

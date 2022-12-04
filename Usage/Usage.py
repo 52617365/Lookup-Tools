@@ -2,7 +2,7 @@ import warnings
 
 import pandas as pd
 from pandas import DataFrame
-from pandas.errors import ParserError, ParserWarning
+from pandas.errors import ParserWarning
 
 from Database.DatabaseCombiner import DatabaseCombiner
 from DatabaseWriter.HashWriter import HashWriter
@@ -47,26 +47,25 @@ class Usage:
             reader = DatabaseReader(database_path,
                                     self.__user_arguments.manual)
             database_content_chunks = reader.get_json_or_csv_database_chunks()
-            try:
-                with warnings.catch_warnings():
-                    warnings.simplefilter("error", category=ParserWarning)
-                    for chunk in database_content_chunks:
-                        # TODO: check that the chunks are in correct format here. Only after then jump into the next loop that does stuff with the chunks.
-                        combined_database_contents = self.__combine_additional_information_to_database(chunk,
-                                                                                                       database_path)
-                        self.__write_file_to_mongo_database(combined_database_contents, file_identifier)
-
-                        database_name = combined_database_contents['database_name'].iloc[0]
-                        self.hash_writer.write_valid_hash(file_identifier, database_name)
-            except ParserWarning:
-                quit(F"The file does not have a valid format.")
-        except ParserError:
-            quit(F"The file does not have a valid format.")
-        except ParserWarning:
-            quit(F"The file does not have a valid format.")
+            self.handle_chunk(database_content_chunks, database_path, file_identifier)
         except WeWantToSkipFile as e:
             print(e)
             return
+
+    def handle_chunk(self, database_content_chunks, database_path, file_identifier):
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("error", category=ParserWarning)
+                for chunk in database_content_chunks:
+                    # TODO: check that the chunks are in correct format here. Only after then jump into the next loop that does stuff with the chunks.
+                    combined_database_contents = self.__combine_additional_information_to_database(chunk,
+                                                                                                   database_path)
+                    self.__write_file_to_mongo_database(combined_database_contents, file_identifier)
+
+                    database_name = combined_database_contents['database_name'].iloc[0]
+                    self.hash_writer.write_valid_hash(file_identifier, database_name)
+        except ParserWarning:
+            quit(F"The file does not have a valid format.")
 
     def __combine_additional_information_to_database(self, database_contents: DataFrame, database_path: str):
         combined_delimited_database = DatabaseCombiner(self.additional_information)
