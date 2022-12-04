@@ -21,9 +21,8 @@ class TestDatabaseReader(TestCase):
     def test_get_valid_comma_delimited_file_as_dataframe(self, mock_get_file_format_for_csv):
         mock_get_file_format_for_csv.return_value = FileFormat(["dir", "test2", "test3"], [], ',')
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
-
-        example_delimited_file = DatabaseReader(testing_file_path, specify_format_manually=True)
-        data = example_delimited_file.get_csv_database_chunks()
+        reader = self.get_reader(testing_file_path, True)
+        data = reader.get_csv_database_chunks()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -32,9 +31,8 @@ class TestDatabaseReader(TestCase):
         mock_get_file_format_for_csv.return_value = FileFormat(["dir", "test2", "test3"], [], ':')
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1:asd2:asd3")
 
-        example_delimited_file = DatabaseReader(testing_file_path, specify_format_manually=True)
-
-        data = example_delimited_file.get_csv_database_chunks()
+        reader = self.get_reader(testing_file_path, True)
+        data = reader.get_csv_database_chunks()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -43,8 +41,8 @@ class TestDatabaseReader(TestCase):
         mock_get_file_format_for_csv.return_value = FileFormat(["dir", "test2", "test3"], [], '|')
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1|asd2|asd3")
 
-        example_delimited_file = DatabaseReader(testing_file_path, specify_format_manually=True)
-        data = example_delimited_file.get_csv_database_chunks()
+        reader = self.get_reader(testing_file_path, True)
+        data = reader.get_csv_database_chunks()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -53,9 +51,9 @@ class TestDatabaseReader(TestCase):
         mock_get_file_format_for_csv.return_value = FileFormat(["dir", "test2", "test3"], [], '.')
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1.asd2.asd3")
 
-        example_delimited_file = DatabaseReader(testing_file_path, specify_format_manually=True)
+        reader = self.get_reader(testing_file_path, True)
 
-        data = example_delimited_file.get_csv_database_chunks()
+        data = reader.get_csv_database_chunks()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -64,9 +62,9 @@ class TestDatabaseReader(TestCase):
         mock_get_file_format_for_csv.return_value = FileFormat(["dir", "test2", "test3"], [], '\t')
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1\tasd2\tasd3")
 
-        example_delimited_file = DatabaseReader(testing_file_path, specify_format_manually=True)
+        reader = self.get_reader(testing_file_path, True)
 
-        data = example_delimited_file.get_csv_database_chunks()
+        data = reader.get_csv_database_chunks()
         expected_data = pd.DataFrame({'dir': ["asd1"], 'test2': ["asd2"], 'test3': ["asd3"]})
         self.assertEqual(next(data).equals(expected_data), True)
 
@@ -76,7 +74,7 @@ class TestDatabaseReader(TestCase):
         with self.assertRaises(ValueError):
             testing_file_path = self.create_fake_file("invalid_format_file.json", "value1,value2,value3")
 
-            reader = DatabaseReader(testing_file_path, specify_format_manually=True)
+            reader = self.get_reader(testing_file_path, True)
             reader.get_json_or_csv_database_chunks()
 
     @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
@@ -85,7 +83,7 @@ class TestDatabaseReader(TestCase):
 
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
 
-        reader = DatabaseReader(testing_file_path, specify_format_manually=True)
+        reader = self.get_reader(testing_file_path, True)
         data_frame = reader.get_json_or_csv_database_chunks()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
@@ -95,7 +93,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.json",
                                                   '[{"field1": "asd1", "field2": "asd2", "field3": "asd3"},{"field1": "asd4", "field2": "asd5", "field3": "asd6"}]')
 
-        reader = DatabaseReader(testing_file_path, specify_format_manually=True)
+        reader = self.get_reader(testing_file_path, True)
 
         data_frame = reader.get_json_or_csv_database_chunks()
 
@@ -109,7 +107,7 @@ class TestDatabaseReader(TestCase):
 
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
 
-        reader = DatabaseReader(testing_file_path, specify_format_manually=True)
+        reader = self.get_reader(testing_file_path, True)
         data_frame = reader.get_json_or_csv_database_chunks()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field3': ["asd3"]})
@@ -119,18 +117,21 @@ class TestDatabaseReader(TestCase):
         with self.assertRaises(WeWantToSkipFile):
             with HiddenPrints():
                 testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
-
-                reader = DatabaseReader(testing_file_path, specify_format_manually=True)
+                reader = self.get_reader(testing_file_path, True)
                 reader.get_file_format_for_csv("testing_file.csv")
 
     def test_get_csv_with_all_fields_automatically(self):
         testing_file_path = self.create_fake_file("testing_file.csv", "field1,field2,field3\nasd1,asd2,asd3")
 
-        reader = DatabaseReader(testing_file_path, specify_format_manually=False)
+        reader = self.get_reader(testing_file_path, False)
         automatically_determined_csv_file = reader.get_csv_chunks_with_all_fields()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
         self.assertEqual(next(automatically_determined_csv_file).equals(expected_data_frame), True)
+
+    @staticmethod
+    def get_reader(testing_file_path, specify_format_manually):
+        return DatabaseReader(testing_file_path, specify_format_manually=specify_format_manually)
 
     def init_get_database(self, mock_dotenv_values, mongo_server_info):
         self.avoid_exit_if_instance_mongo_instance_does_not_exist(mongo_server_info)
