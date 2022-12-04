@@ -45,7 +45,7 @@ class Usage:
 
             reader = DatabaseReader(database_path,
                                     self.__user_arguments.manual)
-            database_content_chunks = reader.get_json_or_csv_database_chunks()
+            database_content_chunks = reader.get_json_or_csv_database_chunk_iterator()
             self.handle_chunks(database_content_chunks, database_path, file_identifier, reader)
         except WeWantToSkipFile as e:
             print(e)

@@ -75,7 +75,7 @@ class TestDatabaseReader(TestCase):
             testing_file_path = self.create_fake_file("invalid_format_file.json", "value1,value2,value3")
 
             reader = self.get_reader(testing_file_path, True)
-            next(reader.get_json_or_csv_database_chunks())
+            next(reader.get_json_or_csv_database_chunk_iterator())
 
     @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
     def test_validate_valid_csv_file_chunks(self, mock_get_file_format_for_csv):
@@ -110,7 +110,7 @@ class TestDatabaseReader(TestCase):
                                                   "asd1,asd2,asd3")
 
         reader = self.get_reader(testing_file_path, True)
-        data_frame = reader.get_json_or_csv_database_chunks()
+        data_frame = reader.get_json_or_csv_database_chunk_iterator()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
         resulting_data_frame = next(data_frame)
@@ -122,7 +122,7 @@ class TestDatabaseReader(TestCase):
 
         reader = self.get_reader(testing_file_path, True)
 
-        data_frame = reader.get_json_or_csv_database_chunks()
+        data_frame = reader.get_json_or_csv_database_chunk_iterator()
 
         expected_data_frame = pd.DataFrame(
             {'field1': ["asd1", "asd4"], 'field2': ["asd2", "asd5"], 'field3': ["asd3", "asd6"]})
@@ -137,7 +137,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
 
         reader = self.get_reader(testing_file_path, True)
-        data_frame = reader.get_json_or_csv_database_chunks()
+        data_frame = reader.get_json_or_csv_database_chunk_iterator()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field3': ["asd3"]})
         self.assertEqual(next(data_frame).equals(expected_data_frame), True)
@@ -153,7 +153,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.csv", "field1,field2,field3\nasd1,asd2,asd3")
 
         reader = self.get_reader(testing_file_path, False)
-        automatically_determined_csv_file = reader.get_csv_chunks_with_all_fields()
+        automatically_determined_csv_file = reader.get_csv_chunk_iterator_with_all_fields()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
         self.assertEqual(next(automatically_determined_csv_file).equals(expected_data_frame), True)

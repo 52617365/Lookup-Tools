@@ -38,7 +38,7 @@ class DatabaseReader:
         file_format = FileFormatDeterminer.determine_file_format(database_path)
         return file_format
 
-    def get_json_or_csv_database_chunks(self):
+    def get_json_or_csv_database_chunk_iterator(self):
         if self.file_is_json:
             database_reader = self.get_json_database()
         else:
@@ -51,53 +51,60 @@ class DatabaseReader:
 
     def get_csv_database_chunks(self):
         if self.ignored_fields_exist():
-            csv_file = self.get_csv_chunks_with_deleted_fields()
+            csv_file = self.get_csv_chunk_iterator_with_deleted_fields()
         else:
-            csv_file = self.get_csv_chunks_with_all_fields()
+            csv_file = self.get_csv_chunk_iterator_with_all_fields()
         return csv_file
 
     def ignored_fields_exist(self):
         return len(self.file_format.ignored_fields) != 0
 
-    def get_csv_chunks_with_deleted_fields(self):
+    def get_csv_chunk_iterator_with_deleted_fields(self):
         fields_to_keep = self.get_fields_we_want_to_keep()
 
-        csv_file = DatabaseReader.get_csv_chunks(database_file_path=self.database_file_path,
-                                                 sep=self.file_format.file_delimiter, names=self.file_format.fields,
-                                                 use_cols=fields_to_keep, engine="c", header=None)
+        csv_file = DatabaseReader.get_csv_chunk_iterator(database_file_path=self.database_file_path,
+                                                         sep=self.file_format.file_delimiter,
+                                                         names=self.file_format.fields,
+                                                         use_cols=fields_to_keep, engine="c", header=None)
         return csv_file
 
     def get_fields_we_want_to_keep(self):
         return list(filter(lambda x: x not in self.file_format.ignored_fields, self.file_format.fields))
 
-    def get_csv_chunks_with_all_fields(self):
+    def get_csv_chunk_iterator_with_all_fields(self):
         if self.specify_format_manually:
-            csv_file_chunks = DatabaseReader.get_csv_chunks(database_file_path=self.database_file_path,
-                                                            sep=self.file_format.file_delimiter,
-                                                            names=self.file_format.fields,
-                                                            engine="c", header=None)
+            csv_file_chunks = DatabaseReader.get_csv_chunk_iterator(database_file_path=self.database_file_path,
+                                                                    sep=self.file_format.file_delimiter,
+                                                                    names=self.file_format.fields,
+                                                                    engine="c", header=None)
         else:
-            csv_file_chunks = DatabaseReader.get_csv_chunks(database_file_path=self.database_file_path,
-                                                            engine="python",
-                                                            sep='[:;.,\\s+|__]')
+            csv_file_chunks = DatabaseReader.get_csv_chunk_iterator(database_file_path=self.database_file_path,
+                                                                    engine="python",
+                                                                    sep='[:;.,\\s+|__]')
         return csv_file_chunks
 
     @staticmethod
-    def get_csv_chunks(database_file_path: str, engine, use_cols=None, sep: str = ',', names=None,
-                       header: str | None = "infer"):
+    def get_csv_chunk_iterator(database_file_path: str, engine, use_cols=None, sep: str = ',', names=None,
+                               header: str | None = "infer"):
 
-        csv_file = pd.read_csv(database_file_path, sep=sep,
-                               names=names, header=header,
-                               usecols=use_cols, engine=engine, index_col=False, chunksize=1000)
-        return csv_file
+        with pd.read_csv(database_file_path, sep=sep,
+                         names=names, header=header,
+                         usecols=use_cols, engine=engine, index_col=False, chunksize=100000,
+                         ) as chunks:
+            for chunk in chunks:
+                yield chunk
 
+    # TODO: fix why this consumes so much memory even though we are iterating a generator here.
     @staticmethod
     def terminate_if_csv_database_invalid_format(database_content_chunks: Iterator):
+        print("Validating the format of the database...")
         try:
             with warnings.catch_warnings():
                 warnings.simplefilter("error", category=ParserWarning)
-                for _ in database_content_chunks:
-                    pass
-
+                while True:
+                    try:
+                        next(database_content_chunks)
+                    except StopIteration:
+                        break
         except ParserWarning:
             quit(F"The file does not have a valid format.")
