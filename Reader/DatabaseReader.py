@@ -2,7 +2,6 @@ import warnings
 
 import pandas as pd
 from pandas.errors import ParserWarning
-from pandas.io.parsers import TextFileReader
 
 from Format.FileFormatDeterminer import FileFormat, FileFormatDeterminer
 from Format.Input import IDKException
@@ -11,8 +10,6 @@ from Format.Input import IDKException
 class WeWantToSkipFile(Exception):
     pass
 
-
-# new
 
 class DatabaseReader:
     def __init__(self, database_file_path: str, specify_format_manually: bool):
@@ -40,33 +37,33 @@ class DatabaseReader:
         file_format = FileFormatDeterminer.determine_file_format(database_path)
         return file_format
 
-    def get_json_or_csv_database(self):
+    def get_json_or_csv_database_chunks(self):
         if self.file_is_json:
             database_reader = self.get_json_database()
         else:
-            database_reader = self.get_csv_database()
+            database_reader = self.get_csv_database_chunks()
         return database_reader
 
     def get_json_database(self):
         json_database = pd.read_json(self.database_file_path)
         return json_database
 
-    def get_csv_database(self):
+    def get_csv_database_chunks(self):
         if self.ignored_fields_exist():
-            csv_file = self.get_csv_with_deleted_fields()
+            csv_file = self.get_csv_chunks_with_deleted_fields()
         else:
-            csv_file = self.get_csv_with_all_fields()
+            csv_file = self.get_csv_chunks_with_all_fields()
         return csv_file
 
     def ignored_fields_exist(self):
         return len(self.file_format.ignored_fields) != 0
 
-    def get_csv_with_deleted_fields(self):
+    def get_csv_chunks_with_deleted_fields(self):
         fields_to_keep = self.get_fields_we_want_to_keep()
 
         with warnings.catch_warnings():
             warnings.simplefilter("error", category=ParserWarning)
-            csv_file = DatabaseReader.get_csv_reader(database_file_path=self.database_file_path,
+            csv_file = DatabaseReader.get_csv_chunks(database_file_path=self.database_file_path,
                                                      sep=self.file_format.file_delimiter, names=self.file_format.fields,
                                                      use_cols=fields_to_keep, engine="c", header=None)
             return csv_file
@@ -74,24 +71,25 @@ class DatabaseReader:
     def get_fields_we_want_to_keep(self):
         return list(filter(lambda x: x not in self.file_format.ignored_fields, self.file_format.fields))
 
-    def get_csv_with_all_fields(self):
+    def get_csv_chunks_with_all_fields(self):
         with warnings.catch_warnings():
             warnings.simplefilter("error", category=ParserWarning)
             if self.specify_format_manually:
-                csv_file = DatabaseReader.get_csv_reader(database_file_path=self.database_file_path,
-                                                         sep=self.file_format.file_delimiter,
-                                                         names=self.file_format.fields,
-                                                         engine="c", header=None)
+                csv_file_chunks = DatabaseReader.get_csv_chunks(database_file_path=self.database_file_path,
+                                                                sep=self.file_format.file_delimiter,
+                                                                names=self.file_format.fields,
+                                                                engine="c", header=None)
             else:
-                csv_file = DatabaseReader.get_csv_reader(database_file_path=self.database_file_path, engine="python",
-                                                         sep='[:;.,\\s+|__]')
-            return csv_file
+                csv_file_chunks = DatabaseReader.get_csv_chunks(database_file_path=self.database_file_path,
+                                                                engine="python",
+                                                                sep='[:;.,\\s+|__]')
+            return csv_file_chunks
 
     @staticmethod
-    def get_csv_reader(database_file_path: str, engine, use_cols=None, sep: str = ',', names=None,
-                       header: str | None = "infer") -> TextFileReader:
+    def get_csv_chunks(database_file_path: str, engine, use_cols=None, sep: str = ',', names=None,
+                       header: str | None = "infer"):
 
         csv_file = pd.read_csv(database_file_path, sep=sep,
                                names=names, header=header,
-                               usecols=use_cols, engine=engine, index_col=False)
+                               usecols=use_cols, engine=engine, index_col=False, chunksize=1000)
         return csv_file
