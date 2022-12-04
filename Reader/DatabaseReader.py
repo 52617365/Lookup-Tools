@@ -1,4 +1,8 @@
+import warnings
+from typing import Iterator
+
 import pandas as pd
+from pandas.errors import ParserWarning
 
 from Format.FileFormatDeterminer import FileFormat, FileFormatDeterminer
 from Format.Input import IDKException
@@ -86,3 +90,14 @@ class DatabaseReader:
                                names=names, header=header,
                                usecols=use_cols, engine=engine, index_col=False, chunksize=1000)
         return csv_file
+
+    @staticmethod
+    def terminate_if_csv_database_invalid_format(database_content_chunks: Iterator):
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("error", category=ParserWarning)
+                for _ in database_content_chunks:
+                    pass
+
+        except ParserWarning:
+            quit(F"The file does not have a valid format.")
