@@ -39,23 +39,16 @@ class Usage:
         return databases
 
     def handle_database(self, database_path):
-        # TODO: make sure the file is in a correct format here or something.
         try:
             file_identifier = Hash.get_hash_from_file_contents(database_path)
 
             reader = DatabaseReader(database_path,
                                     self.__user_arguments.manual)
-            database_content_chunks = reader.get_database_chunks()
+            database_content = reader.get_json_or_csv_database()
 
-            for chunk in database_content_chunks:
-                self.handle_chunk(chunk, database_path, file_identifier)
-        except WeWantToSkipFile as e:
-            print(e)
-            return
+            # TODO: check that the chunks are in correct format here. Only after then jump into the next loop that does stuff with the chunks.
 
-    def handle_chunk(self, chunk, database_path, file_identifier):
-        try:
-            combined_database_contents = self.__combine_additional_information_to_database(chunk,
+            combined_database_contents = self.__combine_additional_information_to_database(database_content,
                                                                                            database_path)
             self.__write_file_to_mongo_database(combined_database_contents, file_identifier)
 
@@ -65,6 +58,9 @@ class Usage:
             quit(F"The file does not have a valid format.")
         except ParserWarning:
             quit(F"The file does not have a valid format.")
+        except WeWantToSkipFile as e:
+            print(e)
+            return
 
     def __combine_additional_information_to_database(self, database_contents: DataFrame, database_path: str):
         combined_delimited_database = DatabaseCombiner(self.additional_information)
