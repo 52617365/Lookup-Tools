@@ -50,8 +50,9 @@ class Usage:
 
     def handle_chunks(self, database_path, file_identifier, reader: DatabaseReader):
         # Creating two iterators to avoid having to implement a hack to "reset" the iterator back to start once it's exhausted.
-        iterator_to_check_database_format = reader.get_json_or_csv_database_chunk_iterator()
-        reader.terminate_if_csv_database_invalid_format(iterator_to_check_database_format)
+        if not self.__user_arguments.lazy:
+            iterator_to_check_database_format = reader.get_json_or_csv_database_chunk_iterator()
+            reader.terminate_if_csv_database_invalid_format(iterator_to_check_database_format)
 
         database_content_chunks = reader.get_json_or_csv_database_chunk_iterator()
         for chunk in database_content_chunks:
