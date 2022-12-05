@@ -25,7 +25,7 @@ class CommandLineArguments:
         self.parser.add_argument('-m', '--manual', default=True, type=bool,
                                  help='A boolean value to determine if the format should be specified by the user. If this flag is false, the format has to be on the first line of the file.',
                                  required=False)
-        self.parser.add_argument('-l', '--lazy', default=False, type=bool,
+        self.parser.add_argument('-s', '--skip_invalid_lines', default=False, type=bool,
                                  help='A boolean value to determine if the program should skip invalid lines. Default is false.',
                                  required=False)
         self.args = self.parser.parse_args()
