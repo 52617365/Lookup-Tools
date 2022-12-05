@@ -8,7 +8,7 @@ class Hash:
         try:
             with open(path_to_file, "rb") as file:
                 blake2b_hash = Hash.get_hash_from_file_chunks(file)
-                print(F"Generated hash for {path_to_file}.")
+                print(F"Generated hash for {path_to_file} - {blake2b_hash}.")
                 return blake2b_hash
         except OSError:
             quit("Could not open file: " + path_to_file)
