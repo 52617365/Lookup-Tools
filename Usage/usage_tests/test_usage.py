@@ -63,7 +63,8 @@ class TestUsage(TestCase):
                                                                    additional='test_additional.txt',
                                                                    glob=False,
                                                                    json=False,
-                                                                   manual=True)
+                                                                   manual=True,
+                                                                   lazy=False)
         hash_collection, data_collection, database_collection = self.create_mocks()
         instance = Usage(hash_collection, data_collection, database_collection)
         instance.handle_database('test_input.txt')
@@ -80,7 +81,8 @@ class TestUsage(TestCase):
                                                                    additional='test_additional.txt',
                                                                    json=False,
                                                                    glob=False,
-                                                                   manual=True)
+                                                                   manual=True,
+                                                                   lazy=False)
         hash_collection, data_collection, database_collection = self.create_mocks()
         with self.assertRaises(SystemExit):
             instance = Usage(hash_collection, data_collection, database_collection)

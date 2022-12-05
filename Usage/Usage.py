@@ -42,7 +42,7 @@ class Usage:
             file_identifier = Hash.get_hash_from_file_contents(database_path)
 
             reader = DatabaseReader(database_path,
-                                    self.__user_arguments.manual)
+                                    self.__user_arguments.manual, self.__user_arguments.lazy)
             self.handle_chunks(database_path, file_identifier, reader)
         except WeWantToSkipFile as e:
             print(e)

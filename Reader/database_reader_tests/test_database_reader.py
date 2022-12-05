@@ -69,6 +69,30 @@ class TestDatabaseReader(TestCase):
         self.assertEqual(next(data).equals(expected_data), True)
 
     @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_invalid_line_gets_skipped_csv(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = FileFormat(["field", "field2", "field3"], [], ',')
+        testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3\nasd1,asd2,asd3,asd4")
+
+        reader = self.get_reader(testing_file_path, specify_format_manually=True, skip_invalid_lines=True)
+
+        data = reader.get_csv_database_chunk_iterator()
+        expected_data = pd.DataFrame({'field': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
+        self.assertEqual(next(data).equals(expected_data), True)
+
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
+    def test_invalid_line_gets_skipped_csv2(self, mock_get_file_format_for_csv):
+        mock_get_file_format_for_csv.return_value = FileFormat(["field", "field2", "field3"], [], ',')
+        testing_file_path = self.create_fake_file("testing_file.csv",
+                                                  "asd1,asd2,asd3\nasd1,asd2,asd3,asd4\nasd1,asd2,asd3")
+
+        reader = self.get_reader(testing_file_path, specify_format_manually=True, skip_invalid_lines=True)
+
+        data = reader.get_csv_database_chunk_iterator()
+        expected_data = pd.DataFrame(
+            {'field': ["asd1", "asd1"], 'field2': ["asd2", "asd2"], 'field3': ["asd3", "asd3"]})
+        self.assertEqual(next(data).equals(expected_data), True)
+
+    @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
     def test_get_json_invalid_format(self, mock_get_file_format_for_csv):
         mock_get_file_format_for_csv.return_value = FileFormat(["field1", "field2"], [], ',')
         with self.assertRaises(ValueError):
@@ -96,7 +120,7 @@ class TestDatabaseReader(TestCase):
                                                   "asd7,asd8,asd9\nasd10,asd11,asd12\nasd13,asd14,asd15\nasd16,asd17,asd18")
 
         with self.assertRaises(SystemExit):
-            reader = self.get_reader(testing_file_path, True)
+            reader = self.get_reader(testing_file_path, specify_format_manually=True, skip_invalid_lines=False)
 
             data = reader.get_csv_database_chunk_iterator()
 
@@ -159,8 +183,9 @@ class TestDatabaseReader(TestCase):
         self.assertEqual(next(automatically_determined_csv_file).equals(expected_data_frame), True)
 
     @staticmethod
-    def get_reader(testing_file_path, specify_format_manually):
-        return DatabaseReader(testing_file_path, specify_format_manually=specify_format_manually)
+    def get_reader(testing_file_path, specify_format_manually, skip_invalid_lines=False):
+        return DatabaseReader(testing_file_path, specify_format_manually=specify_format_manually,
+                              skip_invalid_lines=skip_invalid_lines)
 
     def init_get_database(self, mock_dotenv_values, mongo_server_info):
         self.avoid_exit_if_instance_mongo_instance_does_not_exist(mongo_server_info)

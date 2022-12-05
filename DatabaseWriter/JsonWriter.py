@@ -24,6 +24,8 @@ class JsonWriter:
 
     def insert_database_contents_as_json(self):
         try:
+            if self.__combined_database_contents.empty:
+                quit("The database is empty, so we will not write it to MongoDB.")
             data_to_write_in_json = self.__combined_database_contents.to_dict(orient='records')
             self.delete_nan_values(data_to_write_in_json)
             self.__data_collection.insert_many(data_to_write_in_json)
