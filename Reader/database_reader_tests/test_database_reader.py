@@ -98,7 +98,7 @@ class TestDatabaseReader(TestCase):
         with self.assertRaises(ValueError):
             testing_file_path = self.create_fake_file("invalid_format_file.json", "value1,value2,value3")
 
-            reader = self.get_reader(testing_file_path, True)
+            reader = self.get_reader(testing_file_path, specify_format_manually=True)
             next(reader.get_json_or_csv_database_chunk_iterator())
 
     @patch('Reader.DatabaseReader.DatabaseReader.get_file_format_for_csv')
@@ -107,7 +107,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.csv",
                                                   "asd7,asd8,asd9\nasd10,asd11,asd12\nasd13,asd14,asd15\nasd16,asd17,asd18")
 
-        reader = self.get_reader(testing_file_path, True)
+        reader = self.get_reader(testing_file_path, specify_format_manually=True)
 
         data = reader.get_csv_database_chunk_iterator()
 
@@ -133,7 +133,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.csv",
                                                   "asd1,asd2,asd3")
 
-        reader = self.get_reader(testing_file_path, True)
+        reader = self.get_reader(testing_file_path, specify_format_manually=True)
         data_frame = reader.get_json_or_csv_database_chunk_iterator()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
@@ -144,7 +144,7 @@ class TestDatabaseReader(TestCase):
         testing_file_path = self.create_fake_file("testing_file.json",
                                                   '{"field1": "asd1", "field2": "asd2", "field3": "asd3"},{"field1": "asd4", "field2": "asd5", "field3": "asd6"}')
 
-        reader = self.get_reader(testing_file_path, True)
+        reader = self.get_reader(testing_file_path, specify_format_manually=True)
 
         data_frame = reader.get_json_or_csv_database_chunk_iterator()
 
@@ -160,7 +160,7 @@ class TestDatabaseReader(TestCase):
 
         testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
 
-        reader = self.get_reader(testing_file_path, True)
+        reader = self.get_reader(testing_file_path, specify_format_manually=True)
         data_frame = reader.get_json_or_csv_database_chunk_iterator()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field3': ["asd3"]})
@@ -170,13 +170,13 @@ class TestDatabaseReader(TestCase):
         with self.assertRaises(WeWantToSkipFile):
             with HiddenPrints():
                 testing_file_path = self.create_fake_file("testing_file.csv", "asd1,asd2,asd3")
-                reader = self.get_reader(testing_file_path, True)
+                reader = self.get_reader(testing_file_path, specify_format_manually=True)
                 reader.get_file_format_for_csv("testing_file.csv")
 
     def test_get_csv_with_all_fields_automatically(self):
         testing_file_path = self.create_fake_file("testing_file.csv", "field1,field2,field3\nasd1,asd2,asd3")
 
-        reader = self.get_reader(testing_file_path, False)
+        reader = self.get_reader(testing_file_path, specify_format_manually=False)
         automatically_determined_csv_file = reader.get_csv_chunk_iterator_with_all_fields()
 
         expected_data_frame = pd.DataFrame({'field1': ["asd1"], 'field2': ["asd2"], 'field3': ["asd3"]})
