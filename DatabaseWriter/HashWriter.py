@@ -1,11 +1,14 @@
 import hashlib
 
+from Database.DatabaseCombiner import get_file_name_from_path
+
 
 class HashWriter:
     def __init__(self, mongo_hash_collection):
         self.mongo_hash_collection = mongo_hash_collection
 
-    def write_valid_hash(self, hash: str, database_name: str):
+    def write_valid_hash(self, hash: str, database_path: str):
+        database_name = get_file_name_from_path(database_path)
         if self.hash_is_unique(hash):
             self.mongo_hash_collection.insert_one({"hash": hash, "database_name": database_name})
 
