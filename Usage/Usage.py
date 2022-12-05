@@ -2,6 +2,7 @@ import pandas as pd
 from pandas import DataFrame
 
 from Database.DatabaseCombiner import DatabaseCombiner
+from DatabaseWriter.AdditionalWriter import AdditionalWriter
 from DatabaseWriter.HashWriter import HashWriter
 from DatabaseWriter.JsonWriter import JsonWriter
 from FileGlob.FileGlob import FileGlob
@@ -16,7 +17,7 @@ class Usage:
         self.additional_information = self.__get_additional_information()
         self.hash_writer = HashWriter(hash_collection)
         self.__data_collection = data_collection
-        self.__database_collection = database_collection
+        self.__additional_writer = AdditionalWriter(database_collection)
 
     def __get_additional_information(self):
         try:
@@ -39,23 +40,24 @@ class Usage:
 
     def handle_database(self, database_path):
         try:
-            file_identifier = Hash.get_hash_from_file_contents(database_path)
-
             reader = DatabaseReader(database_path,
-                                    self.__user_arguments.manual, self.__user_arguments.lazy)
-            self.handle_chunks(database_path, file_identifier, reader)
+                                    self.__user_arguments.manual, self.__user_arguments.skip_invalid_lines)
+            self.handle_chunks(database_path, reader)
         except WeWantToSkipFile as e:
             print(e)
             return
 
-    def handle_chunks(self, database_path, file_identifier, reader: DatabaseReader):
-        # Creating two iterators to avoid having to implement a hack to "reset" the iterator back to start once it's exhausted.
-        if not self.__user_arguments.lazy:
-            iterator_to_check_database_format = reader.get_json_or_csv_database_chunk_iterator()
-            reader.terminate_if_csv_database_invalid_format(iterator_to_check_database_format)
+    def handle_chunks(self, database_path, reader: DatabaseReader):
+        self.validate_file_if_user_wanted_to(reader)
 
-        database_content_chunks = reader.get_json_or_csv_database_chunk_iterator()
-        for chunk in database_content_chunks:
+        file_identifier = Hash.get_hash_from_file_contents(database_path)
+
+        lines_in_database = 0
+
+        database_chunk_generator = reader.get_json_or_csv_database_chunk_iterator()
+        for chunk in database_chunk_generator:
+            lines_in_database += len(chunk)
+
             combined_database_contents = self.__combine_additional_information_to_database(chunk,
                                                                                            database_path)
             self.__write_file_to_mongo_database(combined_database_contents, file_identifier)
@@ -69,8 +71,7 @@ class Usage:
         return combined_database_contents
 
     def __write_file_to_mongo_database(self, combined_database_contents: DataFrame, file_identifier: str):
-        database_writer = JsonWriter(combined_database_contents, self.__data_collection, self.__database_collection)
+        database_writer = JsonWriter(combined_database_contents, self.__data_collection)
 
         if self.hash_writer.hash_is_unique(file_identifier):
             database_writer.insert_database_contents_as_json()
-            database_writer.insert_database_additional_information()
