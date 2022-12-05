@@ -48,23 +48,23 @@ class Usage:
             return
 
     def handle_chunks(self, database_path, reader: DatabaseReader):
-        self.validate_file_if_user_wanted_to(reader)
-
         file_identifier = Hash.get_hash_from_file_contents(database_path)
+        if self.hash_writer.hash_is_unique(file_identifier):
+            self.validate_file_if_user_wanted_to(reader)
 
-        lines_in_database = 0
+            lines_in_database = 0
 
-        database_chunk_generator = reader.get_json_or_csv_database_chunk_iterator()
-        for chunk in database_chunk_generator:
-            lines_in_database += len(chunk)
+            database_chunk_generator = reader.get_json_or_csv_database_chunk_iterator()
+            for chunk in database_chunk_generator:
+                lines_in_database += len(chunk)
 
-            combined_database_contents = self.__combine_additional_information_to_database(chunk,
-                                                                                           database_path)
-            self.__write_file_to_mongo_database(combined_database_contents, file_identifier)
+                combined_database_contents = self.__combine_additional_information_to_database(chunk,
+                                                                                               database_path)
+                self.__write_file_to_mongo_database(combined_database_contents, file_identifier)
 
-        self.hash_writer.write_valid_hash(file_identifier, database_path)
-        self.__additional_writer.insert_database_additional_information(database_path, lines_in_database,
-                                                                        self.additional_information)
+            self.hash_writer.write_valid_hash(file_identifier, database_path)
+            self.__additional_writer.insert_database_additional_information(database_path, lines_in_database,
+                                                                            self.additional_information)
 
     def validate_file_if_user_wanted_to(self, reader):
         if self.__user_arguments.skip_invalid_lines:
