@@ -1,7 +1,7 @@
 # Lookup-Tools
 
 ## Lookup-Tools is an automated parsing project that uses pandas made to assist with my main project Lookup.
-
+TODO: this README.md is currently outdated, I haven't had time to update it yet, most of the stuff on it is correct though. (20.12.2022)
 <details>
 <summary>What is my end goal?</summary>
 
